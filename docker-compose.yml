@@ -11,6 +11,7 @@ services:
       - ./testpack:/app/testpack:ro
       - ./audio:/app/audio
       - ./evals:/app/evals
+      - ./README.md:/app/README.md
       - model-cache:/cache
       # replays cached LLM responses + decoded audio between runs (gitignored)
       - ./.cache:/app/.cache

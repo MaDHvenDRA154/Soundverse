@@ -51,11 +51,11 @@
      ],
      "length_before_s": 30.12154195011338,
      "length_after_s": 38.43492063492064,
-     "seconds": 0.0,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn1.wav",
-      "grid": "evals\\out\\part2\\S1\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn1.click.wav"
+      "audio": "evals/out/part2/S1/turn1.wav",
+      "grid": "evals/out/part2/S1/turn1.grid.json",
+      "click_audition": "evals/out/part2/S1/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -138,11 +138,11 @@
      ],
      "length_before_s": 38.43492063492064,
      "length_after_s": 38.43492063492064,
-     "seconds": 0.0,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn2.wav",
-      "grid": "evals\\out\\part2\\S1\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn2.click.wav"
+      "audio": "evals/out/part2/S1/turn2.wav",
+      "grid": "evals/out/part2/S1/turn2.grid.json",
+      "click_audition": "evals/out/part2/S1/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -207,11 +207,11 @@
      "resolved": [],
      "length_before_s": 38.43492063492064,
      "length_after_s": 38.43492063492064,
-     "seconds": 0.0,
+     "seconds": 0.03,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn3.wav",
-      "grid": "evals\\out\\part2\\S1\\turn3.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn3.click.wav"
+      "audio": "evals/out/part2/S1/turn3.wav",
+      "grid": "evals/out/part2/S1/turn3.grid.json",
+      "click_audition": "evals/out/part2/S1/turn3.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -293,11 +293,11 @@
      ],
      "length_before_s": 38.43492063492064,
      "length_after_s": 36.356145124716555,
-     "seconds": 0.0,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn4.wav",
-      "grid": "evals\\out\\part2\\S1\\turn4.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn4.click.wav"
+      "audio": "evals/out/part2/S1/turn4.wav",
+      "grid": "evals/out/part2/S1/turn4.grid.json",
+      "click_audition": "evals/out/part2/S1/turn4.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -420,11 +420,11 @@
      ],
      "length_before_s": 30.00018140589569,
      "length_after_s": 54.16195011337869,
-     "seconds": 0.0,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S2\\turn1.wav",
-      "grid": "evals\\out\\part2\\S2\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S2\\turn1.click.wav"
+      "audio": "evals/out/part2/S2/turn1.wav",
+      "grid": "evals/out/part2/S2/turn1.grid.json",
+      "click_audition": "evals/out/part2/S2/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -563,11 +563,11 @@
      ],
      "length_before_s": 120.36580498866213,
      "length_after_s": 122.26832199546486,
-     "seconds": 0.0,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S3\\turn1.wav",
-      "grid": "evals\\out\\part2\\S3\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S3\\turn1.click.wav"
+      "audio": "evals/out/part2/S3/turn1.wav",
+      "grid": "evals/out/part2/S3/turn1.grid.json",
+      "click_audition": "evals/out/part2/S3/turn1.click.wav"
      },
      "format": {
       "samplerate": 44100,
@@ -609,7 +609,7 @@
    "clip": "G-step",
    "clip_kind": "generated",
    "clip_desc": "generated 4/4 with a tempo step 126 -> 134 BPM at beat 128",
-   "audio": "evals\\out\\part1\\_generated\\G-step.wav",
+   "audio": "evals/out/part1/_generated/G-step.wav",
    "usage": {
     "calls": 1,
     "cached_calls": 1,
@@ -661,7 +661,7 @@
      "resolved": [],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 0.0
+     "seconds": 0.01
     }
    ],
    "clip": "sub-disco",
@@ -727,7 +727,7 @@
      ],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 0.02
+     "seconds": 0.12
     }
    ],
    "clip": "sub-disco",
@@ -797,11 +797,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 26.115328798185942,
-     "seconds": 0.0,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S5\\turn1.wav",
-      "grid": "evals\\out\\part2\\S5\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S5\\turn1.click.wav"
+      "audio": "evals/out/part2/S5/turn1.wav",
+      "grid": "evals/out/part2/S5/turn1.grid.json",
+      "click_audition": "evals/out/part2/S5/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -870,7 +870,7 @@
      "resolved": [],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 0.0
+     "seconds": 0.02
     }
    ],
    "clip": "sub-rock",
@@ -936,7 +936,7 @@
      ],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 0.03
+     "seconds": 0.13
     },
     {
      "n": 2,
@@ -977,11 +977,11 @@
      ],
      "length_before_s": 30.081632653061224,
      "length_after_s": 24.398911564625852,
-     "seconds": 0.0,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S4b\\turn2.wav",
-      "grid": "evals\\out\\part2\\S4b\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S4b\\turn2.click.wav"
+      "audio": "evals/out/part2/S4b/turn2.wav",
+      "grid": "evals/out/part2/S4b/turn2.grid.json",
+      "click_audition": "evals/out/part2/S4b/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1074,11 +1074,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 30.013333333333332,
-     "seconds": 0.0,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S6\\turn1.wav",
-      "grid": "evals\\out\\part2\\S6\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S6\\turn1.click.wav"
+      "audio": "evals/out/part2/S6/turn1.wav",
+      "grid": "evals/out/part2/S6/turn1.grid.json",
+      "click_audition": "evals/out/part2/S6/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1143,11 +1143,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 28.596961451247164,
-     "seconds": 0.01,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S6\\turn2.wav",
-      "grid": "evals\\out\\part2\\S6\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S6\\turn2.click.wav"
+      "audio": "evals/out/part2/S6/turn2.wav",
+      "grid": "evals/out/part2/S6/turn2.grid.json",
+      "click_audition": "evals/out/part2/S6/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1238,7 +1238,7 @@
      "resolved": [],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 0.0
+     "seconds": 0.02
     }
    ],
    "clip": "sub-hiphop",
@@ -1295,11 +1295,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 30.013333333333332,
-     "seconds": 0.0,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S8\\turn1.wav",
-      "grid": "evals\\out\\part2\\S8\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S8\\turn1.click.wav"
+      "audio": "evals/out/part2/S8/turn1.wav",
+      "grid": "evals/out/part2/S8/turn1.grid.json",
+      "click_audition": "evals/out/part2/S8/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1362,11 +1362,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 28.55156462585034,
-     "seconds": 0.0,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S8\\turn2.wav",
-      "grid": "evals\\out\\part2\\S8\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S8\\turn2.click.wav"
+      "audio": "evals/out/part2/S8/turn2.wav",
+      "grid": "evals/out/part2/S8/turn2.grid.json",
+      "click_audition": "evals/out/part2/S8/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1438,8 +1438,8 @@
   }
  },
  "cumulative": {
-  "calls": 18,
-  "tokens": 26688,
-  "est_cost_usd": 0.04792
+  "calls": 20,
+  "tokens": 29452,
+  "est_cost_usd": 0.05251
  }
 }

@@ -54,7 +54,7 @@ uv run python -m pytest -m "not slow and not llm"
 | G-waltz | generated | 1.0 | 1.0 | 1.61 | -0.18 | 99.998 | constant | 3/4 |
 - Sync A7 -> A1 at A1 bar 33: **missing**.
 - Sync G-house-partner -> G-house-6min at G-house-6min bar 33 (generated): kick offsets median 0.339 ms, max 2.083 ms over 121 pairs.
-- Speed: 362.3 s generated track analysed in 12.17 s on this laptop CPU.
+- Speed: 362.3 s generated track analysed in 10.89 s on this laptop CPU.
 
 ### Generalisation / robustness on generated audio ([evals/results/robustness.md](evals/results/robustness.md))
 
@@ -71,7 +71,7 @@ uv run python -m pytest -m "not slow and not llm"
 
 ### Part 2 -- chat editing ([evals/results/part2.md](evals/results/part2.md))
 
-- Model `gemini-3.5-flash`, real API (cached for re-runs). Cumulative LLM spend so far: 18 calls, est. $0.0479 (upper-bound pricing).
+- Model `gemini-3.5-flash`, real API (cached for re-runs). Cumulative LLM spend so far: 20 calls, est. $0.0525 (upper-bound pricing).
 
 | session | ran on | statuses | clicks at splices | hard-cut control flagged | grid vs re-tracked (beat F) |
 |---|---|---|---|---|---|

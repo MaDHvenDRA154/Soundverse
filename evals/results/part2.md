@@ -23,7 +23,7 @@ sees clicks that the crossfade removed.
 
 17 calls (17 served from cache), 0 prompt + 0 output + 0 thinking tokens on this run; estimated cost **$0.0000** at an assumed 1.5 / 7.5 USD per 1M tokens (upper bound; gemini-3.5-flash has no row on the public pricing page).
 
-Cumulative spend for this project so far (every non-cached call is cached once, so the cache is the ledger): 18 real calls, 26688 tokens, estimated **$0.0479** (budget: $10).
+Cumulative spend for this project so far (every non-cached call is cached once, so the cache is the ledger): 20 real calls, 29452 tokens, estimated **$0.0525** (budget: $10).
 
 ## Transcripts
 

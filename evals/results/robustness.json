@@ -14,7 +14,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 3.8,
+  "runtime_s": 15.96,
   "audio_s": 47.91
  },
  {
@@ -32,7 +32,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.76,
+  "runtime_s": 4.23,
   "audio_s": 70.4
  },
  {
@@ -52,7 +52,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 0.87,
+  "runtime_s": 0.89,
   "audio_s": 28.17
  },
  {
@@ -90,7 +90,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.7,
+  "runtime_s": 2.14,
   "audio_s": 42.3
  },
  {
@@ -110,7 +110,7 @@
   "notes": [
    "meter 4/4, expected 3/4"
   ],
-  "runtime_s": 1.61,
+  "runtime_s": 1.77,
   "audio_s": 35.46
  },
  {
@@ -128,7 +128,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.61,
+  "runtime_s": 2.97,
   "audio_s": 62.86
  },
  {
@@ -149,7 +149,7 @@
    "eighth-note level (compound meter)",
    "constant grid off by up to 15.13 ms (> 10.0 ms)"
   ],
-  "runtime_s": 1.72,
+  "runtime_s": 1.66,
   "audio_s": 43.83
  },
  {
@@ -169,7 +169,7 @@
   "notes": [
    "meter 6/8, expected 3/4"
   ],
-  "runtime_s": 1.52,
+  "runtime_s": 1.56,
   "audio_s": 31.23
  },
  {
@@ -187,7 +187,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.81,
+  "runtime_s": 1.9,
   "audio_s": 57.22
  },
  {
@@ -205,7 +205,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.35,
+  "runtime_s": 2.66,
   "audio_s": 59.64
  },
  {
@@ -225,7 +225,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.52,
+  "runtime_s": 1.45,
   "audio_s": 36.82
  },
  {
@@ -245,7 +245,7 @@
   "notes": [
    "tempo octave error: tracked 119.991 BPM vs 60.0; x1 alternative exposed; F at the tracked level 1.000"
   ],
-  "runtime_s": 3.35,
+  "runtime_s": 4.99,
   "audio_s": 98.2
  },
  {
@@ -263,7 +263,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.37,
+  "runtime_s": 2.43,
   "audio_s": 66.2
  },
  {
@@ -281,7 +281,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.63,
+  "runtime_s": 1.59,
   "audio_s": 47.2
  },
  {
@@ -299,7 +299,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.55,
+  "runtime_s": 1.51,
   "audio_s": 38.2
  },
  {
@@ -319,7 +319,7 @@
   "notes": [
    "tempo octave error: tracked 99.99 BPM vs 200.0; x2 alternative exposed; F at the tracked level 1.000"
   ],
-  "runtime_s": 1.51,
+  "runtime_s": 1.42,
   "audio_s": 31.0
  },
  {
@@ -337,7 +337,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.57,
+  "runtime_s": 1.38,
   "audio_s": 35.33
  },
  {
@@ -355,7 +355,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.85,
+  "runtime_s": 1.63,
   "audio_s": 57.98
  },
  {
@@ -375,7 +375,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.51,
+  "runtime_s": 1.33,
   "audio_s": 36.89
  },
  {
@@ -395,7 +395,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.5,
+  "runtime_s": 2.36,
   "audio_s": 65.02
  },
  {
@@ -415,7 +415,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.5,
+  "runtime_s": 2.31,
   "audio_s": 61.43
  },
  {
@@ -433,7 +433,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.8,
+  "runtime_s": 1.73,
   "audio_s": 55.56
  },
  {
@@ -451,7 +451,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.49,
+  "runtime_s": 2.37,
   "audio_s": 59.6
  },
  {
@@ -469,7 +469,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 3.37,
+  "runtime_s": 3.38,
   "audio_s": 94.21
  },
  {
@@ -481,7 +481,7 @@
    "message": "No detectable beat in this audio: no grid was produced. (Silence, noise, speech or beatless ambient material all look like this.)"
   },
   "notes": [],
-  "runtime_s": 0.52,
+  "runtime_s": 0.43,
   "audio_s": 20.0
  },
  {
@@ -493,7 +493,7 @@
    "message": "No detectable beat in this audio: no grid was produced. (Silence, noise, speech or beatless ambient material all look like this.)"
   },
   "notes": [],
-  "runtime_s": 0.5,
+  "runtime_s": 0.55,
   "audio_s": 20.0
  },
  {
@@ -530,7 +530,7 @@
    "audition_format": "8000Hz/1ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.47,
+  "runtime_s": 1.18,
   "audio_s": 32.48
  },
  {
@@ -548,7 +548,7 @@
    "audition_format": "96000Hz/2ch/PCM_24"
   },
   "notes": [],
-  "runtime_s": 0.93,
+  "runtime_s": 1.15,
   "audio_s": 29.43
  },
  {
@@ -566,7 +566,7 @@
    "audition_format": "48000Hz/6ch/FLOAT"
   },
   "notes": [],
-  "runtime_s": 1.54,
+  "runtime_s": 1.61,
   "audio_s": 36.29
  },
  {
@@ -584,7 +584,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.52,
+  "runtime_s": 1.38,
   "audio_s": 32.97
  },
  {
@@ -602,7 +602,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.55,
+  "runtime_s": 1.87,
   "audio_s": 32.97
  },
  {
@@ -611,8 +611,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.98,
-   "mean_err_ms": -1.48,
+   "max_abs_err_ms": 4.25,
+   "mean_err_ms": -1.55,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -620,7 +620,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.65,
+  "runtime_s": 1.49,
   "audio_s": 32.97
  },
  {
@@ -629,7 +629,7 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.25,
+   "max_abs_err_ms": 3.26,
    "mean_err_ms": -1.52,
    "beats_before_music": 0,
    "tempo_type": "constant",
@@ -638,7 +638,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.54,
+  "runtime_s": 1.98,
   "audio_s": 32.97
  },
  {
@@ -656,7 +656,7 @@
    "audition_format": "44100Hz/1ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 24.97,
+  "runtime_s": 47.0,
   "audio_s": 722.0
  }
 ]

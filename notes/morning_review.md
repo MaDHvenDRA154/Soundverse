@@ -78,7 +78,7 @@ No chat echo, op, splice score, grid check or Part 1 / robustness verdict differ
 
 ## 4. Secret scan (full history, all branches)
 
-12 commits (~1.3 MB of patches) + all 126 tracked files: the key value appears nowhere; no key-like pattern
+13 commits (all branches, including the commit that adds this file; ~1.3 MB of patches) + all 127 tracked files: the key value appears nowhere; no key-like pattern
 (`AIza...`, `ghp_`, `sk-`, `xox?-`, private-key headers); `.env` was never committed; `.env.example` only
 ever had `GEMINI_API_KEY=` empty; `python -m evals.cache_tool check` passes. Tests: 82 passed.
 

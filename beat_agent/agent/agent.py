@@ -61,9 +61,13 @@ Examples (format only):
 
 
 def gemini_schema() -> dict:
-    """EditPlan JSON schema in the subset Gemini's response_json_schema accepts:
-    refs inlined, oneOf -> anyOf, const -> enum, no discriminator/title."""
-    s = O.EditPlan.model_json_schema()
+    return gemini_schema_for(O.EditPlan)
+
+
+def gemini_schema_for(model) -> dict:
+    """A pydantic model's JSON schema in the subset Gemini's response_json_schema
+    accepts: refs inlined, oneOf -> anyOf, const -> enum, no discriminator/title."""
+    s = model.model_json_schema()
     defs = s.pop("$defs", {})
 
     def fix(n):

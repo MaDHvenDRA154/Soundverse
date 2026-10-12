@@ -72,7 +72,25 @@ def block() -> str:
                      f"{', '.join(map(str, gc)) or '-'} |")
     else:
         L.append(f"- not run{(': ' + p2['error']) if p2 and 'error' in p2 else ''}")
-    L += ["", "### Part 3 -- audio to Web Audio", "", "- not built yet (Phase 3)."]
+    p3 = _load("part3.json")
+    L += ["", "### Part 3 -- audio to Web Audio ([evals/results/part3.md](evals/results/part3.md))", ""]
+    if p3:
+        L += ["| clip | kind | stands in for | drum onsets F | drums by class F | pitched F | render onset F | page safety |",
+              "|---|---|---|---|---|---|---|---|"]
+        for r in p3["clips"]:
+            if r.get("status") != "ok":
+                L.append(f"| {r['id']} | {r['kind']} | {r.get('stands_in_for', '-')} | **{r.get('status')}** | | | | |")
+                continue
+            n = r.get("notes") or {}
+            g = lambda k: (n.get(k) or {}).get("f", "-") if n else "no reference"
+            L.append(f"| {r['id']} | {r['kind']} | {r.get('stands_in_for', '-')} | {g('drum_onsets_any_class')} | "
+                     f"{g('drums_by_class')} | {g('pitched')} | {r['onset_timing'].get('onset_f_50ms', '-')} | "
+                     f"{'ok' if not r['safety_violations'] else 'VIOLATION'} |")
+        ch = p3.get("chat") or {}
+        if ch.get("turns"):
+            L.append(f"- Chat on the recreation of {ch['clip']}: " + "; ".join(f"\"{t['user']}\" -> {t['status']}" for t in ch["turns"]))
+    else:
+        L.append("- not run")
     return "\n".join(L)
 
 

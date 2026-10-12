@@ -44,7 +44,13 @@ class Truth:
 
 # --------------------------------------------------------------------------- sounds
 def _env(n, sr, decay):
-    return np.exp(-np.arange(n) / (decay * sr))
+    """Exponential decay that also fades to exactly zero over the last 10 ms:
+    a sample cut off mid-decay ends in a click (found when the drum transcriber
+    reported 'snares' 350 ms after every generated kick)."""
+    e = np.exp(-np.arange(n) / (decay * sr))
+    f = min(n, int(0.010 * sr))
+    e[n - f:] *= np.linspace(1.0, 0.0, f)
+    return e
 
 
 def _kick(sr, rng):

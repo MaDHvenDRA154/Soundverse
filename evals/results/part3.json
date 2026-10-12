@@ -1,0 +1,258 @@
+{
+ "clips": [
+  {
+   "id": "subP1",
+   "kind": "SUBSTITUTE",
+   "audio": "evals/substitutes/part3/subP1.wav",
+   "midi": "evals/substitutes/part3/subP1.mid",
+   "desc": "Groove MIDI 2-bar drum loop (GM render)",
+   "stands_in_for": "P1",
+   "recreate_s": 4.49,
+   "safety_violations": [],
+   "page_bytes": 17194,
+   "status": "ok",
+   "tempo_bpm": 138.0,
+   "loop_s": 3.4783,
+   "bars": 2,
+   "meter": [
+    4,
+    4
+   ],
+   "mode": "whole_clip",
+   "loop_note": "whole clip as the loop: 8 beats of 434.8 ms = 3.478 s; meter unknown, 4/4 assumed for bar labels only",
+   "tracks": {
+    "drums": 36
+   },
+   "onset_timing": {
+    "onset_f_50ms": 0.9756,
+    "n_onsets_original": 20,
+    "n_onsets_render": 21,
+    "median_abs_offset_ms": 17.41,
+    "median_signed_offset_ms": 14.51
+   },
+   "seam": {
+    "seam_s": 3.4783,
+    "seam_step_ratio": 0.0
+   },
+   "notes": {
+    "drums_by_class": {
+     "f": 0.3256,
+     "p": 0.3889,
+     "r": 0.28,
+     "n_ref": 50,
+     "n_est": 36
+    },
+    "drum_onsets_any_class": {
+     "f": 0.7209,
+     "p": 0.8611,
+     "r": 0.62,
+     "n_ref": 50,
+     "n_est": 36
+    },
+    "pitched": null,
+    "all_notes": {
+     "f": 0.3256,
+     "p": 0.3889,
+     "r": 0.28,
+     "n_ref": 50,
+     "n_est": 36
+    }
+   }
+  },
+  {
+   "id": "subP2",
+   "kind": "SUBSTITUTE",
+   "audio": "evals/substitutes/part3/subP2.wav",
+   "midi": "evals/substitutes/part3/subP2.mid",
+   "desc": "Lakh MIDI 4-bar drums + bass (GM render)",
+   "stands_in_for": "P2",
+   "recreate_s": 4.24,
+   "safety_violations": [],
+   "page_bytes": 23008,
+   "status": "ok",
+   "tempo_bpm": 107.0,
+   "loop_s": 8.972,
+   "bars": 4,
+   "meter": [
+    4,
+    4
+   ],
+   "mode": "whole_clip",
+   "loop_note": "whole clip as the loop: 16 beats of 560.7 ms = 8.972 s",
+   "tracks": {
+    "drums": 71,
+    "bass": 14
+   },
+   "onset_timing": {
+    "onset_f_50ms": 0.9688,
+    "n_onsets_original": 31,
+    "n_onsets_render": 33,
+    "median_abs_offset_ms": 11.61,
+    "median_signed_offset_ms": 11.61
+   },
+   "seam": {
+    "seam_s": 8.972,
+    "seam_step_ratio": 0.51
+   },
+   "notes": {
+    "drums_by_class": {
+     "f": 0.4786,
+     "p": 0.3944,
+     "r": 0.6087,
+     "n_ref": 46,
+     "n_est": 71
+    },
+    "drum_onsets_any_class": {
+     "f": 0.7863,
+     "p": 0.6479,
+     "r": 1.0,
+     "n_ref": 46,
+     "n_est": 71
+    },
+    "pitched": {
+     "f": 0.8,
+     "p": 0.7143,
+     "r": 0.9091,
+     "n_ref": 11,
+     "n_est": 14
+    },
+    "all_notes": {
+     "f": 0.5352,
+     "p": 0.4471,
+     "r": 0.6667,
+     "n_ref": 57,
+     "n_est": 85
+    }
+   }
+  },
+  {
+   "id": "subP3",
+   "kind": "SUBSTITUTE",
+   "audio": "evals/substitutes/part3/subP3.wav",
+   "midi": "evals/substitutes/part3/subP3.mid",
+   "desc": "POP909 8-bar piano melody + chords (GM render)",
+   "stands_in_for": "P3",
+   "recreate_s": 5.66,
+   "safety_violations": [],
+   "page_bytes": 29129,
+   "status": "ok",
+   "tempo_bpm": 90.0,
+   "loop_s": 10.6667,
+   "bars": 3,
+   "meter": [
+    6,
+    8
+   ],
+   "mode": "whole_clip",
+   "loop_note": "whole clip as the loop: 16 beats of 666.7 ms = 10.667 s",
+   "tracks": {
+    "keys": 141
+   },
+   "onset_timing": {
+    "onset_f_50ms": 0.7123,
+    "n_onsets_original": 38,
+    "n_onsets_render": 35,
+    "median_abs_offset_ms": 5.8,
+    "median_signed_offset_ms": 2.9
+   },
+   "seam": {
+    "seam_s": 10.6667,
+    "seam_step_ratio": 0.433
+   },
+   "notes": {
+    "drums_by_class": null,
+    "drum_onsets_any_class": null,
+    "pitched": {
+     "f": 0.625,
+     "p": 0.4965,
+     "r": 0.8434,
+     "n_ref": 83,
+     "n_est": 141
+    },
+    "all_notes": {
+     "f": 0.625,
+     "p": 0.4965,
+     "r": 0.8434,
+     "n_ref": 83,
+     "n_est": 141
+    }
+   }
+  },
+  {
+   "id": "subP4",
+   "kind": "SUBSTITUTE",
+   "audio": "evals/substitutes/part3/subP4.wav",
+   "midi": null,
+   "desc": "Lakh MIDI 8-bar dense mix, 7 instruments (GM render, no reference used)",
+   "stands_in_for": "P4",
+   "recreate_s": 6.19,
+   "safety_violations": [],
+   "page_bytes": 80031,
+   "status": "ok",
+   "tempo_bpm": 120.0,
+   "loop_s": 16.0,
+   "bars": 8,
+   "meter": [
+    4,
+    4
+   ],
+   "mode": "whole_clip",
+   "loop_note": "whole clip as the loop: 32 beats of 500.0 ms = 16.000 s",
+   "tracks": {
+    "drums": 187,
+    "bass": 50,
+    "keys": 351
+   },
+   "onset_timing": {
+    "onset_f_50ms": 0.8889,
+    "n_onsets_original": 68,
+    "n_onsets_render": 76,
+    "median_abs_offset_ms": 11.61,
+    "median_signed_offset_ms": 11.61
+   },
+   "seam": {
+    "seam_s": 16.0,
+    "seam_step_ratio": 0.04
+   }
+  }
+ ],
+ "chat": {
+  "clip": "subP2",
+  "turns": [
+   {
+    "user": "Mute the drums.",
+    "status": "error",
+    "ops": null,
+    "echo": "The language model is unavailable: daily Gemini quota for gemini-3.5-flash is used up (resets in about 5 h). Cached sessions still replay; use another key or a model with its own quota via GEMINI_MODEL. Nothing was changed.",
+    "page": "evals\\out\\part3\\subP2\\chat_turn1.html"
+   },
+   {
+    "user": "Make the bass brighter.",
+    "status": "error",
+    "ops": null,
+    "echo": "The language model is unavailable: daily Gemini quota for gemini-3.5-flash is used up (resets in about 5 h). Cached sessions still replay; use another key or a model with its own quota via GEMINI_MODEL. Nothing was changed.",
+    "page": "evals\\out\\part3\\subP2\\chat_turn2.html"
+   },
+   {
+    "user": "Play it at 140.",
+    "status": "error",
+    "ops": null,
+    "echo": "The language model is unavailable: daily Gemini quota for gemini-3.5-flash is used up (resets in about 5 h). Cached sessions still replay; use another key or a model with its own quota via GEMINI_MODEL. Nothing was changed.",
+    "page": "evals\\out\\part3\\subP2\\chat_turn3.html"
+   }
+  ],
+  "usage": {
+   "calls": 0,
+   "cached_calls": 0,
+   "prompt_tokens": 0,
+   "output_tokens": 0,
+   "thinking_tokens": 0,
+   "est_cost_usd": 0.0,
+   "price_assumption_usd_per_mtok": {
+    "input": 1.5,
+    "output_incl_thinking": 7.5,
+    "note": "upper-bound estimate; see llm.price_per_mtok"
+   }
+  }
+ }
+}

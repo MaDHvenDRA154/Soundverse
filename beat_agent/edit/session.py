@@ -253,7 +253,9 @@ class EditSession:
             tl2 = tl.repeat(a, b, o.times_total)
             line = (f"Repeated {span.what} so it plays {o.times_total} times in total, back to back in place "
                     f"(original + {o.times_total - 1} cop{'y' if o.times_total == 2 else 'ies'}): {where}; "
-                    f"the copies occupy {b / sr:.3f}-{(b + (o.times_total - 1) * (b - a)) / sr:.3f} s.{notes}")
+                    f"the copies occupy {b / sr:.3f}-{(b + (o.times_total - 1) * (b - a)) / sr:.3f} s.{notes} "
+                    f"(If you meant the original plus {o.times_total} more, that is {o.times_total + 1} plays: "
+                    f"say 'play it {o.times_total + 1} times in total'.)")
         elif isinstance(o, O.Move):
             p, pdesc = resolve_point(o.to, g, sr, total)
             if a < p < b:

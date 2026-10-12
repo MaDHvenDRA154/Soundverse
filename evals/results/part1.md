@@ -9,7 +9,9 @@ offsets, so drift numbers on them measure grid + annotation disagreement.
 
 Beat/downbeat F: mir_eval, +-70 ms, first 5 s trimmed (mir_eval default). `untrimmed` scores from 0 s.
 
-| clip | source | status | beat F | untrimmed | no phase refinement | librosa F | downbeat F | BPM | type | meter | runtime s / audio s |
+Default analysis: phase refinement OFF (DECISIONS.md D8). The 'refinement ON' columns re-run each clip with it on.
+
+| clip | source | status | beat F | untrimmed | beat F, refinement ON | librosa F | downbeat F | BPM | type | meter | runtime s / audio s |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | A1 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
 | A2 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
@@ -18,38 +20,37 @@ Beat/downbeat F: mir_eval, +-70 ms, first 5 s trimmed (mir_eval default). `untri
 | A5 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
 | A6 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
 | A7 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
-| sub-disco | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 0.9787 | 1.0 | 114.904 | variable | 4/4 | 3.55 / 30.12 |
-| sub-hiphop | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 119.197 | constant | 4/4 | 1.25 / 30.0 |
-| sub-rock | SUBSTITUTE (GTZAN) | ok | 0.8039 | 0.8361 | 0.8039 | 0.7921 | 0.7692 | 121.567 | constant | 4/4 | 1.22 / 30.01 |
-| sub-jazz | SUBSTITUTE (GTZAN) | ok | 0.5359 | 0.5543 | 0.5359 | 0.5333 | 0.0 | 241.212 | variable | 6/8 | 1.15 / 30.01 |
-| sub-country | SUBSTITUTE (GTZAN) | ok | 0.9577 | 0.8 | 0.9577 | 0.9014 | 1.0 | 84.466 | constant | 4/4 | 1.28 / 30.08 |
-| G-house-6min | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 124.0 | constant | 4/4 | 10.89 / 362.3 |
-| G-house-partner | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 118.499 | constant | 4/4 | 5.92 / 165.83 |
-| G-step | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 126.612 | variable | 4/4 | 4.08 / 120.37 |
-| G-waltz | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 99.998 | constant | 3/4 | 3.43 / 117.9 |
+| sub-disco | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 0.9787 | 1.0 | 114.983 | variable | 4/4 | 2.35 / 30.12 |
+| sub-hiphop | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 119.202 | constant | 4/4 | 1.14 / 30.0 |
+| sub-rock | SUBSTITUTE (GTZAN) | ok | 0.8039 | 0.8361 | 0.8039 | 0.7921 | 0.7692 | 121.027 | variable | 4/4 | 1.1 / 30.01 |
+| sub-jazz | SUBSTITUTE (GTZAN) | ok | 0.5325 | 0.5514 | 0.5325 | 0.5333 | 0.0667 | 243.963 | variable | 6/8 | 1.11 / 30.01 |
+| sub-country | SUBSTITUTE (GTZAN) | ok | 0.9577 | 0.8 | 0.9577 | 0.9014 | 1.0 | 84.468 | constant | 4/4 | 1.1 / 30.08 |
+| G-house-6min | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 124.0 | constant | 4/4 | 8.5 / 362.3 |
+| G-house-partner | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 118.501 | constant | 4/4 | 3.82 / 165.83 |
+| G-step | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 127.36 | variable | 4/4 | 3.15 / 120.37 |
+| G-waltz | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 100.0 | constant | 3/4 | 2.74 / 117.9 |
 
 ## Drift (grid beat - reference beat, every matched reference beat)
 
-| clip | matched | max abs ms | mean abs ms | mean signed ms | share within 10 ms | max abs ms without phase refinement |
+| clip | matched | max abs ms | mean abs ms | mean signed ms | share within 10 ms | max abs ms, refinement ON | mean signed ms, refinement ON |
 |---|---|---|---|---|---|---|
-| sub-disco | 58/58 | 34.19 | 12.97 | -11.64 | 0.4138 | 34.19 |
-| sub-hiphop | 60/60 | 36.42 | 25.29 | -25.29 | 0.0 | 27.83 |
-| sub-rock | 51/61 | 50.73 | 18.09 | 4.58 | 0.2941 | 50.73 |
-| sub-jazz | 52/63 | 69.86 | 30.35 | -18.48 | 0.0769 | 69.86 |
-| sub-country | 34/43 | 64.62 | 6.53 | 5.46 | 0.8529 | 64.62 |
-| G-house-6min | 744/744 | 1.14 | 1.03 | -1.03 | 1.0 | 1.43 |
-| G-house-partner | 320/320 | 1.53 | 1.15 | -1.15 | 1.0 | 4.18 |
-| G-step | 256/256 | 2.62 | 1.19 | -1.19 | 1.0 | 6.46 |
-| G-waltz | 192/192 | 1.61 | 0.73 | -0.18 | 1.0 | 7.84 |
+| sub-disco | 58/58 | 36.82 | 13.66 | -12.06 | 0.3448 | 36.82 | -12.06 |
+| sub-hiphop | 60/60 | 27.75 | 17.09 | -17.09 | 0.05 | 35.97 | -25.32 |
+| sub-rock | 51/61 | 39.44 | 17.97 | 1.97 | 0.2745 | 39.44 | 1.97 |
+| sub-jazz | 52/63 | 65.55 | 29.05 | -22.35 | 0.1346 | 65.55 | -22.35 |
+| sub-country | 34/43 | 62.36 | 5.38 | 2.99 | 0.9706 | 62.36 | 2.99 |
+| G-house-6min | 744/744 | 0.91 | 0.9 | 0.9 | 1.0 | 1.03 | -1.03 |
+| G-house-partner | 320/320 | 3.12 | 2.62 | 2.62 | 1.0 | 1.65 | -1.15 |
+| G-step | 256/256 | 3.49 | 1.85 | 0.46 | 1.0 | 2.44 | -1.15 |
+| G-waltz | 192/192 | 0.62 | 0.54 | -0.54 | 1.0 | 0.62 | -0.54 |
 
 ## Sync (kick onsets of A vs stretched B in the rendered overlap)
 
 | pair | source | status | B rate | offset s | kick pairs | median abs ms | max abs ms | p95 ms |
 |---|---|---|---|---|---|---|---|---|
 | A7 -> A1 at A1 bar 33 | test pack | **missing**  | - | - | - | - | - | - |
-| G-house-partner -> G-house-6min at G-house-6min bar 33 | generated | ok | 1.046418 | 60.435911 | 121 | 0.339 | 2.083 | 1.344 |
+| G-house-partner -> G-house-6min at G-house-6min bar 33 | generated | ok | 1.046407 | 60.433267 | 121 | 1.745 | 3.537 | 2.666 |
 
 ## Messages emitted by the analyser
 
-- **sub-jazz**: Downbeat/meter confidence is low (0.49); bar numbers may be off.
 - **G-house-partner**: No detectable pulse from 0.00s to 2.30s; no beats emitted there.

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beat Agent recreation</title>
+<style>
+  :root { --bg:#14171c; --panel:#1a1e25; --line:#2a303a; --text:#e7e4dd; --muted:#8b919b; --accent:#d9a441;
+          --sans: system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 var(--sans); }
+  main { max-width: 860px; margin: 0 auto; padding: 28px 24px; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0 0 22px; }
+  .label { font: 500 11px/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 22px 0 10px; }
+  button { font: 500 13px var(--sans); color: var(--text); background: transparent; border: 1px solid var(--line);
+           padding: 7px 16px; border-radius: 3px; cursor: pointer; }
+  button.primary { border-color: var(--accent); color: var(--accent); }
+  button:hover { border-color: var(--muted); }
+  .row { display: flex; gap: 10px; align-items: center; }
+  table { width: 100%; border-collapse: collapse; }
+  td, th { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; }
+  th { color: var(--muted); font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+  input[type=range] { width: 160px; accent-color: var(--accent); }
+  .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  canvas { width: 100%; height: 120px; background: var(--panel); border: 1px solid var(--line); display: block; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">Recreation</h1>
+  <p class="sub" id="meta"></p>
+  <div class="row"><button class="primary" id="play">Play</button><button id="stop">Stop</button>
+    <span class="mono" id="state">stopped</span></div>
+  <p class="label">Score</p>
+  <canvas id="roll" width="1600" height="240"></canvas>
+  <p class="label">Mixer</p>
+  <table><thead><tr><th>Track</th><th>Role</th><th>Notes</th><th>Mute</th><th>Gain</th></tr></thead><tbody id="mixer"></tbody></table>
+  <p class="label">Provenance</p>
+  <p class="mono" id="prov"></p>
+</main>
+<script>
+"use strict";
+const SCORE = /*SCORE_JSON*/;
+
+// ---------------------------------------------------------------- synthesis
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const dbToLin = db => Math.pow(10, db / 20);
+const midiHz = m => 440 * Math.pow(2, (m - 69) / 12);
+
+function makeEngine(ctx, score, out) {
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -6; comp.ratio.value = 4; comp.connect(out);
+  const master = ctx.createGain(); master.gain.value = 0.7; master.connect(comp);
+  const rand = mulberry32(12345);                       // deterministic noise
+  const noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+  const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = rand() * 2 - 1;
+  const buses = {};
+  for (const t of score.tracks) { const g = ctx.createGain(); g.connect(master); buses[t.id] = g; }
+  function setBus(t) { buses[t.id].gain.value = t.mute ? 0 : dbToLin(t.gain_db); }
+  score.tracks.forEach(setBus);
+
+  function env(g, when, peak, attack, decay) {
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.linearRampToValueAtTime(peak, when + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, when + attack + decay);
+  }
+  function noiseSrc(when, dur) { const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true;
+    s.start(when, rand() * 0.9); s.stop(when + dur); return s; }
+
+  function drum(bus, n, when) {
+    const v = Math.pow(n.velocity / 127, 1.4);
+    if (n.drum === "kick") {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(150, when); o.frequency.exponentialRampToValueAtTime(45, when + 0.09);
+      env(g, when, 0.9 * v, 0.002, 0.38); o.connect(g).connect(bus); o.start(when); o.stop(when + 0.45);
+    } else if (n.drum === "snare") {
+      const s = noiseSrc(when, 0.25), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+      bp.type = "bandpass"; bp.frequency.value = 1900; bp.Q.value = 0.7;
+      env(g, when, 0.55 * v, 0.001, 0.17); s.connect(bp).connect(g).connect(bus);
+      const o = ctx.createOscillator(), g2 = ctx.createGain(); o.type = "triangle"; o.frequency.value = 185;
+      env(g2, when, 0.35 * v, 0.001, 0.09); o.connect(g2).connect(bus); o.start(when); o.stop(when + 0.15);
+    } else {
+      const s = noiseSrc(when, 0.12), hp = ctx.createBiquadFilter(), g = ctx.createGain();
+      hp.type = "highpass"; hp.frequency.value = 7000;
+      env(g, when, 0.28 * v, 0.001, 0.05); s.connect(hp).connect(g).connect(bus);
+    }
+  }
+
+  function tone(bus, p, n, when, dur) {
+    const f = midiHz(n.pitch), v = 0.32 * Math.pow(n.velocity / 127, 1.3);
+    const amp = ctx.createGain(), end = when + dur;
+    amp.gain.setValueAtTime(0.0001, when);
+    amp.gain.linearRampToValueAtTime(v, when + p.attack_s);
+    amp.gain.setTargetAtTime(v * p.sustain, when + p.attack_s, p.decay_s / 3);
+    amp.gain.setTargetAtTime(0.0001, end, p.release_s / 3);
+    const stopAt = end + 4 * p.release_s;
+    let head;
+    if (p.osc === "fm") {
+      const car = ctx.createOscillator(), mod = ctx.createOscillator(), mg = ctx.createGain();
+      car.frequency.value = f; mod.frequency.value = f * p.fm_ratio;
+      mg.gain.setValueAtTime(p.fm_index * f * p.fm_ratio, when);
+      mg.gain.setTargetAtTime(0.2 * p.fm_index * f * p.fm_ratio, when, p.decay_s);
+      mod.connect(mg).connect(car.frequency);
+      mod.start(when); car.start(when); mod.stop(stopAt); car.stop(stopAt);
+      head = car;
+    } else {
+      const o = ctx.createOscillator(); o.type = p.osc === "saw" ? "sawtooth" : p.osc; o.frequency.value = f;
+      o.detune.value = p.detune_cents; o.start(when); o.stop(stopAt); head = o;
+    }
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = p.cutoff_hz; lp.Q.value = p.resonance;
+    head.connect(lp).connect(amp).connect(bus);
+  }
+
+  function voice(track, n, when, spb) {
+    const bus = buses[track.id];
+    if (track.role === "drums") drum(bus, n, when);
+    else tone(bus, track.patch, n, when, Math.max(0.02, n.dur_beats * spb));
+  }
+  return { master, buses, setBus, voice };
+}
+
+// flat, time-ordered event list (beats are what we schedule; tempo is one number)
+function events(score) {
+  const ev = [];
+  for (const t of score.tracks) for (const n of t.notes) ev.push({ t, n });
+  ev.sort((a, b) => a.n.start_beats - b.n.start_beats);
+  return ev;
+}
+
+// ---------------------------------------------------------------- realtime
+let ctx = null, eng = null, timer = null, startAt = 0, idx = 0, loop = 0;
+const LOOKAHEAD = 0.12, TICK_MS = 25;
+function spb() { return 60 / SCORE.tempo_bpm; }
+function loopDur() { return SCORE.loop_beats * spb(); }
+function play() {
+  stop();
+  ctx = ctx || new AudioContext();
+  ctx.resume();
+  eng = makeEngine(ctx, SCORE, ctx.destination);
+  const ev = events(SCORE);
+  startAt = ctx.currentTime + 0.08; idx = 0; loop = 0;
+  timer = setInterval(() => {
+    if (!ev.length) return;
+    // schedule everything that starts before now + lookahead, on the audio clock
+    for (;;) {
+      const e = ev[idx], when = startAt + loop * loopDur() + e.n.start_beats * spb();
+      if (when > ctx.currentTime + LOOKAHEAD) break;
+      eng.voice(e.t, e.n, when, spb());
+      idx++;
+      if (idx >= ev.length) { idx = 0; loop++; }
+    }
+    document.getElementById("state").textContent = `playing, loop ${loop + 1}`;
+  }, TICK_MS);
+}
+function stop() {
+  if (timer) clearInterval(timer);
+  timer = null;
+  if (eng) { const m = eng.master; m.gain.setTargetAtTime(0, ctx.currentTime, 0.01); setTimeout(() => m.disconnect(), 120); }
+  eng = null;
+  const s = document.getElementById("state"); if (s) s.textContent = "stopped";
+}
+
+// ---------------------------------------------------------------- offline
+function wavBytes(buf) {
+  const ch = buf.numberOfChannels, len = buf.length, sr = buf.sampleRate;
+  const out = new DataView(new ArrayBuffer(44 + len * ch * 2));
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); out.setUint32(4, 36 + len * ch * 2, true); w(8, "WAVE"); w(12, "fmt ");
+  out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, ch, true); out.setUint32(24, sr, true);
+  out.setUint32(28, sr * ch * 2, true); out.setUint16(32, ch * 2, true); out.setUint16(34, 16, true);
+  w(36, "data"); out.setUint32(40, len * ch * 2, true);
+  const data = []; for (let c = 0; c < ch; c++) data.push(buf.getChannelData(c));
+  let o = 44;
+  for (let i = 0; i < len; i++) for (let c = 0; c < ch; c++) {
+    const v = Math.max(-1, Math.min(1, data[c][i])); out.setInt16(o, v < 0 ? v * 32768 : v * 32767, true); o += 2; }
+  return new Uint8Array(out.buffer);
+}
+async function renderOffline(loops, sampleRate) {
+  const sr = sampleRate || 44100, n = Math.round(loops * loopDur() * sr);
+  const octx = new OfflineAudioContext(2, n, sr);
+  const e = makeEngine(octx, SCORE, octx.destination);
+  for (let l = 0; l < loops; l++) for (const ev of events(SCORE))
+    e.voice(ev.t, ev.n, l * loopDur() + ev.n.start_beats * spb(), spb());
+  const bytes = wavBytes(await octx.startRendering());
+  let s = ""; for (let i = 0; i < bytes.length; i += 32768) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 32768));
+  return btoa(s);
+}
+window.beatAgent = { score: SCORE, renderOffline };
+
+// ---------------------------------------------------------------- UI
+function drawRoll() {
+  const cv = document.getElementById("roll"), g = cv.getContext("2d"), W = cv.width, H = cv.height;
+  g.fillStyle = "#1a1e25"; g.fillRect(0, 0, W, H);
+  const x = b => b / SCORE.loop_beats * W;
+  for (let b = 0; b <= SCORE.loop_beats; b++) { g.fillStyle = b % SCORE.beats_per_bar === 0 ? "#3a414c" : "#232831"; g.fillRect(x(b), 0, 1, H); }
+  const lanes = SCORE.tracks.length, lh = H / lanes;
+  SCORE.tracks.forEach((t, i) => {
+    const ps = t.notes.map(n => n.pitch), lo = Math.min(...ps), hi = Math.max(...ps) + 1;
+    g.fillStyle = t.mute ? "#3a414c" : (t.role === "drums" ? "#e7e4dd" : "#d9a441");
+    for (const n of t.notes) {
+      const y = i * lh + (1 - (n.pitch - lo + 0.5) / (hi - lo)) * (lh - 6) + 3;
+      g.fillRect(x(n.start_beats), y - 2, Math.max(3, x(n.dur_beats)), 4);
+    }
+  });
+}
+function initUI() {
+  const c = SCORE.clip;
+  document.getElementById("title").textContent = `Recreation: ${String(c.source).split(/[\\/]/).pop()}`;
+  document.getElementById("meta").textContent =
+    `${SCORE.tempo_bpm.toFixed(2)} BPM, ${SCORE.time_signature[0]}/${SCORE.time_signature[1]}, ${SCORE.bars} bars ` +
+    `(source bars ${c.bars[0]}-${c.bars[1]}, ${c.start_s.toFixed(3)}-${c.end_s.toFixed(3)} s), loop ${loopDur().toFixed(3)} s. Synthesis only.`;
+  const tb = document.getElementById("mixer");
+  for (const t of SCORE.tracks) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${t.name}</td><td class="mono">${t.role}</td><td class="mono">${t.notes.length}</td>` +
+      `<td><input type="checkbox" ${t.mute ? "checked" : ""}></td>` +
+      `<td><input type="range" min="-30" max="6" step="0.5" value="${t.gain_db}"> <span class="mono">${t.gain_db} dB</span></td>`;
+    const [cb, rg, lab] = [tr.querySelector("input[type=checkbox]"), tr.querySelector("input[type=range]"), tr.querySelector("span")];
+    cb.onchange = () => { t.mute = cb.checked; if (eng) eng.setBus(t); drawRoll(); };
+    rg.oninput = () => { t.gain_db = parseFloat(rg.value); lab.textContent = `${t.gain_db} dB`; if (eng) eng.setBus(t); };
+    tb.appendChild(tr);
+  }
+  document.getElementById("prov").textContent = Object.entries(SCORE.provenance).map(([k, v]) => `${k}: ${typeof v === "object" ? JSON.stringify(v) : v}`).join("  |  ");
+  document.getElementById("play").onclick = play;
+  document.getElementById("stop").onclick = stop;
+  drawRoll();
+}
+initUI();
+</script>
+</body>
+</html>

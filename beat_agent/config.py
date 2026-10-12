@@ -21,9 +21,10 @@ LOSSY_EXPORT_SUBTYPE = "PCM_16"
 # Formats libsndfile reads natively with sample-accurate seeking. Anything
 # else is decoded through ffmpeg first.
 NATIVE_FORMATS = {"WAV", "FLAC", "AIFF", "W64", "RF64", "WAVEX"}
-# Inputs shorter than this cannot contain two bars of even fast music, so we
-# still analyse them but never claim a meter (see analysis.meter).
-MIN_DURATION_FOR_METER_S = 4.0
+# No extra duration rule for the meter: the decoder already needs
+# MIN_BEATS_PER_REGION (8) beats, i.e. two 4/4 bars. (A 4 s minimum used to be
+# here; it refused the meter on a 2-bar loop at 138 BPM, which is 3.5 s.)
+MIN_DURATION_FOR_METER_S = 0.0
 
 # --------------------------------------------------------------------------
 # Beat tracking (Beat This!)
@@ -35,6 +36,12 @@ PEAK_PROB_THRESHOLD = 0.5
 # Peaks closer than this are merged (Beat This! uses a +-70 ms max filter,
 # equivalent to a 214 BPM ceiling at the beat level).
 PEAK_MIN_SEPARATION_S = 0.07
+# Parabolic sub-frame refinement of activation peaks. OFF: the bias study
+# (evals/results/bias_study.md, E1) measured it moving beats away from Beat
+# This!'s own integer-frame output by up to ~5 ms on the generated tracks (the
+# activation peak is asymmetric). Integer frames are what the model's authors
+# use; the line fits average the 20 ms quantisation out over many beats.
+PEAK_SUBFRAME_INTERPOLATION = False
 
 # --------------------------------------------------------------------------
 # Beat regions / "is there a beat here at all?"
@@ -115,7 +122,7 @@ STEP_TRANSITION_GUARD_BEATS = 4
 STEP_INLIER_S = 0.030
 # Phase refinement (grid.refine_phase): shift each tempo segment onto the
 # audio's attacks when the evidence is statistically clear.
-PHASE_REFINEMENT = True
+PHASE_REFINEMENT = False   # see DECISIONS.md D8: hurt the only real-music evidence; kept as an option
 # Search +-40 ms around each beat (two tracker frames) for an attack.
 ATTACK_SEARCH_S = 0.04
 # An "attack" is a >= 6 dB rise of 4 ms energy within 3 ms: percussive onsets
@@ -258,3 +265,52 @@ PROPOSE_MIN_CONTRAST_DB = 3.0
 # pattern: half time plausible).
 OCTAVE_DOUBLE_PLAUSIBLE = 0.75
 OCTAVE_HALF_PLAUSIBLE = 0.5
+
+# --------------------------------------------------------------------------
+# Part 3: audio -> score
+# --------------------------------------------------------------------------
+DEMUCS_MODEL = "htdemucs"          # the default 4-stem Demucs v4 model (CPU)
+# Context fed to Demucs on each side of the loop so separation has no edge effects.
+DEMUCS_CONTEXT_S = 0.5
+# Recreations are 2-16 bars (brief); a longer track defaults to its first
+# 8-bar phrase, the standard loop length.
+RECREATE_MAX_BARS = 16
+RECREATE_DEFAULT_BARS = 8
+# A stem quieter than -50 dBFS RMS is treated as absent (Demucs leaves low-level
+# bleed in empty stems; -50 dB is well below any real part in a mix).
+STEM_SILENT_DB = -50.0
+# Drum onsets: 4 ms-windowed band energy at 2.5 ms hop; a hit is a rise of
+# >= 6 dB within 10 ms that is at least 20% of the strongest rises (99.5th
+# percentile) in that band; hits closer than 50 ms (a 32nd at 150 BPM) merge.
+DRUM_HOP_S = 0.0025
+DRUM_RISE_S = 0.010
+DRUM_MIN_RISE_DB = 6.0
+DRUM_REL_HEIGHT = 0.20
+DRUM_MIN_SPACING_S = 0.050
+# ...and only if the band energy there is within 30 dB of the band's loud
+# level (99th percentile): rises out of the noise floor between hits are not hits.
+DRUM_MIN_LEVEL_BELOW_PEAK_DB = 30.0
+# Detected hits are refined to ~1 ms by the steepest-rise detector within +-15 ms.
+DRUM_REFINE_S = 0.015
+# Bands: kick < KICK_LOWPASS_HZ (shared with the sync kick detector), snare
+# 150-5000 Hz (body + crack), hats > 6 kHz.
+SNARE_BAND_HI_HZ = 5000.0
+HAT_BAND_LO_HZ = 6000.0
+# Hits in two bands within 30 ms are the same event...
+DRUM_COINCIDE_S = 0.030
+# ...and a mid-band rise next to a kick is a snare only if it is >= 1.5x as
+# strong (relative to each band's own scale) -- a kick's click alone is not.
+SNARE_OVER_KICK = 1.5
+# Basic Pitch: its own defaults for onset / frame thresholds; minimum note
+# 60 ms (its 127 ms default would drop 16th notes above ~120 BPM).
+BP_ONSET_THRESHOLD = 0.5
+BP_FRAME_THRESHOLD = 0.3
+BP_MIN_NOTE_MS = 60.0
+# MIDI pitch ranges per role (E1-G4 bass, C2-C7 keys, C3-C6 lead).
+BASS_RANGE = (28, 67)
+KEYS_RANGE = (36, 96)
+LEAD_RANGE = (48, 84)
+# Soft quantisation: move each onset halfway to the nearest 16th (or triplet)
+# of the grid. 0.5 keeps human timing feel while removing transcription jitter;
+# 1.0 would be a hard snap.
+QUANTIZE_STRENGTH = 0.5

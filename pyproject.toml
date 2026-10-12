@@ -28,6 +28,8 @@ dependencies = [
     "onnxruntime>=1.17",
     "pretty_midi>=0.2.10",
     "playwright>=1.44",
+    # basic-pitch -> resampy imports pkg_resources, removed from setuptools >= 81
+    "setuptools>=70,<81",
 ]
 
 [project.optional-dependencies]

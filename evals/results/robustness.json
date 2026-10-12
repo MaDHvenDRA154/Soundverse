@@ -5,8 +5,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 2.4,
-   "mean_err_ms": -0.46,
+   "max_abs_err_ms": 4.89,
+   "mean_err_ms": -3.57,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "3/4",
@@ -14,7 +14,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 15.96,
+  "runtime_s": 2.46,
   "audio_s": 47.91
  },
  {
@@ -23,8 +23,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 4.69,
-   "mean_err_ms": -1.74,
+   "max_abs_err_ms": 6.49,
+   "mean_err_ms": -3.56,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -32,7 +32,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 4.23,
+  "runtime_s": 1.91,
   "audio_s": 70.4
  },
  {
@@ -41,8 +41,8 @@
   "status": "partial",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.46,
-   "mean_err_ms": -1.58,
+   "max_abs_err_ms": 13.88,
+   "mean_err_ms": -13.06,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "12/8",
@@ -50,9 +50,10 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [
+   "constant grid off by up to 13.88 ms (> 10.0 ms)",
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 0.89,
+  "runtime_s": 0.64,
   "audio_s": 28.17
  },
  {
@@ -61,8 +62,8 @@
   "status": "partial",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.64,
-   "mean_err_ms": -1.08,
+   "max_abs_err_ms": 15.34,
+   "mean_err_ms": -13.79,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "12/8",
@@ -70,9 +71,10 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [
+   "constant grid off by up to 15.34 ms (> 10.0 ms)",
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.58,
+  "runtime_s": 1.15,
   "audio_s": 32.46
  },
  {
@@ -81,8 +83,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.29,
-   "mean_err_ms": -1.24,
+   "max_abs_err_ms": 4.42,
+   "mean_err_ms": -4.27,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "3/4",
@@ -90,7 +92,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.14,
+  "runtime_s": 1.19,
   "audio_s": 42.3
  },
  {
@@ -99,8 +101,8 @@
   "status": "fail",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.31,
-   "mean_err_ms": -0.95,
+   "max_abs_err_ms": 6.4,
+   "mean_err_ms": -5.55,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -110,7 +112,7 @@
   "notes": [
    "meter 4/4, expected 3/4"
   ],
-  "runtime_s": 1.77,
+  "runtime_s": 1.16,
   "audio_s": 35.46
  },
  {
@@ -119,8 +121,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.74,
-   "mean_err_ms": -1.32,
+   "max_abs_err_ms": 3.01,
+   "mean_err_ms": -2.55,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "3/4",
@@ -128,7 +130,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.97,
+  "runtime_s": 1.88,
   "audio_s": 62.86
  },
  {
@@ -137,8 +139,8 @@
   "status": "partial",
   "checks": {
    "beat_f": 0.993,
-   "max_abs_err_ms": 15.13,
-   "mean_err_ms": -13.86,
+   "max_abs_err_ms": 12.21,
+   "mean_err_ms": -12.05,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "6/8",
@@ -147,9 +149,9 @@
   },
   "notes": [
    "eighth-note level (compound meter)",
-   "constant grid off by up to 15.13 ms (> 10.0 ms)"
+   "constant grid off by up to 12.21 ms (> 10.0 ms)"
   ],
-  "runtime_s": 1.66,
+  "runtime_s": 1.22,
   "audio_s": 43.83
  },
  {
@@ -158,8 +160,8 @@
   "status": "fail",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.18,
-   "mean_err_ms": -0.95,
+   "max_abs_err_ms": 8.41,
+   "mean_err_ms": -6.46,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "6/8",
@@ -169,25 +171,27 @@
   "notes": [
    "meter 6/8, expected 3/4"
   ],
-  "runtime_s": 1.56,
+  "runtime_s": 1.11,
   "audio_s": 31.23
  },
  {
   "name": "random_09_4-4_105.2bpm",
   "group": "generalisation",
-  "status": "pass",
+  "status": "partial",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 5.03,
-   "mean_err_ms": -1.31,
+   "max_abs_err_ms": 20.48,
+   "mean_err_ms": -17.93,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
    "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
-  "notes": [],
-  "runtime_s": 1.9,
+  "notes": [
+   "constant grid off by up to 20.48 ms (> 10.0 ms)"
+  ],
+  "runtime_s": 1.28,
   "audio_s": 57.22
  },
  {
@@ -196,8 +200,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.97,
-   "mean_err_ms": -1.23,
+   "max_abs_err_ms": 9.8,
+   "mean_err_ms": -9.77,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -205,7 +209,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.66,
+  "runtime_s": 1.71,
   "audio_s": 59.64
  },
  {
@@ -214,8 +218,8 @@
   "status": "partial",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 6.5,
-   "mean_err_ms": -0.82,
+   "max_abs_err_ms": 6.19,
+   "mean_err_ms": -5.72,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "12/8",
@@ -225,27 +229,25 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.45,
+  "runtime_s": 1.14,
   "audio_s": 36.82
  },
  {
   "name": "tempo_60",
   "group": "robustness",
-  "status": "partial",
+  "status": "pass",
   "checks": {
-   "beat_f": 0.669,
-   "max_abs_err_ms": 3.95,
-   "mean_err_ms": -0.57,
+   "beat_f": 1.0,
+   "max_abs_err_ms": 0.0,
+   "mean_err_ms": -0.0,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
-   "downbeat_f": 0.6667,
+   "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
-  "notes": [
-   "tempo octave error: tracked 119.991 BPM vs 60.0; x1 alternative exposed; F at the tracked level 1.000"
-  ],
-  "runtime_s": 4.99,
+  "notes": [],
+  "runtime_s": 2.47,
   "audio_s": 98.2
  },
  {
@@ -254,8 +256,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 5.72,
-   "mean_err_ms": -1.59,
+   "max_abs_err_ms": 7.78,
+   "mean_err_ms": -3.94,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -263,7 +265,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.43,
+  "runtime_s": 1.77,
   "audio_s": 66.2
  },
  {
@@ -272,8 +274,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 0.92,
-   "mean_err_ms": -0.8,
+   "max_abs_err_ms": 2.09,
+   "mean_err_ms": -1.99,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -281,7 +283,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.59,
+  "runtime_s": 1.22,
   "audio_s": 47.2
  },
  {
@@ -290,8 +292,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.25,
-   "mean_err_ms": -0.74,
+   "max_abs_err_ms": 2.78,
+   "mean_err_ms": -2.5,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -299,7 +301,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.51,
+  "runtime_s": 1.15,
   "audio_s": 38.2
  },
  {
@@ -308,8 +310,8 @@
   "status": "partial",
   "checks": {
    "beat_f": 0.6667,
-   "max_abs_err_ms": 2.3,
-   "mean_err_ms": -0.95,
+   "max_abs_err_ms": 0.0,
+   "mean_err_ms": -0.0,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -317,9 +319,9 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [
-   "tempo octave error: tracked 99.99 BPM vs 200.0; x2 alternative exposed; F at the tracked level 1.000"
+   "tempo octave error: tracked 100.0 BPM vs 200.0; x2 alternative exposed; F at the tracked level 1.000"
   ],
-  "runtime_s": 1.42,
+  "runtime_s": 1.14,
   "audio_s": 31.0
  },
  {
@@ -328,8 +330,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.38,
-   "mean_err_ms": -1.01,
+   "max_abs_err_ms": 5.18,
+   "mean_err_ms": -3.55,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "3/4",
@@ -337,25 +339,27 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.38,
+  "runtime_s": 1.1,
   "audio_s": 35.33
  },
  {
   "name": "meter_4-4_104",
   "group": "robustness",
-  "status": "pass",
+  "status": "partial",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.75,
-   "mean_err_ms": -1.22,
+   "max_abs_err_ms": 11.14,
+   "mean_err_ms": -11.12,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
    "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
-  "notes": [],
-  "runtime_s": 1.63,
+  "notes": [
+   "constant grid off by up to 11.14 ms (> 10.0 ms)"
+  ],
+  "runtime_s": 1.35,
   "audio_s": 57.98
  },
  {
@@ -364,8 +368,8 @@
   "status": "partial",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 4.09,
-   "mean_err_ms": -1.36,
+   "max_abs_err_ms": 17.43,
+   "mean_err_ms": -10.71,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "12/8",
@@ -373,9 +377,10 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [
+   "constant grid off by up to 17.43 ms (> 10.0 ms)",
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.33,
+  "runtime_s": 1.11,
   "audio_s": 36.89
  },
  {
@@ -384,18 +389,18 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.98,
-   "mean_err_ms": -1.21,
+   "max_abs_err_ms": 9.57,
+   "mean_err_ms": 4.65,
    "beats_before_music": 0,
    "tempo_type": "variable",
    "tempo_change_found": true,
-   "tempo_change_err_s": 0.0028,
+   "tempo_change_err_s": 0.0007,
    "meter": "4/4",
    "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.36,
+  "runtime_s": 1.83,
   "audio_s": 65.02
  },
  {
@@ -404,18 +409,18 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 2.37,
-   "mean_err_ms": -0.86,
+   "max_abs_err_ms": 10.23,
+   "mean_err_ms": 3.81,
    "beats_before_music": 0,
    "tempo_type": "variable",
    "tempo_change_found": true,
-   "tempo_change_err_s": 0.0003,
+   "tempo_change_err_s": 0.0102,
    "meter": "4/4",
    "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.31,
+  "runtime_s": 1.8,
   "audio_s": 61.43
  },
  {
@@ -423,17 +428,17 @@
   "group": "robustness",
   "status": "pass",
   "checks": {
-   "beat_f": 0.9688,
-   "max_abs_err_ms": 65.17,
-   "mean_err_ms": 6.72,
+   "beat_f": 1.0,
+   "max_abs_err_ms": 16.66,
+   "mean_err_ms": -5.92,
    "beats_before_music": 0,
    "tempo_type": "variable",
    "meter": "4/4",
-   "downbeat_f": 0.9583,
+   "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.73,
+  "runtime_s": 1.31,
   "audio_s": 55.56
  },
  {
@@ -442,8 +447,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.11,
-   "mean_err_ms": -0.83,
+   "max_abs_err_ms": 8.28,
+   "mean_err_ms": -5.23,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -451,7 +456,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.37,
+  "runtime_s": 1.71,
   "audio_s": 59.6
  },
  {
@@ -460,8 +465,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.14,
-   "mean_err_ms": -1.02,
+   "max_abs_err_ms": 5.67,
+   "mean_err_ms": 5.25,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -469,7 +474,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 3.38,
+  "runtime_s": 2.46,
   "audio_s": 94.21
  },
  {
@@ -481,7 +486,7 @@
    "message": "No detectable beat in this audio: no grid was produced. (Silence, noise, speech or beatless ambient material all look like this.)"
   },
   "notes": [],
-  "runtime_s": 0.43,
+  "runtime_s": 0.39,
   "audio_s": 20.0
  },
  {
@@ -493,7 +498,7 @@
    "message": "No detectable beat in this audio: no grid was produced. (Silence, noise, speech or beatless ambient material all look like this.)"
   },
   "notes": [],
-  "runtime_s": 0.55,
+  "runtime_s": 0.37,
   "audio_s": 20.0
  },
  {
@@ -502,8 +507,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 0.96,
-   "mean_err_ms": -0.16,
+   "max_abs_err_ms": 0.0,
+   "mean_err_ms": -0.0,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": null,
@@ -512,7 +517,7 @@
   "notes": [
    "short clip: meter not required"
   ],
-  "runtime_s": 0.07,
+  "runtime_s": 0.06,
   "audio_s": 2.5
  },
  {
@@ -521,8 +526,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.41,
-   "mean_err_ms": -1.34,
+   "max_abs_err_ms": 4.27,
+   "mean_err_ms": -3.93,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -530,7 +535,7 @@
    "audition_format": "8000Hz/1ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.18,
+  "runtime_s": 1.05,
   "audio_s": 32.48
  },
  {
@@ -539,8 +544,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.8,
-   "mean_err_ms": -0.98,
+   "max_abs_err_ms": 3.43,
+   "mean_err_ms": -2.14,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -548,7 +553,7 @@
    "audition_format": "96000Hz/2ch/PCM_24"
   },
   "notes": [],
-  "runtime_s": 1.15,
+  "runtime_s": 0.74,
   "audio_s": 29.43
  },
  {
@@ -557,8 +562,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.93,
-   "mean_err_ms": -1.29,
+   "max_abs_err_ms": 6.56,
+   "mean_err_ms": -6.43,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -566,7 +571,7 @@
    "audition_format": "48000Hz/6ch/FLOAT"
   },
   "notes": [],
-  "runtime_s": 1.61,
+  "runtime_s": 1.12,
   "audio_s": 36.29
  },
  {
@@ -575,8 +580,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 2.75,
-   "mean_err_ms": -1.34,
+   "max_abs_err_ms": 1.48,
+   "mean_err_ms": 0.21,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -584,7 +589,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.38,
+  "runtime_s": 1.1,
   "audio_s": 32.97
  },
  {
@@ -593,8 +598,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 2.61,
-   "mean_err_ms": -1.26,
+   "max_abs_err_ms": 1.74,
+   "mean_err_ms": 0.21,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -602,7 +607,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.87,
+  "runtime_s": 1.22,
   "audio_s": 32.97
  },
  {
@@ -611,8 +616,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 4.25,
-   "mean_err_ms": -1.55,
+   "max_abs_err_ms": 5.36,
+   "mean_err_ms": 1.99,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -620,7 +625,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.49,
+  "runtime_s": 1.13,
   "audio_s": 32.97
  },
  {
@@ -629,8 +634,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 3.26,
-   "mean_err_ms": -1.52,
+   "max_abs_err_ms": 2.59,
+   "mean_err_ms": 2.35,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -638,7 +643,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.98,
+  "runtime_s": 1.18,
   "audio_s": 32.97
  },
  {
@@ -647,8 +652,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 1.1,
-   "mean_err_ms": -1.08,
+   "max_abs_err_ms": 2.15,
+   "mean_err_ms": 2.12,
    "beats_before_music": 0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -656,7 +661,7 @@
    "audition_format": "44100Hz/1ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 47.0,
+  "runtime_s": 17.23,
   "audio_s": 722.0
  }
 ]

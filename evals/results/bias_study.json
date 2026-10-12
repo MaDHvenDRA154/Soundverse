@@ -1,0 +1,298 @@
+{
+ "E1_generated_offsets": {
+  "g120": {
+   "official_File2Beats": {
+    "n": 96,
+    "median_ms": 0.0,
+    "mean_ms": 0.0,
+    "mad_ms": 0.0
+   },
+   "ours_integer_frames": {
+    "n": 96,
+    "median_ms": 0.0,
+    "mean_ms": 0.0,
+    "mad_ms": 0.0
+   },
+   "ours_parabolic": {
+    "n": 96,
+    "median_ms": 4.8,
+    "mean_ms": 4.7,
+    "mad_ms": 1.76
+   },
+   "ours_full_grid_no_refinement": {
+    "n": 96,
+    "median_ms": -0.0,
+    "mean_ms": -0.0,
+    "mad_ms": 0.0
+   }
+  },
+  "g97": {
+   "official_File2Beats": {
+    "n": 96,
+    "median_ms": -5.05,
+    "mean_ms": -4.98,
+    "mad_ms": 5.05
+   },
+   "ours_integer_frames": {
+    "n": 96,
+    "median_ms": -5.05,
+    "mean_ms": -4.98,
+    "mad_ms": 5.05
+   },
+   "ours_parabolic": {
+    "n": 96,
+    "median_ms": -7.13,
+    "mean_ms": -7.39,
+    "mad_ms": 2.35
+   },
+   "ours_full_grid_no_refinement": {
+    "n": 96,
+    "median_ms": -4.85,
+    "mean_ms": -4.85,
+    "mad_ms": 1.35
+   }
+  },
+  "g141": {
+   "official_File2Beats": {
+    "n": 128,
+    "median_ms": 4.68,
+    "mean_ms": 4.82,
+    "mad_ms": 5.53
+   },
+   "ours_integer_frames": {
+    "n": 128,
+    "median_ms": 4.68,
+    "mean_ms": 4.82,
+    "mad_ms": 5.53
+   },
+   "ours_parabolic": {
+    "n": 128,
+    "median_ms": 6.03,
+    "mean_ms": 5.45,
+    "mad_ms": 3.77
+   },
+   "ours_full_grid_no_refinement": {
+    "n": 128,
+    "median_ms": 4.89,
+    "mean_ms": 4.89,
+    "mad_ms": 0.57
+   }
+  }
+ },
+ "E2_delay_linearity_g120": {
+  "+5ms": {
+   "n": 96,
+   "median_ms": -5.0,
+   "mean_ms": -4.79,
+   "mad_ms": 0.0
+  },
+  "+10ms": {
+   "n": 96,
+   "median_ms": 10.0,
+   "mean_ms": 1.25,
+   "mad_ms": 0.0
+  },
+  "+15ms": {
+   "n": 96,
+   "median_ms": 5.0,
+   "mean_ms": 5.21,
+   "mad_ms": 0.0
+  },
+  "+0ms": {
+   "n": 96,
+   "median_ms": 0.0,
+   "mean_ms": 0.0,
+   "mad_ms": 0.0
+  }
+ },
+ "E3_samplerate": {
+  "22050": {
+   "n": 96,
+   "median_ms": -7.12,
+   "mean_ms": -7.35,
+   "mad_ms": 2.34
+  },
+  "32000": {
+   "n": 96,
+   "median_ms": -7.12,
+   "mean_ms": -7.38,
+   "mad_ms": 2.35
+  },
+  "44100": {
+   "n": 96,
+   "median_ms": -7.12,
+   "mean_ms": -7.38,
+   "mad_ms": 2.35
+  },
+  "48000": {
+   "n": 96,
+   "median_ms": -7.12,
+   "mean_ms": -7.38,
+   "mad_ms": 2.35
+  },
+  "96000": {
+   "n": 96,
+   "median_ms": -7.12,
+   "mean_ms": -7.37,
+   "mad_ms": 2.35
+  }
+ },
+ "E4_decoders": {
+  "wav": {
+   "n": 128,
+   "median_ms": 6.03,
+   "mean_ms": 5.45,
+   "mad_ms": 3.77
+  },
+  "flac": {
+   "n": 128,
+   "median_ms": 6.04,
+   "mean_ms": 5.45,
+   "mad_ms": 3.78
+  },
+  "mp3": {
+   "n": 128,
+   "median_ms": 4.47,
+   "mean_ms": 4.4,
+   "mad_ms": 3.55
+  },
+  "m4a": {
+   "n": 128,
+   "median_ms": 2.75,
+   "mean_ms": 2.75,
+   "mad_ms": 3.57
+  }
+ },
+ "E5_substitutes": {
+  "sub-disco": {
+   "annotation_minus_attack": {
+    "n": 46,
+    "median_ms": 11.18,
+    "mean_ms": 10.38,
+    "mad_ms": 9.91
+   },
+   "tracker_minus_attack": {
+    "n": 45,
+    "median_ms": 2.68,
+    "mean_ms": 0.5,
+    "mad_ms": 8.62
+   },
+   "tracker_minus_annotation": {
+    "n": 58,
+    "median_ms": -12.5,
+    "mean_ms": -12.1,
+    "mad_ms": 8.5
+   },
+   "official_File2Beats_minus_annotation": {
+    "n": 58,
+    "median_ms": -12.5,
+    "mean_ms": -12.1,
+    "mad_ms": 8.5
+   }
+  },
+  "sub-hiphop": {
+   "annotation_minus_attack": {
+    "n": 43,
+    "median_ms": 21.79,
+    "mean_ms": 20.36,
+    "mad_ms": 3.72
+   },
+   "tracker_minus_attack": {
+    "n": 45,
+    "median_ms": 4.94,
+    "mean_ms": 4.22,
+    "mad_ms": 7.3
+   },
+   "tracker_minus_annotation": {
+    "n": 60,
+    "median_ms": -17.0,
+    "mean_ms": -17.07,
+    "mad_ms": 5.0
+   },
+   "official_File2Beats_minus_annotation": {
+    "n": 60,
+    "median_ms": -17.0,
+    "mean_ms": -17.07,
+    "mad_ms": 5.0
+   }
+  },
+  "sub-rock": {
+   "annotation_minus_attack": {
+    "n": 45,
+    "median_ms": 2.57,
+    "mean_ms": 2.19,
+    "mad_ms": 20.8
+   },
+   "tracker_minus_attack": {
+    "n": 46,
+    "median_ms": 6.39,
+    "mean_ms": 8.96,
+    "mad_ms": 16.1
+   },
+   "tracker_minus_annotation": {
+    "n": 52,
+    "median_ms": 3.5,
+    "mean_ms": 3.33,
+    "mad_ms": 20.0
+   },
+   "official_File2Beats_minus_annotation": {
+    "n": 52,
+    "median_ms": 3.5,
+    "mean_ms": 3.33,
+    "mad_ms": 20.0
+   }
+  },
+  "sub-jazz": {
+   "annotation_minus_attack": {
+    "n": 24,
+    "median_ms": 3.84,
+    "mean_ms": 3.26,
+    "mad_ms": 17.79
+   },
+   "tracker_minus_attack": {
+    "n": 60,
+    "median_ms": 3.06,
+    "mean_ms": 2.55,
+    "mad_ms": 16.01
+   },
+   "tracker_minus_annotation": {
+    "n": 51,
+    "median_ms": -31.0,
+    "mean_ms": -23.16,
+    "mad_ms": 13.0
+   },
+   "official_File2Beats_minus_annotation": {
+    "n": 51,
+    "median_ms": -31.0,
+    "mean_ms": -23.16,
+    "mad_ms": 13.0
+   }
+  },
+  "sub-country": {
+   "annotation_minus_attack": {
+    "n": 10,
+    "median_ms": 28.54,
+    "mean_ms": 20.6,
+    "mad_ms": 6.91
+   },
+   "tracker_minus_attack": {
+    "n": 14,
+    "median_ms": 26.94,
+    "mean_ms": 12.7,
+    "mad_ms": 13.24
+   },
+   "tracker_minus_annotation": {
+    "n": 34,
+    "median_ms": 3.0,
+    "mean_ms": 4.03,
+    "mad_ms": 4.5
+   },
+   "official_File2Beats_minus_annotation": {
+    "n": 34,
+    "median_ms": 3.0,
+    "mean_ms": 4.03,
+    "mad_ms": 4.5
+   }
+  }
+ }
+}

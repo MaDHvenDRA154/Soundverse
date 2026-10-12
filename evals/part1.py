@@ -135,12 +135,14 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part1", results
             row["downbeat_f"] = _f(clip.downbeats, np.array(grid.downbeats), trim=True) if clip.downbeats is not None else NM
             base = librosa_baseline(clip.audio)
             row["librosa_beat_f"] = _f(clip.beats, base, trim=True)
-            abl = analyze(clip.audio, src, phase_refinement=False)
-            row["beat_f_no_phase_refinement"] = _f(clip.beats, abl.beat_times(), trim=True)
+            from beat_agent import config as _cfg
+            abl = analyze(clip.audio, src, phase_refinement=not _cfg.PHASE_REFINEMENT)
+            row["phase_refinement_default"] = _cfg.PHASE_REFINEMENT
+            row["beat_f_other_phase_refinement"] = _f(clip.beats, abl.beat_times(), trim=True)
             dr = drift(clip.beats, est)
             dr_abl = drift(clip.beats, abl.beat_times())
             row["drift"] = {k: v for k, v in dr.items() if not k.startswith("_")}
-            row["drift_no_phase_refinement"] = {k: v for k, v in dr_abl.items() if not k.startswith("_")}
+            row["drift_other_phase_refinement"] = {k: v for k, v in dr_abl.items() if not k.startswith("_")}
         else:
             row.update(beat_f=NM, downbeat_f=NM, librosa_beat_f=NM, drift=NM)
             dr = {}
@@ -187,7 +189,8 @@ def report(res: dict) -> str:
          "Substitute annotations come from a different annotation effort than the test pack and have their own small timing",
          "offsets, so drift numbers on them measure grid + annotation disagreement.", "",
          "Beat/downbeat F: mir_eval, +-70 ms, first 5 s trimmed (mir_eval default). `untrimmed` scores from 0 s.", "",
-         "| clip | source | status | beat F | untrimmed | no phase refinement | librosa F | downbeat F | BPM | type | meter | runtime s / audio s |",
+         "Default analysis: phase refinement OFF (DECISIONS.md D8). The 'refinement ON' columns re-run each clip with it on.", "",
+         "| clip | source | status | beat F | untrimmed | beat F, refinement ON | librosa F | downbeat F | BPM | type | meter | runtime s / audio s |",
          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     order = lambda r: (2 if r.get("generated") else 1 if r.get("substitute") else 0)
     for r in sorted(res["clips"], key=order):
@@ -197,17 +200,17 @@ def report(res: dict) -> str:
             L.append(f"| {r['id']} | {src} | **{r['status']}** | - | - | - | - | - | - | - | - | - |")
             continue
         L.append(f"| {r['id']} | {src} | ok | {_v(r.get('beat_f'))} | {_v(r.get('beat_f_untrimmed', NM))} | "
-                 f"{_v(r.get('beat_f_no_phase_refinement', NM))} | {_v(r.get('librosa_beat_f'))} | {_v(r.get('downbeat_f'))} | "
+                 f"{_v(r.get('beat_f_other_phase_refinement', NM))} | {_v(r.get('librosa_beat_f'))} | {_v(r.get('downbeat_f'))} | "
                  f"{r['bpm']} | {r['tempo_type']} | {r['meter']} | {r['runtime_s']} / {r['duration_s']} |")
     L += ["", "## Drift (grid beat - reference beat, every matched reference beat)", "",
-          "| clip | matched | max abs ms | mean abs ms | mean signed ms | share within 10 ms | max abs ms without phase refinement |",
+          "| clip | matched | max abs ms | mean abs ms | mean signed ms | share within 10 ms | max abs ms, refinement ON | mean signed ms, refinement ON |",
           "|---|---|---|---|---|---|---|"]
     for r in res["clips"]:
         d = r.get("drift")
         if isinstance(d, dict) and d.get("matched"):
-            da = r.get("drift_no_phase_refinement", {})
+            da = r.get("drift_other_phase_refinement", {})
             L.append(f"| {r['id']} | {d['matched']}/{d['of']} | {d['max_abs_ms']} | {d['mean_abs_ms']} | {d['mean_signed_ms']} | "
-                     f"{d['within_10ms']} | {da.get('max_abs_ms', '-')} |")
+                     f"{d['within_10ms']} | {da.get('max_abs_ms', '-')} | {da.get('mean_signed_ms', '-')} |")
     L += ["", "## Sync (kick onsets of A vs stretched B in the rendered overlap)", "",
           "| pair | source | status | B rate | offset s | kick pairs | median abs ms | max abs ms | p95 ms |", "|---|---|---|---|---|---|---|---|---|"]
     for s in res["sync"]:

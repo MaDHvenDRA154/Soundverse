@@ -15,12 +15,17 @@ def spectral_flux(y: np.ndarray, sr: int, hop_s: float, n_fft: int = 1024,
     hop = max(1, int(round(hop_s * sr)))
     if len(y) < n_fft:
         y = np.pad(y, (0, n_fft - len(y)))
-    f, _, Z = stft(y, fs=sr, nperseg=n_fft, noverlap=n_fft - hop, boundary="even", padded=True)
+    # zero padding: with mirrored ("even") padding an attack at sample 0 has a
+    # mirror image before it and shows no rise, so a loop that starts on its
+    # first hit lost that beat to edge trimming
+    f, _, Z = stft(y, fs=sr, nperseg=n_fft, noverlap=n_fft - hop, boundary="zeros", padded=True)
     if fmin > 0:
         Z = Z[f >= fmin]
     mag = np.log1p(100.0 * np.abs(Z))
+    # the signal is silent before sample 0 (zero padding), so the first frame's
+    # flux is its rise from silence -- not 0, which made a hit at t = 0 invisible
+    mag = np.concatenate([np.zeros((mag.shape[0], 1)), mag], axis=1)
     flux = np.maximum(0.0, np.diff(mag, axis=1)).sum(axis=0)
-    flux = np.concatenate([[0.0], flux])
     return flux.astype(np.float64), sr / hop
 
 

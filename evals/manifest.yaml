@@ -127,6 +127,22 @@ generated:
     synth: {segments: [[192, 100.0, 100.0]], meter: "3/4", start_s: 1.2, seed: 104}
     steady_tempo: true
 
+# part3_substitutes: SUBSTITUTE clips for Part 3 (P1-P4 missing), built from public MIDI by
+#   `python -m evals.substitutes.fetch_midi` (selection rules in that file). Used only when the
+#   matching test-pack clip is absent. reference: whether the excerpt MIDI is used as the reference.
+part3_substitutes:
+  - {id: subP1, stands_in_for: P1, reference: true, desc: "Groove MIDI 2-bar drum loop (GM render)",
+     audio: ["evals/substitutes/part3/subP1.wav"], midi: ["evals/substitutes/part3/subP1.mid"]}
+  - {id: subP2, stands_in_for: P2, reference: true, desc: "Lakh MIDI 4-bar drums + bass (GM render)",
+     audio: ["evals/substitutes/part3/subP2.wav"], midi: ["evals/substitutes/part3/subP2.mid"]}
+  - {id: subP3, stands_in_for: P3, reference: true, desc: "POP909 8-bar piano melody + chords (GM render)",
+     audio: ["evals/substitutes/part3/subP3.wav"], midi: ["evals/substitutes/part3/subP3.mid"]}
+  - {id: subP4, stands_in_for: P4, reference: false, desc: "Lakh MIDI 8-bar dense mix, 7 instruments (GM render, no reference used)",
+     audio: ["evals/substitutes/part3/subP4.wav"]}
+part3_chat:
+  clip: subP2
+  turns: ["Mute the drums.", "Make the bass brighter.", "Play it at 140."]
+
 sync:
   - {master: A1, other: A7, a_bar: 33, b_bar: 1}
   - {master: G-house-6min, other: G-house-partner, a_bar: 33, b_bar: 1, generated: true}

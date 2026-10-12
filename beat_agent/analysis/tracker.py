@@ -59,8 +59,9 @@ def activations(y: np.ndarray, sr: int = config.ANALYSIS_SR) -> Activations:
 
 def pick_peaks(act: np.ndarray, fps: int = FPS, threshold: float = config.PEAK_PROB_THRESHOLD,
                min_sep_s: float = config.PEAK_MIN_SEPARATION_S):
-    """Local maxima above threshold, refined to sub-frame time by parabolic
-    interpolation of the log-activation. Returns (times_s, heights)."""
+    """Local maxima above threshold. Optionally refined to sub-frame time by
+    parabolic interpolation of the log-activation (config, off by default).
+    Returns (times_s, heights)."""
     w = max(1, int(round(min_sep_s * fps)))
     n = len(act)
     if n < 3:
@@ -77,7 +78,7 @@ def pick_peaks(act: np.ndarray, fps: int = FPS, threshold: float = config.PEAK_P
     times, heights = [], []
     for i in cand:
         off = 0.0
-        if 0 < i < n - 1:
+        if config.PEAK_SUBFRAME_INTERPOLATION and 0 < i < n - 1:
             a, b, c = la[i - 1], la[i], la[i + 1]
             den = a - 2 * b + c
             if den < 0:

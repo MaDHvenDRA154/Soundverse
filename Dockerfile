@@ -1,9 +1,10 @@
 FROM python:3.11-slim-bookworm
 
 # ffmpeg: decode MP3/M4A/AAC; rubberband-cli: pitch-preserving time-stretch;
-# libsndfile1: soundfile; make: `make eval` inside the container.
+# libsndfile1: soundfile; make: `make eval` inside the container;
+# fluidsynth + timgm6mb-soundfont: render the public-MIDI Part 3 substitutes.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ffmpeg rubberband-cli libsndfile1 make curl ca-certificates \
+        ffmpeg rubberband-cli libsndfile1 make curl ca-certificates fluidsynth timgm6mb-soundfont \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv

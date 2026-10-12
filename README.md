@@ -1,8 +1,8 @@
 # Beat Agent
 
 One chat-driven agent for audio: (1) a beat grid you can trust and two-track beat-matching, (2) chat
-edits addressed in beats and bars, applied without clicks, (3) audio -> playable Web Audio page
-*(Part 3 not built yet)*.
+edits addressed in beats and bars, applied without clicks, (3) audio -> score JSON -> a self-contained,
+synthesis-only Web Audio page.
 
 **The LLM interprets; code measures and executes.** Tempo, beats, downbeats, meter and tempo changes come
 from Beat This! plus our own signal processing. The LLM (Gemini) only turns a chat message into typed edit
@@ -10,8 +10,9 @@ operations addressed in beats/bars; code resolves them to samples on the current
 echoes exactly what it did.
 
 > **Status, honestly:** the official test pack was **not available** while this was built. Results below come
-> from (a) **SUBSTITUTE** real-music clips (5 GTZAN excerpts with public human beat annotations, labelled as
-> such everywhere) and (b) **generated** audio with exact ground truth. Neither is the test pack. When the test
+> from (a) **SUBSTITUTE** clips, labelled as such everywhere: 5 GTZAN excerpts with public human beat
+> annotations (Parts 1-2) and 4 public-MIDI excerpts rendered with a GM soundfont (Part 3), and (b)
+> **generated** audio with exact ground truth. Neither is the test pack. When the test
 > pack is dropped into `testpack/`, `make eval` measures it (file-name patterns in `evals/manifest.yaml`).
 
 ## Quick start
@@ -27,9 +28,11 @@ Without Docker (Python 3.11, [uv](https://docs.astral.sh/uv/), plus `ffmpeg` and
 ```bash
 uv sync --extra dev
 uv run python -m evals.substitutes.fetch     # optional: substitute GTZAN clips (not committed)
+uv run python -m evals.substitutes.fetch_midi  # optional: Part 3 substitutes from public MIDI (needs fluidsynth)
 uv run beat-agent analyze song.mp3           # grid JSON + click audition
 uv run beat-agent sync a.wav b.wav --at-bar 33
 uv run beat-agent chat song.wav              # interactive chat editing
+uv run beat-agent recreate loop.wav --render # score JSON + self-contained Web Audio page (+ offline WAV)
 uv run uvicorn beat_agent.app.server:app     # preview app
 uv run python -m pytest -m "not slow and not llm"
 ```
@@ -43,31 +46,32 @@ uv run python -m pytest -m "not slow and not llm"
 
 | clip | kind | beat F | downbeat F | max drift ms | mean signed ms | BPM | type | meter |
 |---|---|---|---|---|---|---|---|---|
-| sub-disco | SUBSTITUTE (GTZAN) | 1.0 | 1.0 | 34.19 | -11.64 | 114.904 | variable | 4/4 |
-| sub-hiphop | SUBSTITUTE (GTZAN) | 1.0 | 1.0 | 36.42 | -25.29 | 119.197 | constant | 4/4 |
-| sub-rock | SUBSTITUTE (GTZAN) | 0.8039 | 0.7692 | 50.73 | 4.58 | 121.567 | constant | 4/4 |
-| sub-jazz | SUBSTITUTE (GTZAN) | 0.5359 | 0.0 | 69.86 | -18.48 | 241.212 | variable | 6/8 |
-| sub-country | SUBSTITUTE (GTZAN) | 0.9577 | 1.0 | 64.62 | 5.46 | 84.466 | constant | 4/4 |
-| G-house-6min | generated | 1.0 | 1.0 | 1.14 | -1.03 | 124.0 | constant | 4/4 |
-| G-house-partner | generated | 1.0 | 1.0 | 1.53 | -1.15 | 118.499 | constant | 4/4 |
-| G-step | generated | 1.0 | 1.0 | 2.62 | -1.19 | 126.612 | variable | 4/4 |
-| G-waltz | generated | 1.0 | 1.0 | 1.61 | -0.18 | 99.998 | constant | 3/4 |
+| sub-disco | SUBSTITUTE (GTZAN) | 1.0 | 1.0 | 36.82 | -12.06 | 114.983 | variable | 4/4 |
+| sub-hiphop | SUBSTITUTE (GTZAN) | 1.0 | 1.0 | 27.75 | -17.09 | 119.202 | constant | 4/4 |
+| sub-rock | SUBSTITUTE (GTZAN) | 0.8039 | 0.7692 | 39.44 | 1.97 | 121.027 | variable | 4/4 |
+| sub-jazz | SUBSTITUTE (GTZAN) | 0.5325 | 0.0667 | 65.55 | -22.35 | 243.963 | variable | 6/8 |
+| sub-country | SUBSTITUTE (GTZAN) | 0.9577 | 1.0 | 62.36 | 2.99 | 84.468 | constant | 4/4 |
+| G-house-6min | generated | 1.0 | 1.0 | 0.91 | 0.9 | 124.0 | constant | 4/4 |
+| G-house-partner | generated | 1.0 | 1.0 | 3.12 | 2.62 | 118.501 | constant | 4/4 |
+| G-step | generated | 1.0 | 1.0 | 3.49 | 0.46 | 127.36 | variable | 4/4 |
+| G-waltz | generated | 1.0 | 1.0 | 0.62 | -0.54 | 100.0 | constant | 3/4 |
 - Sync A7 -> A1 at A1 bar 33: **missing**.
-- Sync G-house-partner -> G-house-6min at G-house-6min bar 33 (generated): kick offsets median 0.339 ms, max 2.083 ms over 121 pairs.
-- Speed: 362.3 s generated track analysed in 10.89 s on this laptop CPU.
+- Sync G-house-partner -> G-house-6min at G-house-6min bar 33 (generated): kick offsets median 1.745 ms, max 3.537 ms over 121 pairs.
+- Speed: 362.3 s generated track analysed in 8.5 s on this laptop CPU.
 
 ### Generalisation / robustness on generated audio ([evals/results/robustness.md](evals/results/robustness.md))
 
-- 27 pass, 7 partial, 2 fail of 36 cases.
-  - partial: `random_02_6-8_108.7bpm` -- hypermeter: 12/8 for 6/8
-  - partial: `random_03_6-8_102.8bpm` -- hypermeter: 12/8 for 6/8
+- 26 pass, 8 partial, 2 fail of 36 cases.
+  - partial: `random_02_6-8_108.7bpm` -- constant grid off by up to 13.88 ms (> 10.0 ms); hypermeter: 12/8 for 6/8
+  - partial: `random_03_6-8_102.8bpm` -- constant grid off by up to 15.34 ms (> 10.0 ms); hypermeter: 12/8 for 6/8
   - fail: `random_05_3-4_138.8bpm` -- meter 4/4, expected 3/4
-  - partial: `random_07_6-8_71.8bpm` -- eighth-note level (compound meter); constant grid off by up to 15.13 ms (> 10.0 ms)
+  - partial: `random_07_6-8_71.8bpm` -- eighth-note level (compound meter); constant grid off by up to 12.21 ms (> 10.0 ms)
   - fail: `random_08_3-4_149.8bpm` -- meter 6/8, expected 3/4
+  - partial: `random_09_4-4_105.2bpm` -- constant grid off by up to 20.48 ms (> 10.0 ms)
   - partial: `random_11_6-8_88.1bpm` -- hypermeter: 12/8 for 6/8
-  - partial: `tempo_60` -- tempo octave error: tracked 119.991 BPM vs 60.0; x1 alternative exposed; F at the tracked level 1.000
-  - partial: `tempo_200` -- tempo octave error: tracked 99.99 BPM vs 200.0; x2 alternative exposed; F at the tracked level 1.000
-  - partial: `meter_6-8_84` -- hypermeter: 12/8 for 6/8
+  - partial: `tempo_200` -- tempo octave error: tracked 100.0 BPM vs 200.0; x2 alternative exposed; F at the tracked level 1.000
+  - partial: `meter_4-4_104` -- constant grid off by up to 11.14 ms (> 10.0 ms)
+  - partial: `meter_6-8_84` -- constant grid off by up to 17.43 ms (> 10.0 ms); hypermeter: 12/8 for 6/8
 
 ### Part 2 -- chat editing ([evals/results/part2.md](evals/results/part2.md))
 
@@ -86,9 +90,15 @@ uv run python -m pytest -m "not slow and not llm"
 | S7 | sub-hiphop (SUBSTITUTE) | clarify | 0 / 0 | 0 / 0 | - |
 | S8 | sub-rock (SUBSTITUTE) | applied, applied | 0 / 1 | 0 / 1 | 1.0, 0.9828 |
 
-### Part 3 -- audio to Web Audio
+### Part 3 -- audio to Web Audio ([evals/results/part3.md](evals/results/part3.md))
 
-- not built yet (Phase 3).
+| clip | kind | stands in for | drum onsets F | drums by class F | pitched F | render onset F | page safety |
+|---|---|---|---|---|---|---|---|
+| subP1 | SUBSTITUTE | P1 | 0.7209 | 0.3256 | - | 0.9756 | ok |
+| subP2 | SUBSTITUTE | P2 | 0.7863 | 0.4786 | 0.8 | 0.9688 | ok |
+| subP3 | SUBSTITUTE | P3 | - | - | 0.625 | 0.7123 | ok |
+| subP4 | SUBSTITUTE | P4 | no reference | no reference | no reference | 0.8889 | ok |
+- Chat on the recreation of subP2: "Mute the drums." -> error; "Make the bass brighter." -> error; "Play it at 140." -> error
 <!-- STATUS:END -->
 
 ## How it works
@@ -112,8 +122,7 @@ flowchart LR
   S --> E[echo: beats, bars, seconds,<br/>new length, beat unit]
 ```
 
-- **Conventions** (stated in every grid JSON and every echo): beats 0-based (beat 0 = first downbeat,
-  pickup beats negative), bars 1-based; beat ranges half-open (`beat 16-32` = 16 beats), bar ranges inclusive.
+- **Conventions** (stated in every grid JSON and every echo): see "Indexing at a glance" below.
 - **LLM/code boundary:** the model sees a grid *summary* (counts, meter, tempo segments; no beat times) and
   returns only typed ops (`remove`, `keep_only`, `repeat{times_total}`, `move`, `insert_copy`, `fade`, `gain`,
   grid corrections, `propose_cut`, `confirm_proposal`, `undo`, `redo`, `clarify`, `reject`). It cannot express
@@ -123,9 +132,37 @@ flowchart LR
 - Key decisions and every ambiguity reading: [DECISIONS.md](DECISIONS.md). Known mistakes made while
   building (raw material for AI_USAGE.md): [notes/ai_mistakes_log.md](notes/ai_mistakes_log.md).
 
+## Indexing at a glance
+
+| Thing | Convention | Example (4/4 track, first downbeat at 1.741 s, 3 pickup beats before it) |
+|---|---|---|
+| beat index | 0-based position; **beat 0 = first downbeat** | beats -3, -2, -1, **0** (1.741 s), 1, 2, ... |
+| pickup beats | beats before the first downbeat get **negative** indices | beats -3..-1 (0.000-1.741 s) |
+| bar number | 1-based; **bar 1 starts at beat 0** | bar 1 = beats 0-3, bar 2 = beats 4-7 |
+| pickup bar | the incomplete bar before bar 1 is **bar 0** | bar 0 = beats -3..-1 |
+| beat_in_bar | 1-based count, 1 = downbeat | beat 5 is bar 2, beat_in_bar 2 |
+| beat range | **half-open** [start, end): end beat not included | "beats 0-8" = beats 0..7 = bars 1-2 |
+| bar range | **inclusive** | "bars 5-8" = 4 bars; "bar 5" = 1 bar |
+| compound meter | "beat" = the level the tracker locked to (`beat_unit`, stated in the echo) | 6/8 at the eighth: 6 beats per bar |
+
+How it appears in an echo (real output, session S5 on the rock substitute, "Cut beat 0 to beat 8"):
+
+```
+Removed beats 0-8 (beat 0 up to, not including, beat 8: 8 beats): beats 0-7, bars 1-2,
+1.741-5.640 s (3.898 s). Beats -3 to -1 are a pickup before bar 1 (0.000-1.741 s); they come
+before beat 0 and are kept.
+Grid: 4/4, 1 beat = quarter note, 121.33 BPM (constant); beats -3-49, bars 1-13. Beats are 0-based,
+bars 1-based; beat ranges exclude their end beat, bar ranges include it.
+```
+
+Worked example on that track: beat 0 is at 1.741 s and is beat_in_bar 1 of bar 1; "remove bar 2" removes
+beats 4-7 (the half-open beat range [4, 8)); afterwards the old bar 3 is bar 2, because every address is
+resolved against the edited grid.
+
 ## Layout
 
 `beat_agent/analysis` grid, tempo, meter · `beat_agent/edit` EDL, timeline, grid mapping, session ·
-`beat_agent/agent` LLM provider + prompt + validation · `beat_agent/sync` · `beat_agent/app` preview UI ·
+`beat_agent/agent` LLM provider + prompts + validation · `beat_agent/sync` · `beat_agent/app` preview UI ·
+`beat_agent/transcribe` audio -> score JSON · `beat_agent/render` score -> HTML template, offline render, score ops ·
 `evals/` harness, manifest, generated audio, substitutes, results · `tests/` (incl. `test_no_hardcoding.py`).
 All thresholds with their justification: `beat_agent/config.py`.

@@ -69,7 +69,9 @@ def find_regions(t: np.ndarray, h: np.ndarray, support: np.ndarray, duration: fl
         idx = _trim_unsupported_edges(idx, support)
         if len(idx) < min_beats:
             continue
-        if _robust_cv(np.diff(t[idx])) > config.REGION_MAX_IBI_CV:
+        # regularity is judged after repair: doubled peaks in a fill (which
+        # repair drops anyway) must not make a real pulse look irregular
+        if _robust_cv(np.diff(repair(t[idx])[0])) > config.REGION_MAX_IBI_CV:
             continue
         if h[idx].mean() < config.REGION_MIN_MEAN_ACTIVATION:
             continue
@@ -224,7 +226,7 @@ class _LineSSE:
         return max(0.0, vy - slope * cxy), slope
 
 
-def _fit_guarded(t: np.ndarray, a: int, b: int, gl: int, gr: int):
+def _fit_guarded(t: np.ndarray, a: int, b: int, gl: int, gr: int, al: bool = False, ar: bool = False):
     """Constant fit over [a, b) excluding `gl`/`gr` beats next to a step boundary.
 
     Returns (coef in piece-local index, residual over fitted part, inliers, passes).
@@ -234,14 +236,17 @@ def _fit_guarded(t: np.ndarray, a: int, b: int, gl: int, gr: int):
         lo, hi = a, b
     j = np.arange(lo - a, hi - a, dtype=float)
     coef, r, inl = _poly_fit(j, t[lo:hi], 1)
-    # Adaptive guard: the tracker can stay confused for more than the fixed
-    # guard around a change. Keep excluding beats next to a guarded edge while
-    # they are off the stable line by > STEP_INLIER_S, up to MAX_GUARD beats.
+    # Adaptive guard, only at STEP boundaries (al / ar): the tracker can stay
+    # confused for more than the fixed guard around a change, and the step grid
+    # rebuilds that stretch from both lines. At a region edge it must NOT grow:
+    # beats there that do not fit mean the tempo changes there, which the step
+    # model has to find (growing the guard extrapolated a 126 BPM line back over
+    # beats that were still at 110 BPM).
     max_g = config.MIN_SEGMENT_BEATS // 2
-    while gl and lo - a < max_g and hi - lo > config.MIN_BEATS_PER_REGION and abs(r[0]) > config.STEP_INLIER_S:
+    while al and gl and lo - a < max_g and hi - lo > config.MIN_BEATS_PER_REGION and abs(r[0]) > config.STEP_INLIER_S:
         lo += 1
         j = np.arange(lo - a, hi - a, dtype=float); coef, r, inl = _poly_fit(j, t[lo:hi], 1)
-    while gr and b - hi < max_g and hi - lo > config.MIN_BEATS_PER_REGION and abs(r[-1]) > config.STEP_INLIER_S:
+    while ar and gr and b - hi < max_g and hi - lo > config.MIN_BEATS_PER_REGION and abs(r[-1]) > config.STEP_INLIER_S:
         hi -= 1
         j = np.arange(lo - a, hi - a, dtype=float); coef, r, inl = _poly_fit(j, t[lo:hi], 1)
     return coef, r, inl, _passes(r, inl)
@@ -288,15 +293,15 @@ def _step_location(t: np.ndarray, a: int, b: int, m: int) -> int | None:
 
 
 def _split_steps(t: np.ndarray, a: int, b: int, sse: _LineSSE, out: list,
-                 gl: int = 0, gr: int = 0, depth: int = 0) -> bool:
+                 gl: int = 0, gr: int = 0, depth: int = 0, al: bool = False, ar: bool = False) -> bool:
     """Recursively split [a, b) into constant pieces. Returns False if impossible.
 
     gl/gr: beats at the left/right end that border a step change and are
     excluded from the constant test (the tracker smooths across a change, so
     the few beats on each side of it are pulled toward the other tempo).
     """
-    if _fit_guarded(t, a, b, gl, gr)[3]:
-        out.append((a, b, gl, gr))
+    if _fit_guarded(t, a, b, gl, gr, al, ar)[3]:
+        out.append((a, b, gl, gr, al, ar))
         return True
     m = config.MIN_SEGMENT_BEATS
     if b - a < 2 * m or depth > 8:
@@ -309,8 +314,8 @@ def _split_steps(t: np.ndarray, a: int, b: int, sse: _LineSSE, out: list,
     _, s2 = sse(min(b - 2, best + g), b)
     if min(s1, s2) <= 0 or abs(s2 / s1 - 1) < config.TEMPO_CHANGE_MIN_RATIO:
         return False
-    return (_split_steps(t, a, best + 1, sse, out, gl, g, depth + 1)
-            and _split_steps(t, best, b, sse, out, g, gr, depth + 1))
+    return (_split_steps(t, a, best + 1, sse, out, gl, g, depth + 1, al, True)
+            and _split_steps(t, best, b, sse, out, g, gr, depth + 1, True, ar))
 
 
 def _bpm(period: float) -> float:
@@ -332,7 +337,7 @@ def fit_region(t: np.ndarray) -> RegionGrid:
         seg = Segment("constant", 0, n, g, _bpm(coef[0]), _bpm(coef[0]), float(1e3 * np.sqrt(np.mean(r[inl] ** 2))))
         return RegionGrid(g, inserted, [seg])
 
-    pieces: list[tuple[int, int, int, int]] = []
+    pieces: list[tuple] = []
     if _split_steps(t, 0, n, _LineSSE(t), pieces, G, G) and len(pieces) > 1:
         return _step_grid(t, sorted(pieces))
 
@@ -360,8 +365,8 @@ def _step_grid(t: np.ndarray, pieces: list[tuple[int, int, int, int]]) -> Region
     corrects the extra / missing beats the tracker produces while it adjusts.
     """
     lines = []
-    for a, b, gl, gr in pieces:
-        c, rr, ii, _ = _fit_guarded(t, a, b, gl, gr)
+    for a, b, gl, gr, al, ar in pieces:
+        c, rr, ii, _ = _fit_guarded(t, a, b, gl, gr, al, ar)
         lines.append((a, b, c, float(1e3 * np.sqrt(np.mean(rr[ii] ** 2)))))
     G = config.STEP_TRANSITION_GUARD_BEATS + 2
     # crossing time between consecutive lines
@@ -371,7 +376,22 @@ def _step_grid(t: np.ndarray, pieces: list[tuple[int, int, int, int]]) -> Region
         k2 = np.arange(-G, G + 1, dtype=float)
         t1, t2 = np.polyval(c1, k1), np.polyval(c2, k2)
         d = np.abs(t1[:, None] - t2[None, :])
-        i, j = np.unravel_index(np.argmin(d), d.shape)
+        # Two tempo lines coincide again every LCM of their periods (7 beats at 140
+        # ~= 6 beats at 120), so "closest pair" alone can pick a crossing several
+        # beats past the change. A tempo change does not add or drop beats: prefer
+        # the pair with the SAME global beat index on both lines, then +-1 (the
+        # tracker dropped/added one), each only if the lines meet within a
+        # quarter beat there.
+        gap = (a1 + k1)[:, None] - (a2 + k2)[None, :]
+        tol = config.FIT_OUTLIER_BEAT_FRACTION * min(abs(c1[0]), abs(c2[0]))
+        i = j = None
+        for shift in (0, 1, -1):
+            m = np.where((gap == shift) & (d <= tol), d, np.inf)
+            if np.isfinite(m).any():
+                i, j = np.unravel_index(np.argmin(m), m.shape)
+                break
+        if i is None:
+            i, j = np.unravel_index(np.argmin(d), d.shape)
         # the change beat is on both lines; it belongs to the new tempo, so the
         # old line stops just before its matching index k1[i]
         cuts.append((float(k1[i]), float(k2[j])))
@@ -464,6 +484,37 @@ def merge_regions(rgrids: list[RegionGrid], support_fn) -> list[RegionGrid]:
 
 
 def _try_merge(a: RegionGrid, b: RegionGrid, support_fn):
+    same = _try_merge_same_tempo(a, b, support_fn)
+    return same if same is not None else _try_merge_joint(a, b, support_fn)
+
+
+def _try_merge_joint(a: RegionGrid, b: RegionGrid, support_fn):
+    """The tracker can drop out right around a tempo change, splitting it across
+    two regions with the change a few beats into the second (too few beats to
+    split there). If the gap continues `a`'s tempo line with onset-backed beats,
+    refit the joined beats and keep the result only if the joint model is not
+    'free' -- i.e. constant / step / ramp explain both sides together."""
+    sa = a.segments[-1]
+    if sa.kind != "constant":
+        return None
+    period = 60.0 / sa.bpm_end
+    gap_beats = (b.times[0] - a.times[-1]) / period
+    k = int(round(gap_beats))
+    if k < 2 or abs(gap_beats - k) > config.FIT_OUTLIER_BEAT_FRACTION:
+        return None
+    fill = a.times[-1] + period * np.arange(1, k)
+    ref = np.median(support_fn(np.concatenate([a.times, b.times])))
+    if ref <= 0 or np.median(support_fn(fill)) < config.EDGE_ONSET_MIN_REL * ref:
+        return None
+    joined = fit_region(np.concatenate([a.times, fill, b.times]))
+    if any(s.kind == "free" for s in joined.segments):
+        return None
+    if len(joined.segments) <= len(a.segments) + len(b.segments) - 1 or any(s.kind == "free" for s in b.segments):
+        return joined
+    return None
+
+
+def _try_merge_same_tempo(a: RegionGrid, b: RegionGrid, support_fn):
     if len(a.segments) != 1 or len(b.segments) != 1:
         return None
     sa, sb = a.segments[0], b.segments[0]

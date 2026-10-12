@@ -74,8 +74,8 @@
    },
    "status": "ok",
    "duration_s": 30.12,
-   "runtime_s": 3.55,
-   "bpm": 114.904,
+   "runtime_s": 2.35,
+   "bpm": 114.983,
    "tempo_type": "variable",
    "meter": "4/4",
    "n_beats": 58,
@@ -85,28 +85,29 @@
     "overall": 1.0,
     "beat": 1.0,
     "downbeat": 1.0,
-    "coverage": 0.993
+    "coverage": 0.994
    },
    "beat_f": 1.0,
    "beat_f_untrimmed": 1.0,
    "downbeat_f": 1.0,
    "librosa_beat_f": 0.9787,
-   "beat_f_no_phase_refinement": 1.0,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 1.0,
    "drift": {
     "matched": 58,
     "of": 58,
-    "max_abs_ms": 34.19,
-    "mean_abs_ms": 12.97,
-    "mean_signed_ms": -11.64,
-    "within_10ms": 0.4138
+    "max_abs_ms": 36.82,
+    "mean_abs_ms": 13.66,
+    "mean_signed_ms": -12.06,
+    "within_10ms": 0.3448
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 58,
     "of": 58,
-    "max_abs_ms": 34.19,
-    "mean_abs_ms": 12.97,
-    "mean_signed_ms": -11.64,
-    "within_10ms": 0.4138
+    "max_abs_ms": 36.82,
+    "mean_abs_ms": 13.66,
+    "mean_signed_ms": -12.06,
+    "within_10ms": 0.3448
    }
   },
   {
@@ -120,8 +121,8 @@
    },
    "status": "ok",
    "duration_s": 30.0,
-   "runtime_s": 1.25,
-   "bpm": 119.197,
+   "runtime_s": 1.14,
+   "bpm": 119.202,
    "tempo_type": "constant",
    "meter": "4/4",
    "n_beats": 60,
@@ -137,22 +138,23 @@
    "beat_f_untrimmed": 1.0,
    "downbeat_f": 1.0,
    "librosa_beat_f": 1.0,
-   "beat_f_no_phase_refinement": 1.0,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 1.0,
    "drift": {
     "matched": 60,
     "of": 60,
-    "max_abs_ms": 36.42,
-    "mean_abs_ms": 25.29,
-    "mean_signed_ms": -25.29,
-    "within_10ms": 0.0
+    "max_abs_ms": 27.75,
+    "mean_abs_ms": 17.09,
+    "mean_signed_ms": -17.09,
+    "within_10ms": 0.05
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 60,
     "of": 60,
-    "max_abs_ms": 27.83,
-    "mean_abs_ms": 16.7,
-    "mean_signed_ms": -16.7,
-    "within_10ms": 0.0667
+    "max_abs_ms": 35.97,
+    "mean_abs_ms": 25.32,
+    "mean_signed_ms": -25.32,
+    "within_10ms": 0.0
    }
   },
   {
@@ -166,24 +168,15 @@
    },
    "status": "ok",
    "duration_s": 30.01,
-   "runtime_s": 1.22,
-   "bpm": 121.567,
-   "tempo_type": "constant",
+   "runtime_s": 1.1,
+   "bpm": 121.027,
+   "tempo_type": "variable",
    "meter": "4/4",
    "n_beats": 61,
-   "tempo_changes": [
-    {
-     "beat_index": 17,
-     "time": 10.023659567620644,
-     "bar": 5,
-     "from_bpm": 123.14,
-     "to_bpm": 120.8,
-     "kind": "step"
-    }
-   ],
+   "tempo_changes": [],
    "messages": [],
    "confidence": {
-    "overall": 0.951,
+    "overall": 1.0,
     "beat": 1.0,
     "downbeat": 1.0,
     "coverage": 0.991
@@ -192,22 +185,23 @@
    "beat_f_untrimmed": 0.8361,
    "downbeat_f": 0.7692,
    "librosa_beat_f": 0.7921,
-   "beat_f_no_phase_refinement": 0.8039,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 0.8039,
    "drift": {
     "matched": 51,
     "of": 61,
-    "max_abs_ms": 50.73,
-    "mean_abs_ms": 18.09,
-    "mean_signed_ms": 4.58,
-    "within_10ms": 0.2941
+    "max_abs_ms": 39.44,
+    "mean_abs_ms": 17.97,
+    "mean_signed_ms": 1.97,
+    "within_10ms": 0.2745
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 51,
     "of": 61,
-    "max_abs_ms": 50.73,
-    "mean_abs_ms": 18.09,
-    "mean_signed_ms": 4.58,
-    "within_10ms": 0.2941
+    "max_abs_ms": 39.44,
+    "mean_abs_ms": 17.97,
+    "mean_signed_ms": 1.97,
+    "within_10ms": 0.2745
    }
   },
   {
@@ -221,58 +215,40 @@
    },
    "status": "ok",
    "duration_s": 30.01,
-   "runtime_s": 1.15,
-   "bpm": 241.212,
+   "runtime_s": 1.11,
+   "bpm": 243.963,
    "tempo_type": "variable",
    "meter": "6/8",
-   "n_beats": 121,
-   "tempo_changes": [
-    {
-     "beat_index": 32,
-     "time": 7.630174173823254,
-     "bar": 6,
-     "from_bpm": 254.169,
-     "to_bpm": 234.791,
-     "kind": "step"
-    },
-    {
-     "beat_index": 80,
-     "time": 19.893396063527334,
-     "bar": 14,
-     "from_bpm": 234.791,
-     "to_bpm": 241.212,
-     "kind": "step"
-    }
-   ],
-   "messages": [
-    "Downbeat/meter confidence is low (0.49); bar numbers may be off."
-   ],
+   "n_beats": 122,
+   "tempo_changes": [],
+   "messages": [],
    "confidence": {
-    "overall": 0.826,
+    "overall": 0.991,
     "beat": 1.0,
-    "downbeat": 0.486,
+    "downbeat": 0.529,
     "coverage": 0.998
    },
-   "beat_f": 0.5359,
-   "beat_f_untrimmed": 0.5543,
-   "downbeat_f": 0.0,
+   "beat_f": 0.5325,
+   "beat_f_untrimmed": 0.5514,
+   "downbeat_f": 0.0667,
    "librosa_beat_f": 0.5333,
-   "beat_f_no_phase_refinement": 0.5359,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 0.5325,
    "drift": {
     "matched": 52,
     "of": 63,
-    "max_abs_ms": 69.86,
-    "mean_abs_ms": 30.35,
-    "mean_signed_ms": -18.48,
-    "within_10ms": 0.0769
+    "max_abs_ms": 65.55,
+    "mean_abs_ms": 29.05,
+    "mean_signed_ms": -22.35,
+    "within_10ms": 0.1346
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 52,
     "of": 63,
-    "max_abs_ms": 69.86,
-    "mean_abs_ms": 30.35,
-    "mean_signed_ms": -18.48,
-    "within_10ms": 0.0769
+    "max_abs_ms": 65.55,
+    "mean_abs_ms": 29.05,
+    "mean_signed_ms": -22.35,
+    "within_10ms": 0.1346
    }
   },
   {
@@ -286,8 +262,8 @@
    },
    "status": "ok",
    "duration_s": 30.08,
-   "runtime_s": 1.28,
-   "bpm": 84.466,
+   "runtime_s": 1.1,
+   "bpm": 84.468,
    "tempo_type": "constant",
    "meter": "4/4",
    "n_beats": 42,
@@ -303,22 +279,23 @@
    "beat_f_untrimmed": 0.8,
    "downbeat_f": 1.0,
    "librosa_beat_f": 0.9014,
-   "beat_f_no_phase_refinement": 0.9577,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 0.9577,
    "drift": {
     "matched": 34,
     "of": 43,
-    "max_abs_ms": 64.62,
-    "mean_abs_ms": 6.53,
-    "mean_signed_ms": 5.46,
-    "within_10ms": 0.8529
+    "max_abs_ms": 62.36,
+    "mean_abs_ms": 5.38,
+    "mean_signed_ms": 2.99,
+    "within_10ms": 0.9706
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 34,
     "of": 43,
-    "max_abs_ms": 64.62,
-    "mean_abs_ms": 6.53,
-    "mean_signed_ms": 5.46,
-    "within_10ms": 0.8529
+    "max_abs_ms": 62.36,
+    "mean_abs_ms": 5.38,
+    "mean_signed_ms": 2.99,
+    "within_10ms": 0.9706
    }
   },
   {
@@ -326,11 +303,11 @@
    "desc": "generated four-on-the-floor 4/4 at 124 BPM, 6 min (drift + speed stand-in)",
    "generated": true,
    "substitute": false,
-   "audio": "evals/out/part1/_generated/G-house-6min.wav",
+   "audio": "evals\\out\\part1\\_generated\\G-house-6min.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 362.3,
-   "runtime_s": 10.89,
+   "runtime_s": 8.5,
    "bpm": 124.0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -347,21 +324,22 @@
    "beat_f_untrimmed": 1.0,
    "downbeat_f": 1.0,
    "librosa_beat_f": 1.0,
-   "beat_f_no_phase_refinement": 1.0,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 1.0,
    "drift": {
     "matched": 744,
     "of": 744,
-    "max_abs_ms": 1.14,
-    "mean_abs_ms": 1.03,
-    "mean_signed_ms": -1.03,
+    "max_abs_ms": 0.91,
+    "mean_abs_ms": 0.9,
+    "mean_signed_ms": 0.9,
     "within_10ms": 1.0
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 744,
     "of": 744,
-    "max_abs_ms": 1.43,
-    "mean_abs_ms": 1.32,
-    "mean_signed_ms": 1.32,
+    "max_abs_ms": 1.03,
+    "mean_abs_ms": 1.03,
+    "mean_signed_ms": -1.03,
     "within_10ms": 1.0
    }
   },
@@ -370,12 +348,12 @@
    "desc": "generated 4/4 at 118.5 BPM, 48 kHz mono 24-bit (sync partner stand-in)",
    "generated": true,
    "substitute": false,
-   "audio": "evals/out/part1/_generated/G-house-partner.wav",
+   "audio": "evals\\out\\part1\\_generated\\G-house-partner.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 165.83,
-   "runtime_s": 5.92,
-   "bpm": 118.499,
+   "runtime_s": 3.82,
+   "bpm": 118.501,
    "tempo_type": "constant",
    "meter": "4/4",
    "n_beats": 320,
@@ -393,21 +371,22 @@
    "beat_f_untrimmed": 1.0,
    "downbeat_f": 1.0,
    "librosa_beat_f": 1.0,
-   "beat_f_no_phase_refinement": 1.0,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 1.0,
    "drift": {
     "matched": 320,
     "of": 320,
-    "max_abs_ms": 1.53,
-    "mean_abs_ms": 1.15,
-    "mean_signed_ms": -1.15,
+    "max_abs_ms": 3.12,
+    "mean_abs_ms": 2.62,
+    "mean_signed_ms": 2.62,
     "within_10ms": 1.0
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 320,
     "of": 320,
-    "max_abs_ms": 4.18,
-    "mean_abs_ms": 3.8,
-    "mean_signed_ms": 3.8,
+    "max_abs_ms": 1.65,
+    "mean_abs_ms": 1.15,
+    "mean_signed_ms": -1.15,
     "within_10ms": 1.0
    }
   },
@@ -416,22 +395,22 @@
    "desc": "generated 4/4 with a tempo step 126 -> 134 BPM at beat 128",
    "generated": true,
    "substitute": false,
-   "audio": "evals/out/part1/_generated/G-step.wav",
+   "audio": "evals\\out\\part1\\_generated\\G-step.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 120.37,
-   "runtime_s": 4.08,
-   "bpm": 126.612,
+   "runtime_s": 3.15,
+   "bpm": 127.36,
    "tempo_type": "variable",
    "meter": "4/4",
    "n_beats": 256,
    "tempo_changes": [
     {
      "beat_index": 128,
-     "time": 61.55012037620859,
+     "time": 61.550787739889316,
      "bar": 33,
-     "from_bpm": 125.994,
-     "to_bpm": 133.994,
+     "from_bpm": 125.995,
+     "to_bpm": 133.999,
      "kind": "step"
     }
    ],
@@ -446,21 +425,22 @@
    "beat_f_untrimmed": 1.0,
    "downbeat_f": 1.0,
    "librosa_beat_f": 1.0,
-   "beat_f_no_phase_refinement": 1.0,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 1.0,
    "drift": {
     "matched": 256,
     "of": 256,
-    "max_abs_ms": 2.62,
-    "mean_abs_ms": 1.19,
-    "mean_signed_ms": -1.19,
+    "max_abs_ms": 3.49,
+    "mean_abs_ms": 1.85,
+    "mean_signed_ms": 0.46,
     "within_10ms": 1.0
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 256,
     "of": 256,
-    "max_abs_ms": 6.46,
-    "mean_abs_ms": 4.64,
-    "mean_signed_ms": 0.49,
+    "max_abs_ms": 2.44,
+    "mean_abs_ms": 1.15,
+    "mean_signed_ms": -1.15,
     "within_10ms": 1.0
    }
   },
@@ -469,20 +449,20 @@
    "desc": "generated 3/4 at 100 BPM",
    "generated": true,
    "substitute": false,
-   "audio": "evals/out/part1/_generated/G-waltz.wav",
+   "audio": "evals\\out\\part1\\_generated\\G-waltz.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 117.9,
-   "runtime_s": 3.43,
-   "bpm": 99.998,
+   "runtime_s": 2.74,
+   "bpm": 100.0,
    "tempo_type": "constant",
    "meter": "3/4",
    "n_beats": 192,
    "tempo_changes": [],
    "messages": [],
    "confidence": {
-    "overall": 0.999,
-    "beat": 0.999,
+    "overall": 0.998,
+    "beat": 0.998,
     "downbeat": 1.0,
     "coverage": 0.977
    },
@@ -490,21 +470,22 @@
    "beat_f_untrimmed": 1.0,
    "downbeat_f": 1.0,
    "librosa_beat_f": 1.0,
-   "beat_f_no_phase_refinement": 1.0,
+   "phase_refinement_default": false,
+   "beat_f_other_phase_refinement": 1.0,
    "drift": {
     "matched": 192,
     "of": 192,
-    "max_abs_ms": 1.61,
-    "mean_abs_ms": 0.73,
-    "mean_signed_ms": -0.18,
+    "max_abs_ms": 0.62,
+    "mean_abs_ms": 0.54,
+    "mean_signed_ms": -0.54,
     "within_10ms": 1.0
    },
-   "drift_no_phase_refinement": {
+   "drift_other_phase_refinement": {
     "matched": 192,
     "of": 192,
-    "max_abs_ms": 7.84,
-    "mean_abs_ms": 6.41,
-    "mean_signed_ms": -6.41,
+    "max_abs_ms": 0.62,
+    "mean_abs_ms": 0.54,
+    "mean_signed_ms": -0.54,
     "within_10ms": 1.0
    }
   }
@@ -522,14 +503,14 @@
    "plan": {
     "a_bar": 33,
     "b_bar": 1,
-    "a_start_s": 62.73438284425057,
-    "b_start_s": 2.2984714897815826,
+    "a_start_s": 62.736382622962445,
+    "b_start_s": 2.303115691618605,
     "bpm_a": 124.0,
-    "bpm_b": 118.499,
+    "bpm_b": 118.501,
     "octave_factor": 1.0,
-    "rate": 1.046418,
-    "stretch_ratio": 0.955641,
-    "offset_s": 60.435911,
+    "rate": 1.046407,
+    "stretch_ratio": 0.955651,
+    "offset_s": 60.433267,
     "n_mapped_beats": 125,
     "overlap_s": 60.0,
     "warnings": []
@@ -538,10 +519,10 @@
     "n_kicks_a": 123,
     "n_kicks_b": 121,
     "n_pairs": 121,
-    "median_abs_offset_ms": 0.339,
-    "max_abs_offset_ms": 2.083,
-    "p95_abs_offset_ms": 1.344,
-    "median_signed_offset_ms": -0.029
+    "median_abs_offset_ms": 1.745,
+    "max_abs_offset_ms": 3.537,
+    "p95_abs_offset_ms": 2.666,
+    "median_signed_offset_ms": -1.745
    }
   }
  ]

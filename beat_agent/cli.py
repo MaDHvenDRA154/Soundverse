@@ -3,6 +3,7 @@
   beat-agent analyze <file> [--out DIR]
   beat-agent sync <master> <other> --at-bar N [--b-bar M] [--out DIR]
   beat-agent chat <file> [--out DIR]      interactive editing; :export, :quit
+  beat-agent recreate <file> [--bars N] [--start-bar M] [--out DIR] [--render]
 """
 from __future__ import annotations
 
@@ -104,6 +105,28 @@ def cmd_chat(a) -> int:
     return 0
 
 
+def cmd_recreate(a) -> int:
+    from beat_agent.render.html import safety_violations, write_html, render_html
+    from beat_agent.transcribe.pipeline import recreate
+    out = _out_dir(a.out, a.file)
+    stem = Path(a.file).stem
+    t0 = time.perf_counter()
+    score = recreate(a.file, bars=a.bars, start_bar=a.start_bar, stems_dir=out / "stems" if a.stems else None)
+    (out / f"{stem}.score.json").write_text(score.model_dump_json(indent=1))
+    page = write_html(score, out / f"{stem}.html")
+    bad = safety_violations(render_html(score))
+    c = score.clip
+    print(f"{score.bars} bars ({c['mode']}: {c['start_s']:.3f}-{c['end_s']:.3f} s), {score.tempo_bpm} BPM, "
+          f"{score.time_signature[0]}/{score.time_signature[1]}; tracks: "
+          + ", ".join(f"{t.name} {len(t.notes)} notes" for t in score.tracks) + f"  ({time.perf_counter() - t0:.1f}s)")
+    print(f"  wrote {out / (stem + '.score.json')} and {page}" + (f"  SAFETY: {bad}" if bad else ""))
+    if a.render:
+        from beat_agent.render.offline import render_offline
+        w = render_offline(page, out / f"{stem}.render.wav", loops=a.loops)
+        print(f"  offline render: {w}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="beat-agent")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -123,13 +146,23 @@ def main(argv=None) -> int:
     p.add_argument("file")
     p.add_argument("--out")
     p.set_defaults(fn=cmd_chat)
+    p = sub.add_parser("recreate", help="audio clip -> score JSON + self-contained Web Audio page")
+    p.add_argument("file")
+    p.add_argument("--bars", type=int, help="number of bars (1-16); default: the whole clip, or 8 bars of a long track")
+    p.add_argument("--start-bar", type=int)
+    p.add_argument("--out")
+    p.add_argument("--render", action="store_true", help="also render the page offline to WAV (headless Chromium)")
+    p.add_argument("--loops", type=int, default=1)
+    p.add_argument("--stems", action="store_true", help="keep the Demucs stems")
+    p.set_defaults(fn=cmd_recreate)
     a = ap.parse_args(argv)
     from beat_agent.io.audio import AudioInputError
     from beat_agent.agent.llm import LLMError
     from beat_agent.sync.sync import SyncError
+    from beat_agent.transcribe.pipeline import RecreateError
     try:
         return a.fn(a)
-    except (AudioInputError, SyncError, LLMError) as e:
+    except (AudioInputError, SyncError, LLMError, RecreateError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
 

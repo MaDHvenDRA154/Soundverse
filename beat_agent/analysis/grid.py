@@ -98,13 +98,13 @@ def _trim_unsupported_edges(idx: np.ndarray, support: np.ndarray) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------- repair
-def _reference_period(ibi: np.ndarray) -> np.ndarray:
-    """Per-interval reference period for repair decisions.
+def _repair_period(ibi: np.ndarray) -> np.ndarray:
+    """Per-interval baseline period for repair decisions.
 
     A short running median follows tempo drift, but it also follows the
     tracker when it switches metrical level for a few bars (e.g. eighths <->
     dotted quarters in 6/8), which repair must undo, not preserve. So the
-    reference is the running median, except where that disagrees with the
+    baseline is the running median, except where that disagrees with the
     region's dominant period by more than a plausible tempo drift; there the
     dominant period wins.
     """
@@ -125,7 +125,7 @@ def repair(t: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if len(t) < 3:
             break
         ibi = np.diff(t)
-        local = _reference_period(ibi)
+        local = _repair_period(ibi)
         short = np.flatnonzero(ibi / local < config.REPAIR_EXTRA_FACTOR)
         if not len(short):
             break
@@ -142,7 +142,7 @@ def repair(t: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     inserted = np.zeros(len(t), bool)
     if len(t) >= 3:
         ibi = np.diff(t)
-        local = _reference_period(ibi)
+        local = _repair_period(ibi)
         out_t, out_ins = [t[0]], [False]
         for i, d in enumerate(ibi):
             m = int(round(d / local[i]))
@@ -252,16 +252,18 @@ def _split_steps(t: np.ndarray, a: int, b: int, sse: _LineSSE, out: list,
     if b - a < 2 * m or depth > 8:
         return False
     best, best_cost, slopes = None, np.inf, None
+    g = config.STEP_TRANSITION_GUARD_BEATS
     for s in range(a + m, b - m + 1):
-        c1, s1 = sse(a, s + 1)   # left piece includes the boundary beat
-        c2, s2 = sse(s, b)
+        # evaluate each candidate boundary without the beats right next to it:
+        # the tracker often keeps the old tempo for a few beats after a change
+        c1, s1 = sse(a, max(a + 2, s + 1 - g))
+        c2, s2 = sse(min(b - 2, s + g), b)
         if c1 + c2 < best_cost:
             best, best_cost, slopes = s, c1 + c2, (s1, s2)
     if best is None or min(slopes) <= 0:
         return False
     if abs(slopes[1] / slopes[0] - 1) < config.TEMPO_CHANGE_MIN_RATIO:
         return False
-    g = config.STEP_TRANSITION_GUARD_BEATS
     return (_split_steps(t, a, best + 1, sse, out, gl, g, depth + 1)
             and _split_steps(t, best, b, sse, out, g, gr, depth + 1))
 
@@ -287,20 +289,7 @@ def fit_region(t: np.ndarray) -> RegionGrid:
 
     pieces: list[tuple[int, int, int, int]] = []
     if _split_steps(t, 0, n, _LineSSE(t), pieces, G, G) and len(pieces) > 1:
-        pieces.sort()
-        g = np.empty(n)
-        segs, steps = [], []
-        for pi, (a, b, gl, gr) in enumerate(pieces):
-            # pieces share their boundary beat; it belongs to the later piece
-            c, rr, ii, _ = _fit_guarded(t, a, b, gl, gr)
-            vals = np.polyval(c, np.arange(b - a, dtype=float))
-            end = b - 1 if pi < len(pieces) - 1 else b
-            g[a:end] = vals[: end - a]
-            segs.append(Segment("constant", a, end, vals[: end - a], _bpm(c[0]), _bpm(c[0]),
-                                float(1e3 * np.sqrt(np.mean(rr[ii] ** 2)))))
-            if pi > 0:
-                steps.append(a)
-        return RegionGrid(g, inserted, segs, steps)
+        return _step_grid(t, sorted(pieces))
 
     coef, r, inl, ok = fit_ramp(t)
     if ok and n >= config.MIN_SEGMENT_BEATS:
@@ -316,6 +305,47 @@ def fit_region(t: np.ndarray) -> RegionGrid:
     return RegionGrid(g, inserted, [seg])
 
 
+def _step_grid(t: np.ndarray, pieces: list[tuple[int, int, int, int]]) -> RegionGrid:
+    """Grid for a piecewise-constant tempo, built from the fitted lines.
+
+    At a step change both tempo lines pass through the change beat, so the
+    change is placed where a beat of the old line and a beat of the new line
+    coincide (searched within the guard zone). Beats are then generated from
+    the lines -- old line before the crossing, new line from it -- which also
+    corrects the extra / missing beats the tracker produces while it adjusts.
+    """
+    lines = []
+    for a, b, gl, gr in pieces:
+        c, rr, ii, _ = _fit_guarded(t, a, b, gl, gr)
+        lines.append((a, b, c, float(1e3 * np.sqrt(np.mean(rr[ii] ** 2)))))
+    G = config.STEP_TRANSITION_GUARD_BEATS + 2
+    # crossing time between consecutive lines
+    cuts = []
+    for (a1, b1, c1, _), (a2, b2, c2, _) in zip(lines[:-1], lines[1:]):
+        k1 = np.arange(b1 - a1 - 1 - G, b1 - a1 + G, dtype=float)       # around the shared boundary
+        k2 = np.arange(-G, G + 1, dtype=float)
+        t1, t2 = np.polyval(c1, k1), np.polyval(c2, k2)
+        d = np.abs(t1[:, None] - t2[None, :])
+        i, j = np.unravel_index(np.argmin(d), d.shape)
+        # the change beat is on both lines; it belongs to the new tempo, so the
+        # old line stops just before its matching index k1[i]
+        cuts.append((float(k1[i]), float(k2[j])))
+    times, segs, steps = [], [], []
+    for pi, (a, b, c, rms) in enumerate(lines):
+        k_start = 0.0 if pi == 0 else cuts[pi - 1][1]
+        k_stop = cuts[pi][0] if pi < len(lines) - 1 else float(b - a)   # exclusive
+        ks = [float(np.polyval(c, k)) for k in np.arange(k_start, k_stop, 1.0)]
+        j0 = len(times)
+        if pi > 0:
+            steps.append(j0)
+        times.extend(ks)
+        segs.append(Segment("constant", j0, len(times), np.array(ks), _bpm(c[0]), _bpm(c[0]), rms))
+    times = np.array(times)
+    # mark beats with no tracked peak within 35 ms as inserted
+    nearest = np.min(np.abs(times[:, None] - t[None, :]), axis=1) if len(t) else np.full(len(times), np.inf)
+    return RegionGrid(times, nearest > 0.035, segs, steps)
+
+
 def smooth_free(t: np.ndarray) -> np.ndarray:
     """Savitzky-Golay (local quadratic) smoothing of tracked beat times.
 
@@ -327,6 +357,40 @@ def smooth_free(t: np.ndarray) -> np.ndarray:
     if len(t) < w:
         return t.copy()
     return savgol_filter(t, w, 2, mode="interp")
+
+
+# ---------------------------------------------------------- phase refinement
+def refine_phase(rg: RegionGrid, attack_fn) -> list[dict]:
+    """Shift each tempo segment so its beats sit on the audio's attacks.
+
+    The tracker's 20 ms frames leave each grid with a constant offset of a few
+    to ~25 ms relative to the drum attacks (measured on generated audio). For
+    every segment we measure attack - beat for each beat that has a percussive
+    attack nearby, and shift the whole segment by the median, but only when
+    that median is statistically clear (standard error <= PHASE_MAX_SE_S and
+    |shift| >= 2 standard errors) and small (<= PHASE_MAX_SHIFT_S); otherwise
+    the grid is left where the tracker put it. Tempo and spacing are untouched.
+    attack_fn(times) -> attack time per beat (NaN where none).
+    Returns a report per segment.
+    """
+    reports = []
+    for s in rg.segments:
+        seg_times = rg.times[s.j0:s.j1]
+        att = attack_fn(seg_times)
+        d = att - seg_times
+        ok = np.isfinite(d)
+        rep = {"start_beat_local": s.j0, "n_beats": int(len(seg_times)), "n_attacks": int(ok.sum()), "shift_ms": 0.0}
+        if ok.sum() >= max(4, config.PHASE_MIN_SUPPORT_FRACTION * len(seg_times)):
+            med = float(np.median(d[ok]))
+            mad = float(np.median(np.abs(d[ok] - med)))
+            se = 1.253 * 1.4826 * mad / np.sqrt(ok.sum())
+            rep.update(median_offset_ms=round(1e3 * med, 2), se_ms=round(1e3 * se, 3))
+            if se <= config.PHASE_MAX_SE_S and abs(med) >= 2 * se and abs(med) <= config.PHASE_MAX_SHIFT_S:
+                rg.times[s.j0:s.j1] = seg_times + med
+                s.times = s.times + med
+                rep["shift_ms"] = round(1e3 * med, 2)
+        reports.append(rep)
+    return reports
 
 
 # ---------------------------------------------------------------- merging

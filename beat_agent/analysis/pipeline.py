@@ -10,7 +10,7 @@ from beat_agent.analysis import grid as gridmod
 from beat_agent.analysis import meter as metermod
 from beat_agent.analysis import tracker
 from beat_agent.analysis.numbering import number
-from beat_agent.analysis.onsets import sample_max, spectral_flux
+from beat_agent.analysis.onsets import attack_times, sample_max, spectral_flux
 from beat_agent.analysis.schema import (BeatGrid, Confidence, Region, Tempo, TempoAlternative,
                                         TempoSegment, TimeSignature)
 from beat_agent.io.audio import SourceInfo, load_analysis_mono, open_source
@@ -23,7 +23,8 @@ CONFIDENCE_HOW = (
 )
 
 
-def analyze(path, src: SourceInfo | None = None) -> BeatGrid:
+def analyze(path, src: SourceInfo | None = None, phase_refinement: bool | None = None) -> BeatGrid:
+    """phase_refinement: override config.PHASE_REFINEMENT (used by the eval ablation)."""
     t_start = time.perf_counter()
     timings = {}
     src = src or open_source(path)
@@ -43,6 +44,11 @@ def analyze(path, src: SourceInfo | None = None) -> BeatGrid:
     region_idx = gridmod.find_regions(peaks_t, peaks_h, support, duration)
     rgrids = [gridmod.fit_region(peaks_t[idx]) for idx in region_idx]
     rgrids = gridmod.merge_regions(rgrids, lambda ts: sample_max(flux, flux_fps, ts, config.BEAT_SUPPORT_WINDOW_S))
+    phase_reports = []
+    if phase_refinement if phase_refinement is not None else config.PHASE_REFINEMENT:
+        att = lambda ts: attack_times(y, sr, ts, config.ATTACK_SEARCH_S, config.ATTACK_MIN_RISE_DB)
+        for rg in rgrids:
+            phase_reports.extend(gridmod.refine_phase(rg, att))
     # a fitted grid must not run past the file
     for rg in rgrids:
         keep = (rg.times >= 0) & (rg.times < duration)
@@ -50,8 +56,13 @@ def analyze(path, src: SourceInfo | None = None) -> BeatGrid:
             _clip_region(rg, keep)
     rgrids = [rg for rg in rgrids if len(rg.times) >= gridmod.min_region_beats(duration)]
     region_times = [rg.times for rg in rgrids]
+    allt = np.concatenate(region_times) if region_times else np.zeros(0)
+    if len(allt) > 1 and np.diff(allt).min() < config.PEAK_MIN_SEPARATION_S:
+        raise AssertionError("internal error: grid beats not strictly increasing")
 
-    mres = metermod.decode(region_times, act.downbeat, act.fps, flux, flux_fps, duration)
+    hf_flux, hf_fps = spectral_flux(y, sr, config.SUBDIVISION_HOP_S, n_fft=config.SUBDIVISION_N_FFT,
+                                    fmin=config.SUBDIVISION_FMIN_HZ)
+    mres = metermod.decode(region_times, act.downbeat, act.fps, hf_flux, hf_fps, duration, y=y, sr=sr)
     timings["postprocess_s"] = time.perf_counter() - t0
 
     if rgrids:
@@ -143,6 +154,7 @@ def analyze(path, src: SourceInfo | None = None) -> BeatGrid:
         confidence=confidence, messages=messages,
         analysis={"tracker": f"beat_this:{config.BEAT_THIS_CHECKPOINT}", "n_tracker_peaks": int(len(peaks_t)),
                   "n_inserted_beats": int(sum(rg.inserted.sum() for rg in rgrids)),
+                  "phase_refinement": phase_reports,
                   "timings": {k: round(v, 3) for k, v in timings.items()}},
     )
 

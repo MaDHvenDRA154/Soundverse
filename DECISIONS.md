@@ -55,6 +55,34 @@ against `models.list` at startup; 2.0/2.5 models are refused (2.5 shuts down
 never execute a partially parsed plan. Responses cached on (model, prompt, grid state) so
 eval re-runs cost nothing.
 
+### D8. Phase refinement onto measured attacks
+- **Problem (measured):** on generated audio the tracker's grids were consistently offset by -25 to +7 ms
+  depending on the track (20 ms frames + learned placement), which alone breaks a 10 ms drift target.
+- **Choice:** per tempo segment, detect the steepest energy rise within +-40 ms of each beat (1 ms
+  resolution) and shift the segment by the median offset, *only* when that median has a standard error
+  <= 2 ms, is at least 2 SE from zero and is <= 30 ms. Tempo and spacing are never changed.
+- **Trade-off / risk:** generated truth sits exactly on the attack, so this step flatters the generated
+  results (max error 1-6 ms after vs up to 28 ms before). Human annotations may sit a few ms off the
+  attack. The Part 1 eval therefore always reports an ablation column ("no phase refinement").
+- **Would change my mind:** if on the real test pack the ablation scores better, turn it off
+  (`PHASE_REFINEMENT = False`) -- a decision for the reference data, not something to tune per clip.
+
+### D9. Downbeats: network activation x harmonic change, decoded jointly with the meter
+- The Beat This! downbeat head alone read fast generated 3/4 as 4/4 (4 of 7 cases). Adding chord-change
+  evidence (chroma novelty entering each beat) as an equal-weight geometric mix fixed 2 of those 4 and
+  changed nothing else (notes/experiments.md, E1). The cue switches itself off on static harmony.
+- Meter = beats-per-bar in {2, 3, 4, 6} chosen by Viterbi likelihood, then simple vs compound from
+  high-band subdivision energy (E2). In compound meters the beat level is whatever the tracker locked to:
+  dotted quarter (2/bar for 6/8) or eighth (6/bar); `time_signature.beat_unit` says which.
+- **Known limitation:** 6/8 vs 12/8 hypermeter -- on generated 6/8 the network marks every other bar, so
+  we report 12/8 and only half the downbeats (downbeat F 0.67). Reported as "partial".
+
+### D10. Step tempo changes are rebuilt from the two fitted lines
+The tracker keeps the old tempo for a few beats after a change and sometimes adds a beat. The change beat
+is placed where a beat of the old line and a beat of the new line coincide, and the grid around it is
+generated from the lines (old before, new from the crossing). Measured on generated 140 -> 120 BPM:
+change located within 0.3 ms (was 2 s off), max beat error 2.6 ms (was 69 ms).
+
 ### D7. Basic Pitch via ONNX, not TensorFlow
 Basic Pitch hard-requires TensorFlow on Python 3.11. Its wheel ships the same model as
 ONNX; we override TensorFlow out (`[tool.uv] override-dependencies`) and run
@@ -91,9 +119,12 @@ The agent states the reading in its echo whenever a command touches one of these
 8. **Out-of-range ranges** ("delete bars 200–210" on a shorter track) are rejected with
    the actual bar count. Never clamped.
 9. **Bars on beats-only material and in 6/8.** Bars always come from our own downbeat
-   decoding, whatever the reference contains. In compound meters a "beat" is the felt
-   pulse (dotted quarter): 6/8 = 2 beats per bar with ternary subdivision. The grid JSON
-   reports meter confidence; low confidence is echoed whenever a bar address is used.
+   decoding, whatever the reference contains. In compound meters the beat is the level the
+   tracker locked to -- dotted quarter (6/8 = 2 beats per bar) or eighth (6 per bar); the
+   grid says which in `time_signature.beat_unit`, and "beat N" in chat means that level.
+   (Changed from the Phase 0 plan of always using the dotted quarter: the tracker locks to
+   eighths at slow dotted-quarter tempos, and silently converting would make chat beat
+   numbers disagree with the click audition.) Meter confidence is echoed whenever it is low.
 10. **Downbeats during a drumless intro.** No beats or downbeats are emitted in a region
     without a detectable pulse; the region is listed in `no_beat_regions`. Bar 1 is the
     first downbeat after it. We do not extrapolate the grid backwards into the intro.

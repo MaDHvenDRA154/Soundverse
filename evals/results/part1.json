@@ -1,0 +1,279 @@
+{
+ "clips": [
+  {
+   "id": "A1",
+   "desc": "Four-on-the-floor house, constant tempo, ~6 min",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "A2",
+   "desc": "Hip-hop, half-time feel, fast hi-hats",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "A3",
+   "desc": "Live band, no click",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "A4",
+   "desc": "~45 s ambient intro without drums, then a full beat",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "A5",
+   "desc": "Electronic, tempo change partway",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "A6",
+   "desc": "Folk-pop with dholak, 6/8",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "A7",
+   "desc": "House at a different tempo from A1 (sync partner)",
+   "generated": false,
+   "audio": null,
+   "reference": null,
+   "status": "missing"
+  },
+  {
+   "id": "G-house-6min",
+   "desc": "generated four-on-the-floor 4/4 at 124 BPM, 6 min (drift + speed stand-in)",
+   "generated": true,
+   "audio": "evals\\out\\part1\\_generated\\G-house-6min.wav",
+   "reference": "generated truth",
+   "status": "ok",
+   "duration_s": 362.3,
+   "runtime_s": 9.64,
+   "bpm": 124.0,
+   "tempo_type": "constant",
+   "meter": "4/4",
+   "n_beats": 744,
+   "tempo_changes": [],
+   "messages": [],
+   "confidence": {
+    "overall": 1.0,
+    "beat": 1.0,
+    "downbeat": 1.0,
+    "coverage": 0.994
+   },
+   "beat_f": 1.0,
+   "beat_f_untrimmed": 1.0,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 1.0,
+   "beat_f_no_phase_refinement": 1.0,
+   "drift": {
+    "matched": 744,
+    "of": 744,
+    "max_abs_ms": 1.14,
+    "mean_abs_ms": 1.03,
+    "mean_signed_ms": -1.03,
+    "within_10ms": 1.0
+   },
+   "drift_no_phase_refinement": {
+    "matched": 744,
+    "of": 744,
+    "max_abs_ms": 1.43,
+    "mean_abs_ms": 1.32,
+    "mean_signed_ms": 1.32,
+    "within_10ms": 1.0
+   }
+  },
+  {
+   "id": "G-house-partner",
+   "desc": "generated 4/4 at 118.5 BPM, 48 kHz mono 24-bit (sync partner stand-in)",
+   "generated": true,
+   "audio": "evals\\out\\part1\\_generated\\G-house-partner.wav",
+   "reference": "generated truth",
+   "status": "ok",
+   "duration_s": 165.83,
+   "runtime_s": 3.75,
+   "bpm": 118.499,
+   "tempo_type": "constant",
+   "meter": "4/4",
+   "n_beats": 320,
+   "tempo_changes": [],
+   "messages": [
+    "No detectable pulse from 0.00s to 2.30s; no beats emitted there."
+   ],
+   "confidence": {
+    "overall": 1.0,
+    "beat": 1.0,
+    "downbeat": 1.0,
+    "coverage": 0.977
+   },
+   "beat_f": 1.0,
+   "beat_f_untrimmed": 1.0,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 1.0,
+   "beat_f_no_phase_refinement": 1.0,
+   "drift": {
+    "matched": 320,
+    "of": 320,
+    "max_abs_ms": 1.53,
+    "mean_abs_ms": 1.15,
+    "mean_signed_ms": -1.15,
+    "within_10ms": 1.0
+   },
+   "drift_no_phase_refinement": {
+    "matched": 320,
+    "of": 320,
+    "max_abs_ms": 4.18,
+    "mean_abs_ms": 3.8,
+    "mean_signed_ms": 3.8,
+    "within_10ms": 1.0
+   }
+  },
+  {
+   "id": "G-step",
+   "desc": "generated 4/4 with a tempo step 126 -> 134 BPM at beat 128",
+   "generated": true,
+   "audio": "evals\\out\\part1\\_generated\\G-step.wav",
+   "reference": "generated truth",
+   "status": "ok",
+   "duration_s": 120.37,
+   "runtime_s": 3.03,
+   "bpm": 126.547,
+   "tempo_type": "variable",
+   "meter": "4/4",
+   "n_beats": 256,
+   "tempo_changes": [
+    {
+     "beat_index": 128,
+     "time": 61.55032894330238,
+     "bar": 33,
+     "from_bpm": 125.995,
+     "to_bpm": 133.995,
+     "kind": "step"
+    }
+   ],
+   "messages": [],
+   "confidence": {
+    "overall": 0.996,
+    "beat": 1.0,
+    "downbeat": 1.0,
+    "coverage": 0.983
+   },
+   "beat_f": 1.0,
+   "beat_f_untrimmed": 1.0,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 1.0,
+   "beat_f_no_phase_refinement": 1.0,
+   "drift": {
+    "matched": 256,
+    "of": 256,
+    "max_abs_ms": 2.57,
+    "mean_abs_ms": 1.19,
+    "mean_signed_ms": -1.19,
+    "within_10ms": 1.0
+   },
+   "drift_no_phase_refinement": {
+    "matched": 256,
+    "of": 256,
+    "max_abs_ms": 6.41,
+    "mean_abs_ms": 4.6,
+    "mean_signed_ms": 0.52,
+    "within_10ms": 1.0
+   }
+  },
+  {
+   "id": "G-waltz",
+   "desc": "generated 3/4 at 100 BPM",
+   "generated": true,
+   "audio": "evals\\out\\part1\\_generated\\G-waltz.wav",
+   "reference": "generated truth",
+   "status": "ok",
+   "duration_s": 117.9,
+   "runtime_s": 2.58,
+   "bpm": 99.998,
+   "tempo_type": "constant",
+   "meter": "3/4",
+   "n_beats": 192,
+   "tempo_changes": [],
+   "messages": [],
+   "confidence": {
+    "overall": 0.999,
+    "beat": 0.999,
+    "downbeat": 1.0,
+    "coverage": 0.977
+   },
+   "beat_f": 1.0,
+   "beat_f_untrimmed": 1.0,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 1.0,
+   "beat_f_no_phase_refinement": 1.0,
+   "drift": {
+    "matched": 192,
+    "of": 192,
+    "max_abs_ms": 1.61,
+    "mean_abs_ms": 0.73,
+    "mean_signed_ms": -0.18,
+    "within_10ms": 1.0
+   },
+   "drift_no_phase_refinement": {
+    "matched": 192,
+    "of": 192,
+    "max_abs_ms": 7.84,
+    "mean_abs_ms": 6.41,
+    "mean_signed_ms": -6.41,
+    "within_10ms": 1.0
+   }
+  }
+ ],
+ "sync": [
+  {
+   "pair": "A7 -> A1 at A1 bar 33",
+   "generated": false,
+   "status": "missing"
+  },
+  {
+   "pair": "G-house-partner -> G-house-6min at G-house-6min bar 33",
+   "generated": true,
+   "status": "ok",
+   "plan": {
+    "a_bar": 33,
+    "b_bar": 1,
+    "a_start_s": 62.73438284362635,
+    "b_start_s": 2.2984714908270147,
+    "bpm_a": 124.0,
+    "bpm_b": 118.499,
+    "octave_factor": 1.0,
+    "rate": 1.046418,
+    "stretch_ratio": 0.955641,
+    "offset_s": 60.435911,
+    "n_mapped_beats": 125,
+    "overlap_s": 60.0,
+    "warnings": []
+   },
+   "kick_alignment": {
+    "n_kicks_a": 123,
+    "n_kicks_b": 121,
+    "n_pairs": 121,
+    "median_abs_offset_ms": 0.339,
+    "max_abs_offset_ms": 2.083,
+    "p95_abs_offset_ms": 1.344,
+    "median_signed_offset_ms": -0.029
+   }
+  }
+ ]
+}

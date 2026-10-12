@@ -110,6 +110,22 @@ CONSTANT_MAX_RESIDUAL_RMS_S = 0.015
 # lacks context at a region edge, and in both cases the nearest ~4 beats come
 # out 5-50 ms off (measured on generated audio). 4 beats = one 4/4 bar.
 STEP_TRANSITION_GUARD_BEATS = 4
+# Phase refinement (grid.refine_phase): shift each tempo segment onto the
+# audio's attacks when the evidence is statistically clear.
+PHASE_REFINEMENT = True
+# Search +-40 ms around each beat (two tracker frames) for an attack.
+ATTACK_SEARCH_S = 0.04
+# An "attack" is a >= 6 dB rise of 4 ms energy within 3 ms: percussive onsets
+# do this, sustained notes and noise do not.
+ATTACK_MIN_RISE_DB = 6.0
+# At least half the beats of a segment need an attack to estimate a shift.
+PHASE_MIN_SUPPORT_FRACTION = 0.5
+# Apply the median offset only if its standard error is <= 2 ms (it must be
+# measured more precisely than the 10 ms drift tolerance it serves)...
+PHASE_MAX_SE_S = 0.002
+# ...and only if it is <= 30 ms (1.5 tracker frames). A larger disagreement
+# means the attacks are not the beat (e.g. pushed hats), so do nothing.
+PHASE_MAX_SHIFT_S = 0.030
 # Variable (non-constant) segments use the tracked beats, smoothed by a local
 # quadratic (Savitzky-Golay) over this many beats each side: 9 beats averages
 # frame quantisation down ~3x, and a local quadratic still follows ramps.
@@ -130,11 +146,29 @@ DOWNBEAT_RESTART_PROB = 0.005
 # Mild prior favouring 4 beats per bar, the most common case, used only to
 # break near ties. Expressed as log-likelihood bonus per bar.
 METER_PRIOR_LOGBONUS = {2: 0.0, 3: 0.0, 4: 0.05, 6: 0.0}
-# Ternary vs binary subdivision decides 6/8 vs 2/4 (and 12/8 vs 4/4): ratio
-# of onset energy at beat thirds vs beat halves. 1.0 == neither; we
-# require a clear 25% margin before calling a meter compound.
+# Weight of the network's downbeat activation vs the harmonic-change cue
+# (chord change entering the beat) in the downbeat decoder, as a geometric
+# mix. Equal weight: on generated audio the network alone misread 3/4 as 4/4
+# in 4 of 6 fast cases while chords changed exactly on bar lines; 0.5 fixed 2
+# of those 4 and changed no other case (notes/experiments.md, E1).
+DOWNBEAT_NETWORK_WEIGHT = 0.5
+# Harmony is only used when it actually changes: if the 95th-percentile
+# beat-to-beat chroma change (1 - cosine) is below this, the track has
+# static harmony and the cue is neutral (0.5).
+CHROMA_MIN_CHANGE = 0.05
+# Ternary vs binary subdivision decides 6/8 vs 2/4 (and 12/8 vs 4/4).
+# triplet = min(E(1/3), E(2/3)) / E(0), duplet = E(1/2) / E(0) on high-band
+# onset flux. Compound needs triplet >= 1.25 x duplet (a clear 25% margin)
+# AND triplet >= 10% of the on-beat energy (something is really there).
 COMPOUND_RATIO_THRESHOLD = 1.25
-# Onset envelope used for subdivision analysis.
+SUBDIVISION_MIN_REL = 0.10
+# Subdivisions live in hats/shakers/strums: flux above 4 kHz, 512-point
+# frames (23 ms) with 2.5 ms hop so eighth-note triplets at 180 BPM (111 ms
+# apart) stay separate.
+SUBDIVISION_FMIN_HZ = 4000.0
+SUBDIVISION_N_FFT = 512
+SUBDIVISION_HOP_S = 0.0025
+# Onset envelope used for beat support / edge trimming.
 ONSET_HOP_S = 0.005
 
 # --------------------------------------------------------------------------

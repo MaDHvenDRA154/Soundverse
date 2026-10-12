@@ -1,0 +1,117 @@
+# Eval manifest. Only the eval harness reads this file; beat_agent/ never does.
+#
+# clips: real audio. `audio`, `beats`, `downbeats`, `midi` are lists of glob
+#   patterns relative to the repo root; the first match wins. A clip whose audio
+#   matches nothing is reported as "missing" and nothing is measured for it.
+#   `steady_tempo: true` marks clips the brief calls constant-tempo (they get
+#   the >= 0.90 beat-F target and the drift measurement).
+# generated: clips rendered by evals/synth.py with exact ground truth. Always
+#   labelled "generated" in reports; never presented as test-pack results.
+# sync: pairs to beat-match (master first). Bars are 1-based.
+# sessions: chat sessions for Part 2, run in order through the real LLM.
+# extra_audio_dirs: every audio file found there is analysed too (no reference,
+#   accuracy "not measured").
+
+clips:
+  - id: A1
+    desc: Four-on-the-floor house, constant tempo, ~6 min
+    audio: ["testpack/**/A1.*", "testpack/**/A1_*.wav", "testpack/**/A1_*.mp3", "testpack/**/A1_*.flac"]
+    beats: ["testpack/**/A1*beats*", "testpack/**/A1*.beats", "testpack/**/A1*.txt"]
+    downbeats: ["testpack/**/A1*downbeat*"]
+    steady_tempo: true
+  - id: A2
+    desc: Hip-hop, half-time feel, fast hi-hats
+    audio: ["testpack/**/A2.*", "testpack/**/A2_*.wav", "testpack/**/A2_*.mp3", "testpack/**/A2_*.flac"]
+    beats: ["testpack/**/A2*beats*", "testpack/**/A2*.beats", "testpack/**/A2*.txt"]
+    downbeats: ["testpack/**/A2*downbeat*"]
+    steady_tempo: true
+  - id: A3
+    desc: Live band, no click
+    audio: ["testpack/**/A3.*", "testpack/**/A3_*.wav", "testpack/**/A3_*.mp3", "testpack/**/A3_*.flac"]
+    beats: ["testpack/**/A3*beats*", "testpack/**/A3*.beats", "testpack/**/A3*.txt"]
+    steady_tempo: false
+  - id: A4
+    desc: ~45 s ambient intro without drums, then a full beat
+    audio: ["testpack/**/A4.*", "testpack/**/A4_*.wav", "testpack/**/A4_*.mp3", "testpack/**/A4_*.flac"]
+    beats: ["testpack/**/A4*beats*", "testpack/**/A4*.beats", "testpack/**/A4*.txt"]
+    downbeats: ["testpack/**/A4*downbeat*"]
+    steady_tempo: true
+  - id: A5
+    desc: Electronic, tempo change partway
+    audio: ["testpack/**/A5.*", "testpack/**/A5_*.wav", "testpack/**/A5_*.mp3", "testpack/**/A5_*.flac"]
+    beats: ["testpack/**/A5*beats*", "testpack/**/A5*.beats", "testpack/**/A5*.txt"]
+    downbeats: ["testpack/**/A5*downbeat*"]
+    steady_tempo: false
+  - id: A6
+    desc: Folk-pop with dholak, 6/8
+    audio: ["testpack/**/A6.*", "testpack/**/A6_*.wav", "testpack/**/A6_*.mp3", "testpack/**/A6_*.flac"]
+    beats: ["testpack/**/A6*beats*", "testpack/**/A6*.beats", "testpack/**/A6*.txt"]
+    downbeats: ["testpack/**/A6*downbeat*"]
+    steady_tempo: true
+  - id: A7
+    desc: House at a different tempo from A1 (sync partner)
+    audio: ["testpack/**/A7.*", "testpack/**/A7_*.wav", "testpack/**/A7_*.mp3", "testpack/**/A7_*.flac"]
+    beats: ["testpack/**/A7*beats*", "testpack/**/A7*.beats", "testpack/**/A7*.txt"]
+    downbeats: ["testpack/**/A7*downbeat*"]
+    steady_tempo: true
+  - id: P1
+    desc: 2-bar drum loop
+    audio: ["testpack/**/P1.*", "testpack/**/P1_*.wav", "testpack/**/P1_*.mp3", "testpack/**/P1_*.flac"]
+    midi: ["testpack/**/P1*.mid", "testpack/**/P1*.midi"]
+    part3: true
+  - id: P2
+    desc: 4-bar drums and bass
+    audio: ["testpack/**/P2.*", "testpack/**/P2_*.wav", "testpack/**/P2_*.mp3", "testpack/**/P2_*.flac"]
+    midi: ["testpack/**/P2*.mid", "testpack/**/P2*.midi"]
+    part3: true
+  - id: P3
+    desc: 8-bar piano melody with chords
+    audio: ["testpack/**/P3.*", "testpack/**/P3_*.wav", "testpack/**/P3_*.mp3", "testpack/**/P3_*.flac"]
+    midi: ["testpack/**/P3*.mid", "testpack/**/P3*.midi"]
+    part3: true
+  - id: P4
+    desc: 8-bar dense full mix (no reference)
+    audio: ["testpack/**/P4.*", "testpack/**/P4_*.wav", "testpack/**/P4_*.mp3", "testpack/**/P4_*.flac"]
+    part3: true
+
+generated:
+  - id: G-house-6min
+    desc: generated four-on-the-floor 4/4 at 124 BPM, 6 min (drift + speed stand-in)
+    synth: {segments: [[744, 124.0, 124.0]], meter: "4/4", four_on_floor: true, start_s: 0.8, seed: 101}
+    steady_tempo: true
+  - id: G-house-partner
+    desc: generated 4/4 at 118.5 BPM, 48 kHz mono 24-bit (sync partner stand-in)
+    synth: {segments: [[320, 118.5, 118.5]], meter: "4/4", four_on_floor: true, start_s: 2.3, seed: 102, sr: 48000, channels: 1}
+    subtype: PCM_24
+    steady_tempo: true
+  - id: G-step
+    desc: generated 4/4 with a tempo step 126 -> 134 BPM at beat 128
+    synth: {segments: [[128, 126.0, 126.0], [128, 134.0, 134.0]], meter: "4/4", start_s: 0.6, seed: 103}
+    steady_tempo: false
+  - id: G-waltz
+    desc: generated 3/4 at 100 BPM
+    synth: {segments: [[192, 100.0, 100.0]], meter: "3/4", start_s: 1.2, seed: 104}
+    steady_tempo: true
+
+sync:
+  - {master: A1, other: A7, a_bar: 33, b_bar: 1}
+  - {master: G-house-6min, other: G-house-partner, a_bar: 33, b_bar: 1, generated: true}
+
+sessions:
+  - id: S1
+    clip: A1
+    turns: ["Cut beat 16-32 and repeat it twice.", "Now fade out the last 8 beats.", "Undo.", "Remove bar 5."]
+  - id: S2
+    clip: A2
+    turns: ["Loop the first 4 bars four times, then let the track play on."]
+  - id: S3
+    clip: A5
+    turns: ["Repeat the last bar before the tempo change twice."]
+  - id: S4
+    clip: A1
+    turns: ["Chop out the boring part."]
+  - id: S5
+    clip: A3
+    turns: ["Cut beat 0 to beat 8.", "Delete bars 200-210."]
+
+extra_audio_dirs: ["audio"]

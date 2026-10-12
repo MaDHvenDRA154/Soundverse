@@ -57,6 +57,6 @@ def number(times: np.ndarray, positions: np.ndarray, regions: np.ndarray, confid
                     float(np.median(np.diff(times))) if n > 1 else 0.0)
                 end = min(end_time, last_t + period)
             pos = positions[s:e]
-            complete = (e - s == beats_per_bar) and bool(np.all(pos == np.arange(beats_per_bar)))
+            complete = bool(e - s == beats_per_bar) and bool(np.all(pos == np.arange(beats_per_bar)))
             bars.append(Bar(bar=int(bar_ids[s]), start=float(times[s]), end=end, n_beats=int(e - s), complete=complete))
     return beats, bars, downbeats

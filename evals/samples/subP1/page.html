@@ -50,9 +50,17 @@ const dbToLin = db => Math.pow(10, db / 20);
 const midiHz = m => 440 * Math.pow(2, (m - 69) / 12);
 
 function makeEngine(ctx, score, out) {
-  const comp = ctx.createDynamicsCompressor();
-  comp.threshold.value = -6; comp.ratio.value = 4; comp.connect(out);
-  const master = ctx.createGain(); master.gain.value = 0.7; master.connect(comp);
+  // Output safety: a static tanh soft limiter (WaveShaper, no oversampling), not a
+  // DynamicsCompressor -- Chrome's compressor delays everything by its 6 ms look-ahead
+  // (measured: evals/render_offset_study.py). Unity gain for small signals, never above
+  // full scale; HEADROOM sets how far the summed tracks may go before it saturates.
+  const HEADROOM = 4, N = 4096;
+  const limitIn = ctx.createGain(); limitIn.gain.value = 1 / HEADROOM;
+  const shaper = ctx.createWaveShaper(), curve = new Float32Array(N);
+  for (let i = 0; i < N; i++) curve[i] = Math.tanh(HEADROOM * (2 * i / (N - 1) - 1));
+  shaper.curve = curve; shaper.oversample = "none";
+  limitIn.connect(shaper).connect(out);
+  const master = ctx.createGain(); master.gain.value = 0.7; master.connect(limitIn);
   const rand = mulberry32(12345);                       // deterministic noise
   const noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
   const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = rand() * 2 - 1;

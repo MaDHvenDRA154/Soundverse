@@ -32,71 +32,71 @@
    "p90_ms": 27.92
   },
   "T3_signal_path_shipped_ms": {
-   "kick": 6.044,
-   "snare": 6.042,
-   "hat": 6.035
+   "kick": 0.058,
+   "snare": 0.056,
+   "hat": 0.049
   },
   "T4_detector_on_synth_hop128": {
    "kick": {
     "n": 3,
-    "median_ms": 10.65,
-    "mean_ms": 10.97,
-    "p10_ms": 9.61,
-    "p90_ms": 12.45
+    "median_ms": 4.84,
+    "mean_ms": 5.16,
+    "p10_ms": 3.81,
+    "p90_ms": 6.65
    },
    "snare": {
     "n": 4,
-    "median_ms": 12.31,
-    "mean_ms": 12.31,
-    "p10_ms": 10.93,
-    "p90_ms": 13.7
+    "median_ms": 6.51,
+    "mean_ms": 6.51,
+    "p10_ms": 5.12,
+    "p90_ms": 7.89
    },
    "hat": {
     "n": 4,
-    "median_ms": 18.17,
-    "mean_ms": 17.85,
-    "p10_ms": 15.95,
-    "p90_ms": 19.49
+    "median_ms": 12.37,
+    "mean_ms": 12.04,
+    "p10_ms": 10.14,
+    "p90_ms": 13.69
    },
    "all": {
     "n": 11,
-    "median_ms": 12.9,
-    "mean_ms": 13.96,
-    "p10_ms": 10.54,
-    "p90_ms": 18.82
+    "median_ms": 7.1,
+    "mean_ms": 8.15,
+    "p10_ms": 4.73,
+    "p90_ms": 13.01
    }
   },
   "T4_detector_on_synth_hop32": {
    "kick": {
     "n": 3,
-    "median_ms": 9.35,
-    "mean_ms": 9.52,
-    "p10_ms": 9.23,
-    "p90_ms": 9.87
+    "median_ms": 3.55,
+    "mean_ms": 3.71,
+    "p10_ms": 3.42,
+    "p90_ms": 4.07
    },
    "snare": {
     "n": 4,
-    "median_ms": 10.14,
-    "mean_ms": 10.14,
-    "p10_ms": 9.78,
-    "p90_ms": 10.49
+    "median_ms": 4.01,
+    "mean_ms": 3.97,
+    "p10_ms": 3.48,
+    "p90_ms": 4.43
    },
    "hat": {
     "n": 4,
-    "median_ms": 13.5,
-    "mean_ms": 13.5,
-    "p10_ms": 13.06,
-    "p90_ms": 13.93
+    "median_ms": 7.69,
+    "mean_ms": 7.69,
+    "p10_ms": 7.26,
+    "p90_ms": 8.12
    },
    "all": {
     "n": 11,
-    "median_ms": 10.38,
-    "mean_ms": 11.19,
-    "p10_ms": 9.35,
-    "p90_ms": 13.82
+    "median_ms": 4.2,
+    "mean_ms": 5.25,
+    "p10_ms": 3.39,
+    "p90_ms": 8.01
    }
   },
-  "T3_signal_path_compressor_bypassed_ms": {
+  "T3_signal_path_output_stage_bypassed_ms": {
    "kick": 0.058,
    "snare": 0.056,
    "hat": 0.049
@@ -110,17 +110,17 @@
   },
   "T6_render_minus_original_hop128": {
    "n": 20,
-   "median_ms": 14.51,
-   "mean_ms": 10.45,
-   "p10_ms": -0.58,
-   "p90_ms": 23.22
+   "median_ms": 11.61,
+   "mean_ms": 5.22,
+   "p10_ms": -5.8,
+   "p90_ms": 17.41
   },
   "render_onsets_minus_scheduled_hop128": {
    "n": 35,
-   "median_ms": 13.33,
-   "mean_ms": 13.97,
-   "p10_ms": 10.52,
-   "p90_ms": 20.18
+   "median_ms": 7.79,
+   "mean_ms": 8.83,
+   "p10_ms": 4.72,
+   "p90_ms": 15.68
   },
   "T5_detector_on_original_hop32": {
    "n": 39,
@@ -131,20 +131,20 @@
   },
   "T6_render_minus_original_hop32": {
    "n": 20,
-   "median_ms": 14.51,
-   "mean_ms": 10.67,
-   "p10_ms": 1.16,
-   "p90_ms": 21.91
+   "median_ms": 7.98,
+   "mean_ms": 4.72,
+   "p10_ms": -4.64,
+   "p90_ms": 14.8
   },
   "render_onsets_minus_scheduled_hop32": {
    "n": 35,
-   "median_ms": 10.18,
-   "mean_ms": 10.32,
-   "p10_ms": 7.93,
-   "p90_ms": 15.73
+   "median_ms": 4.34,
+   "mean_ms": 4.39,
+   "p10_ms": 2.3,
+   "p90_ms": 9.88
   },
-  "predicted_T6_hop128_ms": 14.07,
-  "predicted_T6_hop32_ms": 13.42
+  "predicted_T6_hop128_ms": 8.27,
+  "predicted_T6_hop32_ms": 7.24
  },
  {
   "clip": "subP2",
@@ -179,71 +179,71 @@
    "p90_ms": 7.63
   },
   "T3_signal_path_shipped_ms": {
-   "kick": 6.041,
-   "snare": 6.039,
-   "hat": 6.019
+   "kick": 0.055,
+   "snare": 0.052,
+   "hat": 0.033
   },
   "T4_detector_on_synth_hop128": {
    "kick": {
     "n": 3,
-    "median_ms": 13.03,
-    "mean_ms": 12.55,
-    "p10_ms": 11.1,
-    "p90_ms": 13.82
+    "median_ms": 7.22,
+    "mean_ms": 6.75,
+    "p10_ms": 5.3,
+    "p90_ms": 8.01
    },
    "snare": {
     "n": 4,
-    "median_ms": 14.09,
-    "mean_ms": 14.09,
-    "p10_ms": 12.19,
-    "p90_ms": 15.99
+    "median_ms": 6.58,
+    "mean_ms": 6.83,
+    "p10_ms": 5.1,
+    "p90_ms": 8.77
    },
    "hat": {
     "n": 4,
-    "median_ms": 17.06,
-    "mean_ms": 17.31,
-    "p10_ms": 15.58,
-    "p90_ms": 19.24
+    "median_ms": 11.26,
+    "mean_ms": 11.5,
+    "p10_ms": 9.77,
+    "p90_ms": 13.44
    },
    "all": {
     "n": 11,
-    "median_ms": 15.15,
-    "mean_ms": 14.84,
-    "p10_ms": 11.89,
-    "p90_ms": 17.56
+    "median_ms": 8.21,
+    "mean_ms": 8.51,
+    "p10_ms": 4.81,
+    "p90_ms": 11.75
    }
   },
   "T4_detector_on_synth_hop32": {
    "kick": {
     "n": 3,
-    "median_ms": 9.66,
-    "mean_ms": 9.65,
-    "p10_ms": 9.27,
-    "p90_ms": 10.03
+    "median_ms": 3.36,
+    "mean_ms": 3.36,
+    "p10_ms": 2.97,
+    "p90_ms": 3.76
    },
    "snare": {
     "n": 4,
-    "median_ms": 10.21,
-    "mean_ms": 10.1,
-    "p10_ms": 9.64,
-    "p90_ms": 10.47
+    "median_ms": 3.93,
+    "mean_ms": 3.93,
+    "p10_ms": 3.36,
+    "p90_ms": 4.5
    },
    "hat": {
     "n": 4,
-    "median_ms": 13.68,
-    "mean_ms": 13.68,
-    "p10_ms": 13.34,
-    "p90_ms": 14.02
+    "median_ms": 7.88,
+    "mean_ms": 7.88,
+    "p10_ms": 7.54,
+    "p90_ms": 8.22
    },
    "all": {
     "n": 11,
-    "median_ms": 10.44,
-    "mean_ms": 11.28,
-    "p10_ms": 9.49,
-    "p90_ms": 13.7
+    "median_ms": 4.18,
+    "mean_ms": 5.21,
+    "p10_ms": 3.22,
+    "p90_ms": 7.89
    }
   },
-  "T3_signal_path_compressor_bypassed_ms": {
+  "T3_signal_path_output_stage_bypassed_ms": {
    "kick": 0.055,
    "snare": 0.052,
    "hat": 0.033
@@ -257,17 +257,17 @@
   },
   "T6_render_minus_original_hop128": {
    "n": 31,
-   "median_ms": 11.61,
-   "mean_ms": 10.67,
-   "p10_ms": 5.8,
-   "p90_ms": 17.41
+   "median_ms": 5.8,
+   "mean_ms": 4.68,
+   "p10_ms": 0.0,
+   "p90_ms": 11.61
   },
   "render_onsets_minus_scheduled_hop128": {
    "n": 61,
-   "median_ms": 15.92,
-   "mean_ms": 12.57,
-   "p10_ms": -6.92,
-   "p90_ms": 18.6
+   "median_ms": 10.11,
+   "mean_ms": 6.57,
+   "p10_ms": -12.73,
+   "p90_ms": 12.8
   },
   "T5_detector_on_original_hop32": {
    "n": 31,
@@ -278,19 +278,19 @@
   },
   "T6_render_minus_original_hop32": {
    "n": 31,
-   "median_ms": 8.71,
-   "mean_ms": 10.44,
-   "p10_ms": 7.26,
-   "p90_ms": 14.51
+   "median_ms": 2.9,
+   "mean_ms": 4.35,
+   "p10_ms": 1.45,
+   "p90_ms": 8.71
   },
   "render_onsets_minus_scheduled_hop32": {
    "n": 61,
-   "median_ms": 12.67,
-   "mean_ms": 9.19,
-   "p10_ms": -11.28,
-   "p90_ms": 15.67
+   "median_ms": 6.49,
+   "mean_ms": 3.05,
+   "p10_ms": -18.53,
+   "p90_ms": 9.86
   },
-  "predicted_T6_hop128_ms": 9.63,
-  "predicted_T6_hop32_ms": 6.55
+  "predicted_T6_hop128_ms": 2.69,
+  "predicted_T6_hop32_ms": 0.29
  }
 ]

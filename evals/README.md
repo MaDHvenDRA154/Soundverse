@@ -138,15 +138,16 @@ Numbers from `evals/results/part1.md`, `robustness.md`, `part2.md`, `part3.md`. 
 
 - **subP1 (Groove, 2-bar drums)** -- drum onsets P 0.86 / R 0.62 (36 found, 50 in the reference; which
   hits are missed was not analysed); by class only F 0.33, kick/snare/hat labels are often wrong. The render
-  is a median 14.5 ms late; see `render_offset_study.md` (quantise towards a late grid + compressor
-  look-ahead, not synth attack shape). The 2-bar clip is too short for meter decoding, so 4/4 is assumed for
+  is about 8 ms late (11.6 ms at the eval's 5.8 ms frames): soft quantisation towards a grid that sits
+  13.5 ms after the note-ons; the page itself adds no latency since its compressor was replaced
+  (`render_offset_study.md`, DECISIONS D21). The 2-bar clip is too short for meter decoding, so 4/4 is assumed for
   bar labels only.
 - **subP2 (Lakh, drums + bass)** -- every reference drum hit is found (R 1.0) but with 25 extra hits
   (P 0.65); bass F 0.88. Chat changes: 3 of 3 applied.
 - **subP3 (POP909, piano)** -- pitched F 0.63: Basic Pitch finds 141 notes for 83 in the reference (P 0.50,
   R 0.84; the kind of extra notes was not analysed), and the meter reads 6/8 (whole-clip loop mode
   keeps the loop length right regardless). Render onset F 0.71, the lowest.
-- **subP4 (Lakh, dense mix)** -- no reference is used, as in the brief; render onset F 0.92 against the
+- **subP4 (Lakh, dense mix)** -- no reference is used, as in the brief; render onset F 0.95 against the
   original's own onsets.
 - These renders are much cleaner than real recordings, so the numbers are likely optimistic for the real
   P1-P4.

@@ -1,3 +1,7 @@
+> **Superseded.** Written before the decisions of 2026-10-14 (brief files and pruned cache entries purged from history,
+> compressor replaced by a zero-latency limiter, scratch clones and volumes deleted). Kept as the review record;
+> numbers below are the pre-decision ones.
+
 # Morning review (2026-10-13 night run)
 
 **State: nothing merged, nothing pushed.** Everything is on branch `final-verification`; `main` is untouched
@@ -191,9 +195,9 @@ differ slightly from the committed transcripts in `evals/results/part2.md` (fall
 | 0:45-2:15 | Click audition | `docker compose run --rm app uv run beat-agent analyze evals/substitutes/audio/gtzan_disco_00000.wav --out audio/demo_disco`; play `audio/demo_disco/gtzan_disco_00000.click.wav`; `evals/out/part1/sub-disco/grid_diagnostics.png`; `audio/demo_disco/gtzan_disco_00000.grid.json` -> `conventions` | Clicks on the kick, accented downbeats; beat 0 = first downbeat, bars 1-based. 6-min generated track: max drift 0.91 ms, 8.5 s. GTZAN taps sit late of the attacks (bias study), no offset added. |
 | 2:15-3:30 | Sync render | `evals/out/part1/sync_G-house-partner_to_G-house-6min/overlap_mix.wav`, `b_stretched.wav`, `sync.json` | Rubber Band time map beat onto beat; kick offsets median 1.7 ms, max 3.5 ms (121 pairs). |
 | 3:30-5:30 | Two chat edits + pushback | App: upload `evals/substitutes/audio/gtzan_disco_00000.wav`; `Cut beat 16-32 and repeat it twice.` -> echo, play, Undo; `Chop out the boring part.`; optional `Delete bars 200-210.` | Echo in beats, bars, seconds; "twice" = 2 plays with the alternative stated; grid mapped not re-detected (re-tracked beat F >= 0.98); 0/13 splices flagged. "Boring" not measurable: quietest bars only 0.9 dB below average, nothing cut. Out-of-range rejected with the real bar count. |
-| 5:30-7:00 | Recreation vs original | `evals/samples/subP1/original.wav`, `page.html` (play, loop, mute drums), `score.json`, `evals/results/part3.md` chat | Score JSON -> fixed template; LLM never writes JS; safety test. Drum onsets F 0.72, labels 0.33, render onsets 0.98; 14.5 ms late (render offset study). Chat ops 3/3 applied. |
+| 5:30-7:00 | Recreation vs original | `evals/samples/subP1/original.wav`, `page.html` (play, loop, mute drums), `score.json`, `evals/results/part3.md` chat | Score JSON -> fixed template; LLM never writes JS; safety test. Drum onsets F 0.72, labels 0.33, render onsets 0.98; about 8 ms late (render offset study; the page's own 6 ms latency was removed). Chat ops 3/3 applied. |
 | 7:00-8:15 | Code structure | `beat_agent/{analysis,edit,agent,transcribe,render,sync,app}`, `config.py`, `tests/test_no_hardcoding.py`, `evals/status.py`, `evals/llm_cache/` | Clip timeline over the untouched source; provider interface + pydantic + one retry; thresholds in config with reasons; README table generated; committed LLM answers make a fresh clone reproduce the results with no key. |
-| 8:15-9:30 | Top 3 problems | README "Known problems" | Meter on hard material (fast 3/4, 12/8 for 6/8, jazz double time, downbeat F 0.07); Part 3 drum labels (F 0.33-0.48) and 14.5 ms late render; substitutes only, click check weak outside S1 (hard cuts 5/13). |
+| 8:15-9:30 | Top 3 problems | README "Known problems" | Meter on hard material (fast 3/4, 12/8 for 6/8, jazz double time, downbeat F 0.07); Part 3 drum labels (F 0.33-0.48) and an ~8 ms late render; substitutes only, click check weak outside S1 (hard cuts 5/13). |
 | 9:30-10:00 | Close | `evals/README.md` committed vs regenerated | `make reproduce` rebuilds everything else; `LLM_CACHE=off` re-runs the chat evals live. |
 
 ## 9. README first-run timing note (as added)

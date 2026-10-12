@@ -6,10 +6,10 @@ onset-only, +-50 ms. Drums are compared by class (kick / snare / hat / other); '
 
 | clip | kind | stands in for | status | tempo | loop s | tracks (notes) | drums F (by class) | drum onsets F | pitched F | all notes F | render onset F | render median abs ms | seam step ratio | page safety |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| subP1 | SUBSTITUTE | P1 | ok | 138.0 | 3.4783 | drums (36) | 0.3256 | 0.7209 | - | 0.3256 | 0.9756 | 17.41 | 0.0 | ok |
-| subP2 | SUBSTITUTE | P2 | ok | 107.0 | 8.972 | drums (71), bass (14) | 0.4786 | 0.7863 | 0.88 | 0.5493 | 0.9841 | 11.61 | 0.871 | ok |
-| subP3 | SUBSTITUTE | P3 | ok | 90.0 | 10.6667 | keys (141) | - | - | 0.625 | 0.625 | 0.7123 | 5.8 | 0.433 | ok |
-| subP4 | SUBSTITUTE | P4 | ok | 120.0 | 16.0 | drums (188), bass (50), keys (352) | - | - | - | - | 0.922 | 11.61 | 0.035 | ok |
+| subP1 | SUBSTITUTE | P1 | ok | 138.0 | 3.4783 | drums (36) | 0.3256 | 0.7209 | - | 0.3256 | 0.9756 | 11.61 | 0.476 | ok |
+| subP2 | SUBSTITUTE | P2 | ok | 107.0 | 8.972 | drums (71), bass (14) | 0.4786 | 0.7863 | 0.88 | 0.5493 | 0.9841 | 5.8 | 0.407 | ok |
+| subP3 | SUBSTITUTE | P3 | ok | 90.0 | 10.6667 | keys (141) | - | - | 0.625 | 0.625 | 0.7123 | 5.8 | 0.34 | ok |
+| subP4 | SUBSTITUTE | P4 | ok | 120.0 | 16.0 | drums (188), bass (50), keys (352) | - | - | - | - | 0.9489 | 5.8 | 0.013 | ok |
 
 Precision / recall per clip:
 

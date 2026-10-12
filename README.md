@@ -88,7 +88,7 @@ uv run python -m pytest -m "not slow and not llm"
 | Part 3 recreation | subP1 SUBSTITUTE (P1) | drum onsets F [0.7209](evals/results/part3.md), by class F [0.3256](evals/results/part3.md), render onset F [0.9756](evals/results/part3.md) | +-50 ms onsets |
 | Part 3 recreation | subP2 SUBSTITUTE (P2) | drum onsets F [0.7863](evals/results/part3.md), by class F [0.4786](evals/results/part3.md), pitched F [0.88](evals/results/part3.md), render onset F [0.9841](evals/results/part3.md) | +-50 ms onsets |
 | Part 3 recreation | subP3 SUBSTITUTE (P3) | pitched F [0.625](evals/results/part3.md), render onset F [0.7123](evals/results/part3.md) | +-50 ms onsets |
-| Part 3 recreation | subP4 SUBSTITUTE (P4) | render onset F [0.922](evals/results/part3.md) | no reference |
+| Part 3 recreation | subP4 SUBSTITUTE (P4) | render onset F [0.9489](evals/results/part3.md) | no reference |
 | Part 3 page safety | 4 pages | [4 / 4 clean](evals/results/part3.md) | no URL / fetch / import / media / base64 audio |
 | Part 3 chat changes | subP2 | [3 / 3 applied](evals/results/part3.md) | typed score ops |
 | Grid timing root cause | see study | [report](evals/results/bias_study.md) | no empirical offsets added |
@@ -152,7 +152,7 @@ uv run python -m pytest -m "not slow and not llm"
 | subP1 | SUBSTITUTE | P1 | 0.7209 | 0.3256 | - | 0.9756 | ok |
 | subP2 | SUBSTITUTE | P2 | 0.7863 | 0.4786 | 0.88 | 0.9841 | ok |
 | subP3 | SUBSTITUTE | P3 | - | - | 0.625 | 0.7123 | ok |
-| subP4 | SUBSTITUTE | P4 | no reference | no reference | no reference | 0.922 | ok |
+| subP4 | SUBSTITUTE | P4 | no reference | no reference | no reference | 0.9489 | ok |
 - Chat on the recreation of subP2: "Mute the drums." -> applied; "Make the bass brighter." -> applied; "Play it at 140." -> applied
 - LLM provenance: `gemini-3.1-flash-lite`, 3 calls, all answers replayed from the local cache (LLM_CACHE=replay); answers originally fetched from the API on 2026-10-12 (UTC). Re-run live with `LLM_CACHE=off` or `python -m evals.run part2 --live`.
 <!-- STATUS:END -->
@@ -164,10 +164,10 @@ uv run python -m pytest -m "not slow and not llm"
    locks to double time (244 BPM) and downbeat F is 0.07. The grid exposes the alternatives ("tempo is half
    that", "it's in 3/4") but does not get them right on its own.
 2. **Drum classification in Part 3.** Hits are found (drum onset F 0.72-0.79 on the substitutes) but
-   kick / snare / hat labels are often wrong (by-class F 0.33-0.48), and the recreation plays a median
-   14.5 ms late on subP1 (17.4 ms absolute): +11 ms from soft quantisation towards a grid that sits 13.5 ms
-   after the note-ons, +6 ms from the page's compressor look-ahead; synth attack shape is not the cause
-   ([render offset study](evals/results/render_offset_study.md)).
+   kick / snare / hat labels are often wrong (by-class F 0.33-0.48), and the recreation of subP1 still plays
+   about 8 ms late (11.6 ms in the eval's 5.8 ms frames), because soft quantisation pulls the hits towards a
+   grid that sits 13.5 ms after the note-ons. The page's own 6 ms latency (a compressor's look-ahead) was
+   removed ([render offset study](evals/results/render_offset_study.md), DECISIONS D21).
 3. **Evidence is substitutes, and the click check is weaker than "0 clicks" suggests.** Nothing was
    measured on the real test pack. The splice click detector flags 0 of 13 crossfaded splices, but its own
    negative control (the same edits with hard cuts) is flagged on only 5 of 13 (all in S1), so outside S1 a

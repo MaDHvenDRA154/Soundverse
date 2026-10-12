@@ -7,9 +7,9 @@
    "midi": "evals/substitutes/part3/subP1.mid",
    "desc": "Groove MIDI 2-bar drum loop (GM render)",
    "stands_in_for": "P1",
-   "recreate_s": 38.14,
+   "recreate_s": 59.64,
    "safety_violations": [],
-   "page_bytes": 17194,
+   "page_bytes": 17777,
    "status": "ok",
    "tempo_bpm": 138.0,
    "loop_s": 3.4783,
@@ -27,12 +27,12 @@
     "onset_f_50ms": 0.9756,
     "n_onsets_original": 20,
     "n_onsets_render": 21,
-    "median_abs_offset_ms": 17.41,
-    "median_signed_offset_ms": 14.51
+    "median_abs_offset_ms": 11.61,
+    "median_signed_offset_ms": 11.61
    },
    "seam": {
     "seam_s": 3.4783,
-    "seam_step_ratio": 0.0
+    "seam_step_ratio": 0.476
    },
    "notes": {
     "drums_by_class": {
@@ -66,9 +66,9 @@
    "midi": "evals/substitutes/part3/subP2.mid",
    "desc": "Lakh MIDI 4-bar drums + bass (GM render)",
    "stands_in_for": "P2",
-   "recreate_s": 4.59,
+   "recreate_s": 4.22,
    "safety_violations": [],
-   "page_bytes": 23008,
+   "page_bytes": 23591,
    "status": "ok",
    "tempo_bpm": 107.0,
    "loop_s": 8.972,
@@ -87,12 +87,12 @@
     "onset_f_50ms": 0.9841,
     "n_onsets_original": 31,
     "n_onsets_render": 32,
-    "median_abs_offset_ms": 11.61,
-    "median_signed_offset_ms": 11.61
+    "median_abs_offset_ms": 5.8,
+    "median_signed_offset_ms": 5.8
    },
    "seam": {
     "seam_s": 8.972,
-    "seam_step_ratio": 0.871
+    "seam_step_ratio": 0.407
    },
    "notes": {
     "drums_by_class": {
@@ -132,9 +132,9 @@
    "midi": "evals/substitutes/part3/subP3.mid",
    "desc": "POP909 8-bar piano melody + chords (GM render)",
    "stands_in_for": "P3",
-   "recreate_s": 5.65,
+   "recreate_s": 5.83,
    "safety_violations": [],
-   "page_bytes": 29131,
+   "page_bytes": 29714,
    "status": "ok",
    "tempo_bpm": 90.0,
    "loop_s": 10.6667,
@@ -153,11 +153,11 @@
     "n_onsets_original": 38,
     "n_onsets_render": 35,
     "median_abs_offset_ms": 5.8,
-    "median_signed_offset_ms": 5.8
+    "median_signed_offset_ms": 0.0
    },
    "seam": {
     "seam_s": 10.6667,
-    "seam_step_ratio": 0.433
+    "seam_step_ratio": 0.34
    },
    "notes": {
     "drums_by_class": null,
@@ -185,9 +185,9 @@
    "midi": null,
    "desc": "Lakh MIDI 8-bar dense mix, 7 instruments (GM render, no reference used)",
    "stands_in_for": "P4",
-   "recreate_s": 6.4,
+   "recreate_s": 6.25,
    "safety_violations": [],
-   "page_bytes": 80237,
+   "page_bytes": 80820,
    "status": "ok",
    "tempo_bpm": 120.0,
    "loop_s": 16.0,
@@ -204,15 +204,15 @@
     "keys": 352
    },
    "onset_timing": {
-    "onset_f_50ms": 0.922,
+    "onset_f_50ms": 0.9489,
     "n_onsets_original": 68,
-    "n_onsets_render": 73,
-    "median_abs_offset_ms": 11.61,
-    "median_signed_offset_ms": 11.61
+    "n_onsets_render": 69,
+    "median_abs_offset_ms": 5.8,
+    "median_signed_offset_ms": 5.8
    },
    "seam": {
     "seam_s": 16.0,
-    "seam_step_ratio": 0.035
+    "seam_step_ratio": 0.013
    }
   }
  ],

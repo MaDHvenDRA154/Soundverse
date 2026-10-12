@@ -11,15 +11,15 @@ ms, positive = later; median (n, p10, p90). See the module docstring for the met
 | T1 | raw drum detections - reference MIDI | +1.1 (n=42, p10 -22.6, p90 +14.1) | |
 | T2 | score times (0.5 quantise) - raw detections | +11.0 (n=36, p10 +0.7, p90 +17.2) | |
 | T1+T2 | score times - reference MIDI | +12.2 (n=40, p10 -4.4, p90 +27.9) | |
-| T3 | page signal path, first audible sample - scheduled (shipped / compressor bypassed) | {'kick': 6.044, 'snare': 6.042, 'hat': 6.035} / {'kick': 0.058, 'snare': 0.056, 'hat': 0.049} | |
-| T4 | detector on synth hits - scheduled | +12.9 (n=11, p10 +10.5, p90 +18.8) | +10.4 (n=11, p10 +9.3, p90 +13.8) |
-| T4 kick / snare / hat | | +10.7 (n=3, p10 +9.6, p90 +12.4) / +12.3 (n=4, p10 +10.9, p90 +13.7) / +18.2 (n=4, p10 +15.9, p90 +19.5) | +9.3 (n=3, p10 +9.2, p90 +9.9) / +10.1 (n=4, p10 +9.8, p90 +10.5) / +13.5 (n=4, p10 +13.1, p90 +13.9) |
+| T3 | page signal path, first audible sample - scheduled (shipped / output stage bypassed) | {'kick': 0.058, 'snare': 0.056, 'hat': 0.049} / {'kick': 0.058, 'snare': 0.056, 'hat': 0.049} | |
+| T4 | detector on synth hits - scheduled | +7.1 (n=11, p10 +4.7, p90 +13.0) | +4.2 (n=11, p10 +3.4, p90 +8.0) |
+| T4 kick / snare / hat | | +4.8 (n=3, p10 +3.8, p90 +6.7) / +6.5 (n=4, p10 +5.1, p90 +7.9) / +12.4 (n=4, p10 +10.1, p90 +13.7) | +3.5 (n=3, p10 +3.4, p90 +4.1) / +4.0 (n=4, p10 +3.5, p90 +4.4) / +7.7 (n=4, p10 +7.3, p90 +8.1) |
 | T5 | detector on original - reference MIDI | +11.1 (n=37, p10 -9.7, p90 +33.8) | +9.2 (n=39, p10 -12.8, p90 +30.4) |
-| T6 | **reported: render onsets - original onsets** | +14.5 (n=20, p10 -0.6, p90 +23.2) | +14.5 (n=20, p10 +1.2, p90 +21.9) |
-| | render onsets - scheduled note times | +13.3 (n=35, p10 +10.5, p90 +20.2) | +10.2 (n=35, p10 +7.9, p90 +15.7) |
-| | predicted T6 = T1+T2 + T4 - T5 | 14.07 | 13.42 |
+| T6 | **reported: render onsets - original onsets** | +11.6 (n=20, p10 -5.8, p90 +17.4) | +8.0 (n=20, p10 -4.6, p90 +14.8) |
+| | render onsets - scheduled note times | +7.8 (n=35, p10 +4.7, p90 +15.7) | +4.3 (n=35, p10 +2.3, p90 +9.9) |
+| | predicted T6 = T1+T2 + T4 - T5 | 8.27 | 7.24 |
 
-**Finding (subP1, hop 128 medians):** the score itself is +12.2 ms late of the reference: the raw detections are +1.1 ms, and the 0.5 soft quantise adds +11.0 ms because the grid it pulls towards sits +13.5 ms after the note-ons. The page then plays every sound 6.04 ms after its scheduled time (0.06 ms with the compressor bypassed: the DynamicsCompressor's fixed look-ahead; the scheduler itself is exact). Net of that delay the detector fires +6.9 ms after a synth hit starts vs +11.1 ms after a soundfont hit, so the attack shape contributes -4.2 ms (synth hits are detected sooner, not later). Predicted +14.1 ms vs measured +14.5 ms.
+**Finding (subP1, hop 128 medians):** the score itself is +12.2 ms late of the reference: the raw detections are +1.1 ms, and the 0.5 soft quantise adds +11.0 ms because the grid it pulls towards sits +13.5 ms after the note-ons. The page then plays every sound 0.06 ms after its scheduled time (0.06 ms with the output stage bypassed: the output stage adds no latency; the scheduler itself is exact). Net of that delay the detector fires +7.0 ms after a synth hit starts vs +11.1 ms after a soundfont hit, so the attack shape contributes -4.0 ms (synth hits are detected sooner, not later). Predicted +8.3 ms vs measured +11.6 ms.
 
 ## subP2 -- Lakh MIDI clean clean_midi/Linda Ronstadt/You're No Good.mid (CC BY 4.0) (107.0 BPM)
 
@@ -29,12 +29,12 @@ ms, positive = later; median (n, p10, p90). See the module docstring for the met
 | T1 | raw drum detections - reference MIDI | +1.0 (n=31, p10 -0.7, p90 +1.3) | |
 | T2 | score times (0.5 quantise) - raw detections | +6.4 (n=71, p10 -21.5, p90 +9.9) | |
 | T1+T2 | score times - reference MIDI | +6.7 (n=31, p10 +4.1, p90 +7.6) | |
-| T3 | page signal path, first audible sample - scheduled (shipped / compressor bypassed) | {'kick': 6.041, 'snare': 6.039, 'hat': 6.019} / {'kick': 0.055, 'snare': 0.052, 'hat': 0.033} | |
-| T4 | detector on synth hits - scheduled | +15.2 (n=11, p10 +11.9, p90 +17.6) | +10.4 (n=11, p10 +9.5, p90 +13.7) |
-| T4 kick / snare / hat | | +13.0 (n=3, p10 +11.1, p90 +13.8) / +14.1 (n=4, p10 +12.2, p90 +16.0) / +17.1 (n=4, p10 +15.6, p90 +19.2) | +9.7 (n=3, p10 +9.3, p90 +10.0) / +10.2 (n=4, p10 +9.6, p90 +10.5) / +13.7 (n=4, p10 +13.3, p90 +14.0) |
+| T3 | page signal path, first audible sample - scheduled (shipped / output stage bypassed) | {'kick': 0.055, 'snare': 0.052, 'hat': 0.033} / {'kick': 0.055, 'snare': 0.052, 'hat': 0.033} | |
+| T4 | detector on synth hits - scheduled | +8.2 (n=11, p10 +4.8, p90 +11.8) | +4.2 (n=11, p10 +3.2, p90 +7.9) |
+| T4 kick / snare / hat | | +7.2 (n=3, p10 +5.3, p90 +8.0) / +6.6 (n=4, p10 +5.1, p90 +8.8) / +11.3 (n=4, p10 +9.8, p90 +13.4) | +3.4 (n=3, p10 +3.0, p90 +3.8) / +3.9 (n=4, p10 +3.4, p90 +4.5) / +7.9 (n=4, p10 +7.5, p90 +8.2) |
 | T5 | detector on original - reference MIDI | +12.2 (n=31, p10 +8.1, p90 +16.9) | +10.6 (n=31, p10 +5.9, p90 +12.0) |
-| T6 | **reported: render onsets - original onsets** | +11.6 (n=31, p10 +5.8, p90 +17.4) | +8.7 (n=31, p10 +7.3, p90 +14.5) |
-| | render onsets - scheduled note times | +15.9 (n=61, p10 -6.9, p90 +18.6) | +12.7 (n=61, p10 -11.3, p90 +15.7) |
-| | predicted T6 = T1+T2 + T4 - T5 | 9.63 | 6.55 |
+| T6 | **reported: render onsets - original onsets** | +5.8 (n=31, p10 +0.0, p90 +11.6) | +2.9 (n=31, p10 +1.4, p90 +8.7) |
+| | render onsets - scheduled note times | +10.1 (n=61, p10 -12.7, p90 +12.8) | +6.5 (n=61, p10 -18.5, p90 +9.9) |
+| | predicted T6 = T1+T2 + T4 - T5 | 2.69 | 0.29 |
 
-**Finding (subP2, hop 128 medians):** the score itself is +6.7 ms late of the reference: the raw detections are +1.0 ms, and the 0.5 soft quantise adds +6.4 ms because the grid it pulls towards sits +14.0 ms after the note-ons. The page then plays every sound 6.04 ms after its scheduled time (0.05 ms with the compressor bypassed: the DynamicsCompressor's fixed look-ahead; the scheduler itself is exact). Net of that delay the detector fires +9.1 ms after a synth hit starts vs +12.2 ms after a soundfont hit, so the attack shape contributes -3.1 ms (synth hits are detected sooner, not later). Predicted +9.6 ms vs measured +11.6 ms.
+**Finding (subP2, hop 128 medians):** the score itself is +6.7 ms late of the reference: the raw detections are +1.0 ms, and the 0.5 soft quantise adds +6.4 ms because the grid it pulls towards sits +14.0 ms after the note-ons. The page then plays every sound 0.05 ms after its scheduled time (0.05 ms with the output stage bypassed: the output stage adds no latency; the scheduler itself is exact). Net of that delay the detector fires +8.2 ms after a synth hit starts vs +12.2 ms after a soundfont hit, so the attack shape contributes -4.1 ms (synth hits are detected sooner, not later). Predicted +2.7 ms vs measured +5.8 ms.

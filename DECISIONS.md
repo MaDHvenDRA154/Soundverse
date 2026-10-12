@@ -211,18 +211,24 @@ numbers are likely optimistic for real P1-P4 material.
 - The decision lives in data (`commit_outputs` in `evals/manifest.yaml`); `python -m evals.samples`
   copies only what it allows, and `make reproduce` rebuilds everything else. Details: `evals/README.md`.
 
-### D21. Part 3 render offset: measured, explained, not compensated
-The recreation of subP1 plays a median 14.5 ms (17.4 ms absolute) after the original. Decomposed in
-`evals/render_offset_study.py` -> [evals/results/render_offset_study.md](evals/results/render_offset_study.md):
-raw drum detections are +1 ms from the reference note-ons; the 0.5 soft quantise moves them +11 ms because
-the grid it pulls towards sits +13.5 ms after the note-ons (the tracker's own placement on a 2-bar clip,
-where the line fit has only ~8 beats to average 20 ms frames over; cf. D16); the page plays every sound
-+6.04 ms after its scheduled time, which is Chrome's DynamicsCompressor look-ahead (0.05 ms with it bypassed;
-the scheduler is exact); synth attack shape is detected ~4 ms *sooner* than the soundfont's, so it is not
-the cause. Predicted +14.1 ms vs measured +14.5 ms. Nothing was changed to shrink the number. The
-compressor delay is a real, constant playback latency (inaudible on its own); replacing the compressor with
-a look-ahead-free limiter would remove it, and is left as a decision for review rather than made to improve
-an eval number.
+### D21. Part 3 render offset: measured and explained; the page's own latency removed
+`evals/render_offset_study.py` -> [evals/results/render_offset_study.md](evals/results/render_offset_study.md)
+decomposes the delay of the recreated page against the original (subP1, drum notes):
+- **Transcription (by design, kept):** raw drum detections are +1 ms from the reference note-ons; the 0.5 soft
+  quantise moves them +11 ms because the grid it pulls towards sits +13.5 ms after the note-ons (the tracker's
+  own placement on a 2-bar clip, where the line fit has only ~8 beats to average 20 ms frames over; cf. D16).
+- **Page output stage (removed):** the page used to run its master bus through Chrome's DynamicsCompressor,
+  which delays everything by its fixed look-ahead: +6.04 ms on every sound (0.05 ms with it bypassed; the
+  scheduler itself was exact). It is now a static tanh soft limiter on a WaveShaper (no oversampling): unity
+  gain for small signals, never above full scale, **zero latency** (measured 0.06 ms, the same as the bypassed
+  path; peaks about 0.5 dB lower where the soft knee acts). Compensating instead (scheduling 6 ms early) was
+  rejected: the look-ahead is an implementation detail of Chrome's compressor, so a fixed offset would be
+  wrong in other browsers.
+- **Attack shape (not the cause):** the detector fires ~4 ms *sooner* on the synth hits than on the soundfont's.
+- **Result:** subP1's render now lands +8.0 ms after the original at the study's fine (1.5 ms) detector hop,
+  vs +14.5 ms before; predicted +7.2 ms. The Part 3 eval's coarser 5.8 ms-frame detector reports +11.6 ms
+  (median abs 17.4 -> 11.6 ms); subP4 render onset F 0.922 -> 0.949. What remains is the quantiser pulling notes
+  towards the grid, which is the intended behaviour of soft quantisation, so it was not tuned.
 
 ### D22. Demucs is seeded
 Demucs' API default (`shifts=1`) offsets the input by a random amount from Python's global `random` on every

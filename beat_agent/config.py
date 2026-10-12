@@ -272,6 +272,10 @@ OCTAVE_HALF_PLAUSIBLE = 0.5
 DEMUCS_MODEL = "htdemucs"          # the default 4-stem Demucs v4 model (CPU)
 # Context fed to Demucs on each side of the loop so separation has no edge effects.
 DEMUCS_CONTEXT_S = 0.5
+# Demucs' API default (shifts=1) offsets the input by a random 0-0.5 s drawn from
+# Python's global `random`, so stems -- and every Part 3 number -- changed run to
+# run. We keep the shift and seed it per call: determinism only, the value is arbitrary.
+DEMUCS_SHIFT_SEED = 0
 # Recreations are 2-16 bars (brief); a longer track defaults to its first
 # 8-bar phrase, the standard loop length.
 RECREATE_MAX_BARS = 16

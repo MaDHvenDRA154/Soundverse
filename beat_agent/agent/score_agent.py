@@ -31,6 +31,7 @@ class ScoreAgent:
         self.ledger = UsageLedger()
         self.schema = gemini_schema_for(S.ScorePlan)
         self.history: list[dict] = []
+        self.llm_error: str | None = None   # last provider failure (quota/network)
 
     def handle(self, text: str) -> tuple[str, str, dict | None]:
         ctx = {"tracks": [{"id": t.id, "role": t.role, "mute": t.mute, "gain_db": t.gain_db,
@@ -44,6 +45,7 @@ class ScoreAgent:
             try:
                 r = self.llm.complete_json(SYSTEM, msg, self.schema)
             except LLMError as e:
+                self.llm_error = str(e)
                 return "error", f"The language model is unavailable: {e}. Nothing was changed.", None
             self.ledger.add(r)
             raw = r.text

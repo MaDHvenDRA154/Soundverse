@@ -92,6 +92,7 @@ class AgentTrace:
     attempts: list = field(default_factory=list)   # [{raw, error, usage, cached}]
     plan: dict | None = None
     result: dict | None = None
+    llm_error: str | None = None   # set when the provider failed (quota/network), not the model's answer
 
 
 class Agent:
@@ -127,6 +128,7 @@ class Agent:
             try:
                 r = self.llm.complete_json(SYSTEM, self._context(text, err, raw), self.schema)
             except LLMError as e:
+                tr.llm_error = str(e)
                 res = TurnResult("error", f"The language model is unavailable: {e}. Nothing was changed.")
                 tr.result = res.to_dict()
                 return res, tr

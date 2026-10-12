@@ -33,7 +33,7 @@ Default analysis: phase refinement OFF (DECISIONS.md D8). The 'refinement ON' co
 ## Drift (grid beat - reference beat, every matched reference beat)
 
 | clip | matched | max abs ms | mean abs ms | mean signed ms | share within 10 ms | max abs ms, refinement ON | mean signed ms, refinement ON |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|
 | sub-disco | 58/58 | 36.82 | 13.66 | -12.06 | 0.3448 | 36.82 | -12.06 |
 | sub-hiphop | 60/60 | 27.75 | 17.09 | -17.09 | 0.05 | 35.97 | -25.32 |
 | sub-rock | 51/61 | 39.44 | 17.97 | 1.97 | 0.2745 | 39.44 | 1.97 |

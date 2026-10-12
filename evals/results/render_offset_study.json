@@ -1,0 +1,296 @@
+[
+ {
+  "clip": "subP1",
+  "source": "Groove MIDI Dataset drummer1/eval_session/1_funk-groove1_138_beat_4-4.mid (CC BY 4.0)",
+  "tempo_bpm": 138.0,
+  "T0_grid_beats_minus_reference": {
+   "n": 7,
+   "median_ms": 13.51,
+   "p10_ms": 8.44,
+   "p90_ms": 23.45
+  },
+  "quantize_strength": 0.5,
+  "T1_raw_detection_minus_reference": {
+   "n": 42,
+   "median_ms": 1.07,
+   "mean_ms": 0.33,
+   "p10_ms": -22.64,
+   "p90_ms": 14.05
+  },
+  "T2_score_minus_raw_detection": {
+   "n": 36,
+   "median_ms": 10.96,
+   "mean_ms": 9.86,
+   "p10_ms": 0.67,
+   "p90_ms": 17.16
+  },
+  "T1+T2_score_minus_reference": {
+   "n": 40,
+   "median_ms": 12.24,
+   "mean_ms": 12.72,
+   "p10_ms": -4.44,
+   "p90_ms": 27.92
+  },
+  "T3_signal_path_shipped_ms": {
+   "kick": 6.044,
+   "snare": 6.042,
+   "hat": 6.035
+  },
+  "T4_detector_on_synth_hop128": {
+   "kick": {
+    "n": 3,
+    "median_ms": 10.65,
+    "mean_ms": 10.97,
+    "p10_ms": 9.61,
+    "p90_ms": 12.45
+   },
+   "snare": {
+    "n": 4,
+    "median_ms": 12.31,
+    "mean_ms": 12.31,
+    "p10_ms": 10.93,
+    "p90_ms": 13.7
+   },
+   "hat": {
+    "n": 4,
+    "median_ms": 18.17,
+    "mean_ms": 17.85,
+    "p10_ms": 15.95,
+    "p90_ms": 19.49
+   },
+   "all": {
+    "n": 11,
+    "median_ms": 12.9,
+    "mean_ms": 13.96,
+    "p10_ms": 10.54,
+    "p90_ms": 18.82
+   }
+  },
+  "T4_detector_on_synth_hop32": {
+   "kick": {
+    "n": 3,
+    "median_ms": 9.35,
+    "mean_ms": 9.52,
+    "p10_ms": 9.23,
+    "p90_ms": 9.87
+   },
+   "snare": {
+    "n": 4,
+    "median_ms": 10.14,
+    "mean_ms": 10.14,
+    "p10_ms": 9.78,
+    "p90_ms": 10.49
+   },
+   "hat": {
+    "n": 4,
+    "median_ms": 13.5,
+    "mean_ms": 13.5,
+    "p10_ms": 13.06,
+    "p90_ms": 13.93
+   },
+   "all": {
+    "n": 11,
+    "median_ms": 10.38,
+    "mean_ms": 11.19,
+    "p10_ms": 9.35,
+    "p90_ms": 13.82
+   }
+  },
+  "T3_signal_path_compressor_bypassed_ms": {
+   "kick": 0.058,
+   "snare": 0.056,
+   "hat": 0.049
+  },
+  "T5_detector_on_original_hop128": {
+   "n": 37,
+   "median_ms": 11.07,
+   "mean_ms": 12.53,
+   "p10_ms": -9.7,
+   "p90_ms": 33.78
+  },
+  "T6_render_minus_original_hop128": {
+   "n": 20,
+   "median_ms": 14.51,
+   "mean_ms": 10.45,
+   "p10_ms": -0.58,
+   "p90_ms": 23.22
+  },
+  "render_onsets_minus_scheduled_hop128": {
+   "n": 35,
+   "median_ms": 13.33,
+   "mean_ms": 13.97,
+   "p10_ms": 10.52,
+   "p90_ms": 20.18
+  },
+  "T5_detector_on_original_hop32": {
+   "n": 39,
+   "median_ms": 9.2,
+   "mean_ms": 9.23,
+   "p10_ms": -12.75,
+   "p90_ms": 30.41
+  },
+  "T6_render_minus_original_hop32": {
+   "n": 20,
+   "median_ms": 14.51,
+   "mean_ms": 10.67,
+   "p10_ms": 1.16,
+   "p90_ms": 21.91
+  },
+  "render_onsets_minus_scheduled_hop32": {
+   "n": 35,
+   "median_ms": 10.18,
+   "mean_ms": 10.32,
+   "p10_ms": 7.93,
+   "p90_ms": 15.73
+  },
+  "predicted_T6_hop128_ms": 14.07,
+  "predicted_T6_hop32_ms": 13.42
+ },
+ {
+  "clip": "subP2",
+  "source": "Lakh MIDI clean clean_midi/Linda Ronstadt/You're No Good.mid (CC BY 4.0)",
+  "tempo_bpm": 107.0,
+  "T0_grid_beats_minus_reference": {
+   "n": 15,
+   "median_ms": 14.02,
+   "p10_ms": 9.83,
+   "p90_ms": 18.2
+  },
+  "quantize_strength": 0.5,
+  "T1_raw_detection_minus_reference": {
+   "n": 31,
+   "median_ms": 1.04,
+   "mean_ms": 0.57,
+   "p10_ms": -0.71,
+   "p90_ms": 1.26
+  },
+  "T2_score_minus_raw_detection": {
+   "n": 71,
+   "median_ms": 6.36,
+   "mean_ms": 2.57,
+   "p10_ms": -21.52,
+   "p90_ms": 9.94
+  },
+  "T1+T2_score_minus_reference": {
+   "n": 31,
+   "median_ms": 6.69,
+   "mean_ms": 6.2,
+   "p10_ms": 4.14,
+   "p90_ms": 7.63
+  },
+  "T3_signal_path_shipped_ms": {
+   "kick": 6.041,
+   "snare": 6.039,
+   "hat": 6.019
+  },
+  "T4_detector_on_synth_hop128": {
+   "kick": {
+    "n": 3,
+    "median_ms": 13.03,
+    "mean_ms": 12.55,
+    "p10_ms": 11.1,
+    "p90_ms": 13.82
+   },
+   "snare": {
+    "n": 4,
+    "median_ms": 14.09,
+    "mean_ms": 14.09,
+    "p10_ms": 12.19,
+    "p90_ms": 15.99
+   },
+   "hat": {
+    "n": 4,
+    "median_ms": 17.06,
+    "mean_ms": 17.31,
+    "p10_ms": 15.58,
+    "p90_ms": 19.24
+   },
+   "all": {
+    "n": 11,
+    "median_ms": 15.15,
+    "mean_ms": 14.84,
+    "p10_ms": 11.89,
+    "p90_ms": 17.56
+   }
+  },
+  "T4_detector_on_synth_hop32": {
+   "kick": {
+    "n": 3,
+    "median_ms": 9.66,
+    "mean_ms": 9.65,
+    "p10_ms": 9.27,
+    "p90_ms": 10.03
+   },
+   "snare": {
+    "n": 4,
+    "median_ms": 10.21,
+    "mean_ms": 10.1,
+    "p10_ms": 9.64,
+    "p90_ms": 10.47
+   },
+   "hat": {
+    "n": 4,
+    "median_ms": 13.68,
+    "mean_ms": 13.68,
+    "p10_ms": 13.34,
+    "p90_ms": 14.02
+   },
+   "all": {
+    "n": 11,
+    "median_ms": 10.44,
+    "mean_ms": 11.28,
+    "p10_ms": 9.49,
+    "p90_ms": 13.7
+   }
+  },
+  "T3_signal_path_compressor_bypassed_ms": {
+   "kick": 0.055,
+   "snare": 0.052,
+   "hat": 0.033
+  },
+  "T5_detector_on_original_hop128": {
+   "n": 31,
+   "median_ms": 12.21,
+   "mean_ms": 12.32,
+   "p10_ms": 8.14,
+   "p90_ms": 16.88
+  },
+  "T6_render_minus_original_hop128": {
+   "n": 31,
+   "median_ms": 11.61,
+   "mean_ms": 10.67,
+   "p10_ms": 5.8,
+   "p90_ms": 17.41
+  },
+  "render_onsets_minus_scheduled_hop128": {
+   "n": 61,
+   "median_ms": 15.92,
+   "mean_ms": 12.57,
+   "p10_ms": -6.92,
+   "p90_ms": 18.6
+  },
+  "T5_detector_on_original_hop32": {
+   "n": 31,
+   "median_ms": 10.58,
+   "mean_ms": 9.09,
+   "p10_ms": 5.94,
+   "p90_ms": 11.96
+  },
+  "T6_render_minus_original_hop32": {
+   "n": 31,
+   "median_ms": 8.71,
+   "mean_ms": 10.49,
+   "p10_ms": 7.26,
+   "p90_ms": 14.51
+  },
+  "render_onsets_minus_scheduled_hop32": {
+   "n": 61,
+   "median_ms": 12.67,
+   "mean_ms": 9.26,
+   "p10_ms": -11.28,
+   "p90_ms": 15.67
+  },
+  "predicted_T6_hop128_ms": 9.63,
+  "predicted_T6_hop32_ms": 6.55
+ }
+]

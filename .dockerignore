@@ -10,3 +10,6 @@ evals/substitutes/audio/
 **/__pycache__/
 .env
 *.pdf
+evals/substitutes/annotations/
+evals/substitutes/part3/
+evals/samples/

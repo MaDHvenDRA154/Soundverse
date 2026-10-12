@@ -81,6 +81,8 @@ clips:
 #   before scoring (see evals/substitutes/fetch.py). Reported in their own table;
 #   never used to choose a parameter. GTZAN is held out from the Beat This!
 #   checkpoint we use.
+# GTZAN states no licence: its audio, annotations and anything rendered from them (edits,
+# click auditions, stems) are never committed -- regenerate with `make reproduce`.
 substitutes:
   - id: sub-disco
     desc: "GTZAN disco.00000 (substitute; stands in for A1/A7: steady four-on-the-floor)"
@@ -130,14 +132,25 @@ generated:
 # part3_substitutes: SUBSTITUTE clips for Part 3 (P1-P4 missing), built from public MIDI by
 #   `python -m evals.substitutes.fetch_midi` (selection rules in that file). Used only when the
 #   matching test-pack clip is absent. reference: whether the excerpt MIDI is used as the reference.
+#   commit_outputs: whether the clip, its reference and its recreation may be committed to the repo
+#   (copied to evals/samples/ by `python -m evals.samples`); see DECISIONS.md D20 for each licence.
 part3_substitutes:
   - {id: subP1, stands_in_for: P1, reference: true, desc: "Groove MIDI 2-bar drum loop (GM render)",
+     licence: "CC BY 4.0 (Groove MIDI Dataset, Google LLC); original performances recorded for the dataset",
+     attribution: "Jon Gillick, Adam Roberts, Jesse Engel, Douglas Eck, David Bamman. Learning to Groove with Inverse Sequence Transformations. ICML 2019. https://magenta.withgoogle.com/datasets/groove",
+     commit_outputs: true,
      audio: ["evals/substitutes/part3/subP1.wav"], midi: ["evals/substitutes/part3/subP1.mid"]}
   - {id: subP2, stands_in_for: P2, reference: true, desc: "Lakh MIDI 4-bar drums + bass (GM render)",
+     licence: "CC BY 4.0 covers the Lakh compilation; the file transcribes a commercial song whose composition it does not license",
+     commit_outputs: false,
      audio: ["evals/substitutes/part3/subP2.wav"], midi: ["evals/substitutes/part3/subP2.mid"]}
   - {id: subP3, stands_in_for: P3, reference: true, desc: "POP909 8-bar piano melody + chords (GM render)",
+     licence: "MIT covers the POP909 arrangements; the song itself is a commercial composition the MIT licence does not cover",
+     commit_outputs: false,
      audio: ["evals/substitutes/part3/subP3.wav"], midi: ["evals/substitutes/part3/subP3.mid"]}
   - {id: subP4, stands_in_for: P4, reference: false, desc: "Lakh MIDI 8-bar dense mix, 7 instruments (GM render, no reference used)",
+     licence: "CC BY 4.0 covers the Lakh compilation; the file transcribes a commercial song whose composition it does not license",
+     commit_outputs: false,
      audio: ["evals/substitutes/part3/subP4.wav"]}
 part3_chat:
   clip: subP2

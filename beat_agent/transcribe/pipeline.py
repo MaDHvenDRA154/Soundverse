@@ -6,6 +6,7 @@ Basic Pitch -> soft quantisation onto the grid -> Score.
 """
 from __future__ import annotations
 
+import random
 import tempfile
 import threading
 from pathlib import Path
@@ -211,7 +212,13 @@ def recreate(path, bars: int | None = None, start_bar: int | None = None, src: S
         import soxr
         seg = soxr.resample(seg, sr, sep.samplerate).astype(np.float32)
     ssr = sep.samplerate
-    _, stems = sep.separate_tensor(torch.from_numpy(np.ascontiguousarray(seg[:, :2].T)), ssr)
+    with _sep_lock:   # seeded shift (config.DEMUCS_SHIFT_SEED); the lock keeps concurrent app jobs from sharing the state
+        state = random.getstate()
+        random.seed(config.DEMUCS_SHIFT_SEED)
+        try:
+            _, stems = sep.separate_tensor(torch.from_numpy(np.ascontiguousarray(seg[:, :2].T)), ssr)
+        finally:
+            random.setstate(state)
     stems = {k: v.numpy().T.mean(axis=1) for k, v in stems.items()}
     off = (t0 - pad)   # source time of stem sample 0
     if stems_dir:

@@ -1,0 +1,386 @@
+{
+ "schema_version": "1.0",
+ "tempo_bpm": 138.0,
+ "analysed_tempo_bpm": 138.0,
+ "time_signature": [
+  4,
+  4
+ ],
+ "beats_per_bar": 4,
+ "bars": 2,
+ "loop_beats": 8.0,
+ "clip": {
+  "source": "evals/substitutes/part3/subP1.wav",
+  "start_s": 0.0,
+  "end_s": 3.47825,
+  "bars": [
+   1,
+   2
+  ],
+  "mode": "whole_clip",
+  "grid_bpm": 137.48,
+  "grid_type": "constant"
+ },
+ "tracks": [
+  {
+   "id": "drums",
+   "name": "Drums",
+   "role": "drums",
+   "mute": false,
+   "gain_db": 0.0,
+   "patch": {
+    "osc": "saw",
+    "cutoff_hz": 1800.0,
+    "resonance": 1.0,
+    "attack_s": 0.005,
+    "decay_s": 0.15,
+    "sustain": 0.6,
+    "release_s": 0.12,
+    "fm_ratio": 2.0,
+    "fm_index": 1.5,
+    "detune_cents": 0.0
+   },
+   "notes": [
+    {
+     "start_beats": 0.3471,
+     "dur_beats": 0.24,
+     "start_s": 0.15091,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 127,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 1.0055,
+     "dur_beats": 0.24,
+     "start_s": 0.43717,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 110,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 1.0158,
+     "dur_beats": 0.24,
+     "start_s": 0.44166,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 1.4976,
+     "dur_beats": 0.24,
+     "start_s": 0.65113,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 93,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 1.7718,
+     "dur_beats": 0.24,
+     "start_s": 0.77033,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 1.7752,
+     "dur_beats": 0.24,
+     "start_s": 0.77182,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 75,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 2.0115,
+     "dur_beats": 0.24,
+     "start_s": 0.87456,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 81,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 2.0161,
+     "dur_beats": 0.24,
+     "start_s": 0.87656,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 58,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 2.2616,
+     "dur_beats": 0.24,
+     "start_s": 0.98328,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 121,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 2.2661,
+     "dur_beats": 0.24,
+     "start_s": 0.98528,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 64,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 2.4738,
+     "dur_beats": 0.125,
+     "start_s": 1.07555,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 109,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 2.5059,
+     "dur_beats": 0.24,
+     "start_s": 1.08951,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 70,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 2.7456,
+     "dur_beats": 0.24,
+     "start_s": 1.19375,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 79,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 2.7468,
+     "dur_beats": 0.24,
+     "start_s": 1.19425,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 3.0026,
+     "dur_beats": 0.24,
+     "start_s": 1.30547,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 3.006,
+     "dur_beats": 0.24,
+     "start_s": 1.30696,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 127,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 3.5039,
+     "dur_beats": 0.24,
+     "start_s": 1.52341,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 82,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 3.7551,
+     "dur_beats": 0.24,
+     "start_s": 1.63264,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 3.7585,
+     "dur_beats": 0.24,
+     "start_s": 1.63413,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 84,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 4.0155,
+     "dur_beats": 0.24,
+     "start_s": 1.74585,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 70,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 4.0166,
+     "dur_beats": 0.24,
+     "start_s": 1.74635,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 75,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 4.5099,
+     "dur_beats": 0.24,
+     "start_s": 1.9608,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 69,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 4.5122,
+     "dur_beats": 0.24,
+     "start_s": 1.9618,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 5.0157,
+     "dur_beats": 0.24,
+     "start_s": 2.18075,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 127,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 5.4952,
+     "dur_beats": 0.24,
+     "start_s": 2.38922,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 90,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 5.7533,
+     "dur_beats": 0.24,
+     "start_s": 2.50143,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 5.7556,
+     "dur_beats": 0.24,
+     "start_s": 2.50243,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 127,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 6.0183,
+     "dur_beats": 0.24,
+     "start_s": 2.61664,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 58,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 6.25,
+     "dur_beats": 0.24,
+     "start_s": 2.71738,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 119,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 6.2534,
+     "dur_beats": 0.24,
+     "start_s": 2.71888,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 63,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 6.492,
+     "dur_beats": 0.24,
+     "start_s": 2.82262,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 79,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 6.5184,
+     "dur_beats": 0.24,
+     "start_s": 2.83409,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 113,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 6.9956,
+     "dur_beats": 0.24,
+     "start_s": 3.04156,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 101,
+     "drum": "snare"
+    },
+    {
+     "start_beats": 7.482,
+     "dur_beats": 0.125,
+     "start_s": 3.25302,
+     "dur_s": 0.1,
+     "pitch": 42,
+     "velocity": 84,
+     "drum": "hat"
+    },
+    {
+     "start_beats": 7.5118,
+     "dur_beats": 0.24,
+     "start_s": 3.26599,
+     "dur_s": 0.1,
+     "pitch": 36,
+     "velocity": 127,
+     "drum": "kick"
+    },
+    {
+     "start_beats": 7.9982,
+     "dur_beats": 0.24,
+     "start_s": 3.47745,
+     "dur_s": 0.1,
+     "pitch": 38,
+     "velocity": 103,
+     "drum": "snare"
+    }
+   ]
+  }
+ ],
+ "provenance": {
+  "grid": "beat_agent.analysis (Beat This!)",
+  "tempo_source": "grid",
+  "loop": "whole clip as the loop: 8 beats of 434.8 ms = 3.478 s; meter unknown, 4/4 assumed for bar labels only",
+  "stems": "htdemucs",
+  "drums": "band-split onset detection on the Demucs drum stem",
+  "pitched": "Basic Pitch (ONNX) on Demucs bass/other/vocals stems",
+  "quantise": {
+   "step_beats": 0.25,
+   "strength": 0.5,
+   "phase_beats": 0.0349
+  },
+  "llm": "none"
+ },
+ "edit_history": []
+}

@@ -204,7 +204,7 @@ def report(res: dict) -> str:
                  f"{r['bpm']} | {r['tempo_type']} | {r['meter']} | {r['runtime_s']} / {r['duration_s']} |")
     L += ["", "## Drift (grid beat - reference beat, every matched reference beat)", "",
           "| clip | matched | max abs ms | mean abs ms | mean signed ms | share within 10 ms | max abs ms, refinement ON | mean signed ms, refinement ON |",
-          "|---|---|---|---|---|---|---|"]
+          "|---|---|---|---|---|---|---|---|"]
     for r in res["clips"]:
         d = r.get("drift")
         if isinstance(d, dict) and d.get("matched"):

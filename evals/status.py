@@ -18,9 +18,75 @@ def _load(name):
     return json.loads(p.read_text()) if p.exists() else None
 
 
+def _lnk(v, f):
+    return f"[{v}](evals/results/{f})"
+
+
+def headline(p1, p2, p3, rob) -> list[str]:
+    """One row per brief target; every number links to the results file it was read from."""
+    L = ["| area | measured on | result | target / note |", "|---|---|---|---|"]
+    if p1:
+        gen = {r["id"]: r for r in p1["clips"] if r.get("generated") and r.get("status") == "ok"}
+        subs = [r for r in p1["clips"] if r.get("substitute") and r.get("status") == "ok"]
+        six = next((r for k, r in gen.items() if "6min" in k), None)
+        if six:
+            L.append(f"| Part 1 grid drift | generated 6-min house | max {_lnk(str(six['drift']['max_abs_ms']) + ' ms', 'part1.md')} | <= 10 ms |")
+            L.append(f"| Part 1 speed | generated 6-min house | {_lnk(str(six['runtime_s']) + ' s', 'part1.md')} for {six['duration_s']} s of audio | laptop CPU |")
+        if subs:
+            bf = [r["beat_f"] for r in subs]
+            df = [r["downbeat_f"] for r in subs]
+            L.append(f"| Part 1 beats / downbeats | {len(subs)} GTZAN SUBSTITUTES | beat F {_lnk(f'{min(bf)}-{max(bf)}', 'part1.md')}, "
+                     f"downbeat F {_lnk(f'{min(df)}-{max(df)}', 'part1.md')} | human annotations, +-70 ms |")
+        for s in p1["sync"]:
+            if s["status"] == "ok":
+                k = s["kick_alignment"]
+                L.append(f"| Part 1 sync | {'generated pair' if s.get('generated') else s['pair']} | kick offset median "
+                         f"{_lnk(str(k['median_abs_offset_ms']) + ' ms', 'part1.md')}, max {k['max_abs_offset_ms']} ms ({k['n_pairs']} pairs) | |")
+    if rob:
+        c = {k: sum(1 for r in rob if r["status"] == k) for k in ("pass", "partial", "fail")}
+        L.append(f"| Generalisation | {len(rob)} generated cases | {_lnk(str(c['pass']) + ' pass', 'robustness.md')}, "
+                 f"{c['partial']} partial, {c['fail']} fail | failures listed below |")
+    if p2 and "sessions" in p2:
+        ss = [s for s in p2["sessions"] if s.get("status") != "missing"]
+        sp = [x for s in ss for t in s["turns"] for x in t.get("splices", [])]
+        hc = [x for s in ss for t in s["turns"] for x in t.get("splices_hard_cut_control", [])]
+        gc = [t["grid_check"].get("beat_f_at_grid_level", t["grid_check"].get("beat_f_vs_redetected"))
+              for s in ss for t in s["turns"] if t.get("grid_check")]
+        L.append(f"| Part 2 chat sessions | {len(ss)} sessions, real `{p2['model']}` | "
+                 f"{_lnk(str(sum(len(s['turns']) for s in ss)) + ' turns', 'part2.md')}, transcripts in part2.md | |")
+        n_fl = sum(x["flagged"] for x in sp)
+        L.append(f"| Part 2 clicks at splices | every applied edit | {_lnk(f'{n_fl} / {len(sp)} flagged', 'part2.md')} "
+                 f"(hard-cut control: {sum(x['flagged'] for x in hc)} / {len(hc)} flagged) | 0 |")
+        if gc:
+            L.append(f"| Part 2 grid after edit | edited audio re-tracked | beat F min {_lnk(min(gc), 'part2.md')} | mapped grid vs fresh tracking |")
+        L.append(f"| LLM cost | all {p2['cumulative']['calls']} real calls in the cache | est. "
+                 f"{_lnk('$' + format(p2['cumulative']['est_cost_usd'], '.4f'), 'part2.md')} upper bound | free tier: $0 charged |")
+    if p3:
+        ok = [r for r in p3["clips"] if r.get("status") == "ok"]
+        f = lambda r, k: ((r.get("notes") or {}).get(k) or {}).get("f")
+        for r in ok:
+            parts = [f"{lab} {_lnk(f(r, k), 'part3.md')}" for k, lab in (("drum_onsets_any_class", "drum onsets F"),
+                     ("drums_by_class", "by class F"), ("pitched", "pitched F")) if f(r, k) is not None]
+            parts.append(f"render onset F {_lnk(r['onset_timing'].get('onset_f_50ms'), 'part3.md')}")
+            L.append(f"| Part 3 recreation | {r['id']} SUBSTITUTE ({r.get('stands_in_for')}) | {', '.join(parts)} | "
+                     f"{'no reference' if not r.get('notes') else '+-50 ms onsets'} |")
+        L.append(f"| Part 3 page safety | {len(ok)} pages | {_lnk(str(sum(1 for r in ok if not r['safety_violations'])) + ' / ' + str(len(ok)) + ' clean', 'part3.md')} "
+                 "| no URL / fetch / import / media / base64 audio |")
+        ch = p3.get("chat") or {}
+        if ch.get("turns"):
+            n_ok = sum(1 for t in ch["turns"] if t["status"] == "applied")
+            n_t = len(ch["turns"])
+            L.append(f"| Part 3 chat changes | {ch['clip']} | {_lnk(f'{n_ok} / {n_t} applied', 'part3.md')} | typed score ops |")
+    for f, what in (("bias_study.md", "Grid timing root cause"), ("render_offset_study.md", "Part 3 render offset root cause")):
+        if (R / f).exists():
+            L.append(f"| {what} | see study | {_lnk('report', f)} | no empirical offsets added |")
+    return L
+
+
 def block() -> str:
     L = []
     p1, p2, rob = _load("part1.json"), _load("part2.json"), _load("robustness.json")
+    L += ["### Headline numbers", ""] + headline(p1, p2, _load("part3.json"), rob) + [""]
     L += ["### Part 1 -- beat grid and sync ([evals/results/part1.md](evals/results/part1.md))", ""]
     if p1:
         tp = [r for r in p1["clips"] if not r.get("generated") and not r.get("substitute") and not str(r["id"]).startswith("user:")]

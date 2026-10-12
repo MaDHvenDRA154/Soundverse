@@ -167,6 +167,11 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part3", results
     chat = chat_demo(man, out_root)
     result = {"clips": rows, "chat": chat}
     results_dir.mkdir(parents=True, exist_ok=True)
+    if chat.get("status") == "incomplete":
+        # Same rule as Part 2: no partial chat results in evals/results.
+        (out_root / "part3.partial.json").write_text(json.dumps(result, indent=1, default=str))
+        print(f"Part 3 chat {chat['status']} ({chat.get('error', '')[:200]}); evals/results/part3.* left unchanged.")
+        return result
     (results_dir / "part3.json").write_text(json.dumps(result, indent=1, default=str))
     (results_dir / "part3.md").write_text(report(result))
     return result
@@ -192,6 +197,9 @@ def chat_demo(man, out_root: Path) -> dict:
     turns = []
     for k, text in enumerate(spec["turns"], 1):
         status, echo, plan = ag.handle(text)
+        if ag.llm_error:
+            return {"clip": spec["clip"], "status": "incomplete", "error": ag.llm_error, "turns": turns,
+                    "usage": ag.ledger.to_dict()}
         page = write_html(ag.score, out_root / spec["clip"] / f"chat_turn{k}.html")
         turns.append({"user": text, "status": status, "ops": plan["ops"] if plan else None, "echo": echo, "page": page})
         print(f"  [{status}] {text!r}: {echo}", flush=True)

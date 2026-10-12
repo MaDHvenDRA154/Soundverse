@@ -6,7 +6,7 @@ services:
       - path: .env
         required: false
     environment:
-      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.1-flash-lite}
     volumes:
       - ./testpack:/app/testpack:ro
       - ./audio:/app/audio

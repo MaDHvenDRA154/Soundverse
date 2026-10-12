@@ -7,9 +7,9 @@ onset-only, +-50 ms. Drums are compared by class (kick / snare / hat / other); '
 | clip | kind | stands in for | status | tempo | loop s | tracks (notes) | drums F (by class) | drum onsets F | pitched F | all notes F | render onset F | render median abs ms | seam step ratio | page safety |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | subP1 | SUBSTITUTE | P1 | ok | 138.0 | 3.4783 | drums (36) | 0.3256 | 0.7209 | - | 0.3256 | 0.9756 | 17.41 | 0.0 | ok |
-| subP2 | SUBSTITUTE | P2 | ok | 107.0 | 8.972 | drums (71), bass (14) | 0.4786 | 0.7863 | 0.8 | 0.5352 | 0.9688 | 11.61 | 0.51 | ok |
-| subP3 | SUBSTITUTE | P3 | ok | 90.0 | 10.6667 | keys (141) | - | - | 0.625 | 0.625 | 0.7123 | 5.8 | 0.433 | ok |
-| subP4 | SUBSTITUTE | P4 | ok | 120.0 | 16.0 | drums (187), bass (50), keys (351) | - | - | - | - | 0.8889 | 11.61 | 0.04 | ok |
+| subP2 | SUBSTITUTE | P2 | ok | 107.0 | 8.972 | drums (71), bass (14) | 0.4786 | 0.7863 | 0.88 | 0.5493 | 0.9841 | 11.61 | 0.871 | ok |
+| subP3 | SUBSTITUTE | P3 | ok | 90.0 | 10.6667 | keys (142) | - | - | 0.6222 | 0.6222 | 0.7123 | 5.8 | 0.433 | ok |
+| subP4 | SUBSTITUTE | P4 | ok | 120.0 | 16.0 | drums (188), bass (51), keys (352) | - | - | - | - | 0.9286 | 11.61 | 0.035 | ok |
 
 Precision / recall per clip:
 
@@ -18,18 +18,18 @@ Precision / recall per clip:
 - subP1 all_notes: P 0.3889, R 0.28, F 0.3256 (36 est / 50 ref)
 - subP2 drums_by_class: P 0.3944, R 0.6087, F 0.4786 (71 est / 46 ref)
 - subP2 drum_onsets_any_class: P 0.6479, R 1.0, F 0.7863 (71 est / 46 ref)
-- subP2 pitched: P 0.7143, R 0.9091, F 0.8 (14 est / 11 ref)
-- subP2 all_notes: P 0.4471, R 0.6667, F 0.5352 (85 est / 57 ref)
-- subP3 pitched: P 0.4965, R 0.8434, F 0.625 (141 est / 83 ref)
-- subP3 all_notes: P 0.4965, R 0.8434, F 0.625 (141 est / 83 ref)
+- subP2 pitched: P 0.7857, R 1.0, F 0.88 (14 est / 11 ref)
+- subP2 all_notes: P 0.4588, R 0.6842, F 0.5493 (85 est / 57 ref)
+- subP3 pitched: P 0.493, R 0.8434, F 0.6222 (142 est / 83 ref)
+- subP3 all_notes: P 0.493, R 0.8434, F 0.6222 (142 est / 83 ref)
 
 ## Chat changes on the recreation of subP2 (real LLM)
 
-- "Mute the drums." -> `error` ops `null`  
-  The language model is unavailable: daily Gemini quota for gemini-3.5-flash is used up (resets in about 5 h). Cached sessions still replay; use another key or a model with its own quota via GEMINI_MODEL. Nothing was changed.
-- "Make the bass brighter." -> `error` ops `null`  
-  The language model is unavailable: daily Gemini quota for gemini-3.5-flash is used up (resets in about 5 h). Cached sessions still replay; use another key or a model with its own quota via GEMINI_MODEL. Nothing was changed.
-- "Play it at 140." -> `error` ops `null`  
-  The language model is unavailable: daily Gemini quota for gemini-3.5-flash is used up (resets in about 5 h). Cached sessions still replay; use another key or a model with its own quota via GEMINI_MODEL. Nothing was changed.
+- "Mute the drums." -> `applied` ops `[{"op": "set_mute", "track": "drums", "mute": true}]`  
+  Reading: Mute the drums. / Drums muted.
+- "Make the bass brighter." -> `applied` ops `[{"op": "brightness", "track": "bass", "direction": "up", "amount": "medium"}]`  
+  Reading: Make the bass brighter. / Bass low-pass cutoff 887 -> 1773 Hz (medium step up).
+- "Play it at 140." -> `applied` ops `[{"op": "set_tempo", "bpm": 140.0}]`  
+  Reading: Setting tempo to 140 BPM. / Tempo 107.00 -> 140.00 BPM (loop 8.972 -> 6.857 s); notes keep their beat positions, so rhythm is unchanged.
 
-LLM usage: {'calls': 0, 'cached_calls': 0, 'prompt_tokens': 0, 'output_tokens': 0, 'thinking_tokens': 0, 'est_cost_usd': 0.0, 'price_assumption_usd_per_mtok': {'input': 1.5, 'output_incl_thinking': 7.5, 'note': 'upper-bound estimate; see llm.price_per_mtok'}}
+LLM usage: {'calls': 3, 'cached_calls': 0, 'prompt_tokens': 1100, 'output_tokens': 166, 'thinking_tokens': 330, 'est_cost_usd': 0.00537, 'price_assumption_usd_per_mtok': {'input': 1.5, 'output_incl_thinking': 7.5, 'note': 'upper-bound estimate; see llm.price_per_mtok'}}

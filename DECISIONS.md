@@ -1,7 +1,8 @@
 # Decisions
 
-Status: initial version written at Phase 0. Each decision is revisited at the end
-of the phase that implements it; "measured" notes link to eval output.
+Status: final pass at Phase 4 (2026-10-13). Each decision was revisited at the end of the phase that
+implemented it; "measured" notes link to eval output. The official test pack was not available: every
+measured statement below is about SUBSTITUTE or generated audio.
 
 ## Key decisions
 
@@ -49,11 +50,27 @@ ratio + offset (which we also report); for variable-tempo tracks it stays locked
 of drifting.
 
 ### D6. LLM: Gemini 3 with JSON-schema structured output, behind a provider interface
-Gemini via `google-genai`, model from `GEMINI_MODEL` (default `gemini-3.5-flash`), checked
-against `models.list` at startup; 2.0/2.5 models are refused (2.5 shuts down
-16 Oct 2026). Output is validated with pydantic; one retry with the validation error;
-never execute a partially parsed plan. Responses cached on (model, prompt, grid state) so
-eval re-runs cost nothing.
+Gemini via `google-genai`, model from `GEMINI_MODEL`, checked against `models.list` at startup with no
+fallback to an alias (`gemini-flash-latest` could point at a non-Gemini-3 model); 2.0/2.5 models are refused
+(2.5 shuts down 16 Oct 2026). Output is validated with pydantic; one retry with the validation error; never
+execute a partially parsed plan. Responses are cached on (model, system prompt, contents incl. grid state,
+schema), so eval re-runs cost nothing.
+- **Model used for every committed result: `gemini-3.1-flash-lite` on the free tier** (its own daily quota;
+  the earlier `gemini-3.5-flash` runs hit that model's 20-requests/day free limit). It is also the default.
+  **Reviewers can set `GEMINI_MODEL` to any Gemini 3 model** listed for their key; answers are then fetched
+  fresh (the cache key includes the model) and the evals report which model ran.
+- A full re-run needs 20 calls (17 Part 2 turns + 3 Part 3 chat turns; up to 40 if every answer needs its
+  validation retry). Cost is reported as an upper bound at the highest listed Gemini 3 Flash price; on the
+  free tier the actual charge is $0.
+- **No partial LLM results are published.** If the provider fails mid-run (daily quota, network), the eval
+  stops calling, writes what it has to `evals/out/part2/part2.partial.json` (or `part3.partial.json`) and
+  leaves `evals/results/` untouched; the answers that did arrive are cached, so the next run after the quota
+  reset replays them and makes only the missing calls.
+
+### D7. Basic Pitch via ONNX, not TensorFlow
+Basic Pitch hard-requires TensorFlow on Python 3.11. Its wheel ships the same model as
+ONNX; we override TensorFlow out (`[tool.uv] override-dependencies`) and run
+onnxruntime. Smaller install, same model.
 
 ### D8. Phase refinement onto measured attacks
 - **Problem (measured):** on generated audio the tracker's grids were consistently offset by -25 to +7 ms
@@ -86,6 +103,41 @@ The tracker keeps the old tempo for a few beats after a change and sometimes add
 is placed where a beat of the old line and a beat of the new line coincide, and the grid around it is
 generated from the lines (old before, new from the crossing). Measured on generated 140 -> 120 BPM:
 change located within 0.3 ms (was 2 s off), max beat error 2.6 ms (was 69 ms).
+
+### D11. One turn = one atomic EDL, addresses resolved op by op against the current grid
+All ops of a turn are applied to a copy of the state; any failure (out of range, empty range, a missing tempo
+change) discards the whole turn and the user is told nothing changed. Each op resolves against the grid as it
+stands after the previous op; to keep "remove bar 5 and bar 9" meaning the *current* bars 5 and 9, the LLM is
+told to emit several ranges from the latest to the earliest. Undo/redo restore whole turns and name the turn.
+
+### D12. Vague targets are measured and proposed, never cut
+"Chop out the boring part" maps to `propose_cut`: code measures the quietest (lowest RMS) contiguous stretch of complete
+bars (8-bar phrase by default, a quarter of short tracks), reports its level against the track average, and
+cuts only after an explicit confirmation turn (`confirm_proposal`). If the quietest stretch is less than
+3 dB below the average, the agent says it has no measured basis and asks (on the substitute disco clip the
+best candidate was only 0.9 dB quieter).
+
+### D13. Tempo-octave correction keeps the bar lines
+"The tempo is half/double that" changes the beat level only; downbeats stay where the downbeat decoder put
+them, beats-per-bar scales (6 -> 3 when halving), and halving is refused when bars have an odd number of
+beats. (First version kept beats-per-bar fixed like DJ software, which silently renumbered every bar.)
+
+### D14. Splice quality is judged against the source, with a negative control
+Clicks are measured as the sample step at the splice relative to the natural steps around both source
+points (plus audible HF excess); every Part 2 report also renders the same edit with a hard cut to show the
+detector can see a click on that material. 5 ms equal-power crossfades centred on the splice keep lengths
+and grid times exact.
+- **Measured limit:** the crossfaded splices score 0 of 13 flagged, but the hard-cut control is flagged on
+  only 5 of 13 (all five in S1 on disco); on the other clips the detector does not flag the hard cut either,
+  so there it cannot tell a click from the music (why was not investigated). So "0 clicks" is strong evidence on S1 and
+  weak evidence elsewhere; the hard-cut renders are kept next to each edit for listening.
+
+### D15. Substitute real-music clips while the test pack is missing
+Five GTZAN excerpts (rule fixed before scoring: track 00000 of disco, hiphop, rock, jazz, country) with
+public beat/downbeat annotations, fetched by a script and not committed (no licence stated). GTZAN is held
+out from the Beat This! checkpoint we use. They are reported in their own rows, labelled SUBSTITUTE, and no
+parameter was changed in response to them -- including phase refinement, which made the hiphop substitute
+worse (max error 27.8 -> 36.4 ms); that decision is left for the real test pack.
 
 ### D16. The "early" grid on real music: root cause investigated, no offset added
 Investigated in `evals/bias_study.py` -> [evals/results/bias_study.md](evals/results/bias_study.md):
@@ -126,41 +178,48 @@ used without a reference). They are rendered with FluidSynth + the GM soundfont 
 off) and trimmed to exactly their bars. The GM kit and piano are far cleaner than real recordings, so these
 numbers are likely optimistic for real P1-P4 material.
 
-### D7. Basic Pitch via ONNX, not TensorFlow
-Basic Pitch hard-requires TensorFlow on Python 3.11. Its wheel ships the same model as
-ONNX; we override TensorFlow out (`[tool.uv] override-dependencies`) and run
-onnxruntime. Smaller install, same model.
+### D20. Licences: what is committed
+- **GTZAN** (Parts 1-2 substitutes): no licence is stated for the audio or the TempoBeatDownbeat
+  annotations, so neither they nor anything rendered from them (edited audio, click auditions, hard-cut
+  controls, stems) is committed. Only the eval reports (numbers and chat transcripts) are.
+- **Groove MIDI Dataset** (subP1): CC BY 4.0 (Google LLC), original performances recorded for the dataset.
+  Committed with attribution in `evals/samples/subP1/` (input render, reference MIDI, score JSON, page,
+  offline render).
+- **Lakh MIDI** (subP2, subP4): the dataset is CC BY 4.0, but its author states he did not make the files
+  and they cannot be attributed per file; the two excerpts transcribe commercial songs (Linda Ronstadt
+  recordings). The dataset licence does not cover those compositions, so nothing derived from them is
+  committed.
+- **POP909** (subP3): MIT on the dataset, but song 001 is a commercial pop composition the MIT licence does
+  not cover. Not committed.
+- **TimGM6mb** soundfont (GPL-2) renders all four; it is installed (Debian package, or downloaded by the
+  fetch script), never committed. Rendered audio is credited in each `ATTRIBUTION.md`.
+- The decision lives in data (`commit_outputs` in `evals/manifest.yaml`); `python -m evals.samples`
+  copies only what it allows, and `make reproduce` rebuilds everything else. Details: `evals/README.md`.
 
-### D11. One turn = one atomic EDL, addresses resolved op by op against the current grid
-All ops of a turn are applied to a copy of the state; any failure (out of range, empty range, a missing tempo
-change) discards the whole turn and the user is told nothing changed. Each op resolves against the grid as it
-stands after the previous op; to keep "remove bar 5 and bar 9" meaning the *current* bars 5 and 9, the LLM is
-told to emit several ranges from the latest to the earliest. Undo/redo restore whole turns and name the turn.
+### D21. Part 3 render offset: measured, explained, not compensated
+The recreation of subP1 plays a median 14.5 ms (17.4 ms absolute) after the original. Decomposed in
+`evals/render_offset_study.py` -> [evals/results/render_offset_study.md](evals/results/render_offset_study.md):
+raw drum detections are +1 ms from the reference note-ons; the 0.5 soft quantise moves them +11 ms because
+the grid it pulls towards sits +13.5 ms after the note-ons (the tracker's own placement on a 2-bar clip,
+where the line fit has only ~8 beats to average 20 ms frames over; cf. D16); the page plays every sound
++6.04 ms after its scheduled time, which is Chrome's DynamicsCompressor look-ahead (0.05 ms with it bypassed;
+the scheduler is exact); synth attack shape is detected ~4 ms *sooner* than the soundfont's, so it is not
+the cause. Predicted +14.1 ms vs measured +14.5 ms. Nothing was changed to shrink the number. The
+compressor delay is a real, constant playback latency (inaudible on its own); replacing the compressor with
+a look-ahead-free limiter would remove it, and is left as a decision for review rather than made to improve
+an eval number.
 
-### D12. Vague targets are measured and proposed, never cut
-"Chop out the boring part" maps to `propose_cut`: code measures the quietest contiguous stretch of complete
-bars (8-bar phrase by default, a quarter of short tracks), reports its level against the track average, and
-cuts only after an explicit confirmation turn (`confirm_proposal`). If the quietest stretch is less than
-3 dB below the average, the agent says it has no measured basis and asks (on the substitute disco clip the
-best candidate was only 0.9 dB quieter).
+### D22. Demucs is seeded
+Demucs' API default (`shifts=1`) offsets the input by a random amount from Python's global `random` on every
+call, so stems and every Part 3 number changed between identical runs (drum onset F 0.72 vs 0.73 on subP1).
+The shift is kept and seeded per call (`DEMUCS_SHIFT_SEED`), restoring the caller's random state; two runs
+now give identical scores.
 
-### D13. Tempo-octave correction keeps the bar lines
-"The tempo is half/double that" changes the beat level only; downbeats stay where the downbeat decoder put
-them, beats-per-bar scales (6 -> 3 when halving), and halving is refused when bars have an odd number of
-beats. (First version kept beats-per-bar fixed like DJ software, which silently renumbered every bar.)
-
-### D14. Splice quality is judged against the source, with a negative control
-Clicks are measured as the sample step at the splice relative to the natural steps around both source
-points (plus audible HF excess); every Part 2 report also renders the same edit with a hard cut to show the
-detector can see a click on that material. 5 ms equal-power crossfades centred on the splice keep lengths
-and grid times exact.
-
-### D15. Substitute real-music clips while the test pack is missing
-Five GTZAN excerpts (rule fixed before scoring: track 00000 of disco, hiphop, rock, jazz, country) with
-public beat/downbeat annotations, fetched by a script and not committed (no licence stated). GTZAN is held
-out from the Beat This! checkpoint we use. They are reported in their own rows, labelled SUBSTITUTE, and no
-parameter was changed in response to them -- including phase refinement, which made the hiphop substitute
-worse (max error 27.8 -> 36.4 ms); that decision is left for the real test pack.
+### D23. One command per audience
+`make reproduce` (fetch every substitute, then `make eval`) for a clean clone; `make eval` regenerates
+`evals/out`, `evals/results`, `evals/samples` and the README status block from existing inputs. The README
+status table is generated from the result files (`python -m evals.status`), so no reported number in it is
+typed by hand.
 
 ## Indexing at a glance
 
@@ -179,9 +238,10 @@ How it appears in an echo (real output, session S5 on the rock substitute, "Cut 
 
 ```
 Removed beats 0-8 (beat 0 up to, not including, beat 8: 8 beats): beats 0-7, bars 1-2,
-1.741-5.640 s (3.898 s). Beats -3 to -1 are a pickup before bar 1 (0.000-1.741 s); they come
+1.741-5.646 s (3.905 s). Beats -3 to -1 are a pickup before bar 1 (0.000-1.741 s); they come
 before beat 0 and are kept.
-Grid: 4/4, 1 beat = quarter note, 121.33 BPM (constant); beats -3-49, bars 1-13. Beats are 0-based,
+Length 0:30.013 -> 0:26.108.
+Grid: 4/4, 1 beat = quarter note, 120.90 BPM (variable); beats -3-49, bars 1-13. Beats are 0-based,
 bars 1-based; beat ranges exclude their end beat, bar ranges include it.
 ```
 
@@ -209,14 +269,15 @@ The agent states the reading in its echo whenever a command touches one of these
    count ("plays 2 times in total ... original + 1 copy") and adds one line: "If you meant the original plus
    2 more, that is 3 plays: say 'play it 3 times in total'."
 4. **"Fade out the last 8 beats"** = the last 8 beats of the *current edited* track,
-   ending at the end of the audio. Shape: equal-power (cos) fade to silence.
+   ending at the end of the audio. Shape: equal-power (cos) by default; the model may pick `linear` when
+   the user names no shape (gemini-3.1-flash-lite did, in S1), and the echo always states the shape used.
 5. **"Loop the first 4 bars four times, then let the track play on"** = bars 1–4 play
    **four times in total** (original + 3 repeats), then the track continues from bar 5.
 6. **"The last bar before the tempo change"** requires a detected tempo segment boundary.
    If none is detected the agent says so and does not guess. If there are several it
    asks which.
 7. **"Chop out the boring part"** is not measurable as stated. The agent pushes back,
-   proposes a candidate chosen by a measured criterion (lowest-energy/novelty bar range),
+   proposes a candidate chosen by a measured criterion (the lowest-RMS stretch of whole bars),
    and does **not** cut until the user confirms.
 8. **Out-of-range ranges** ("delete bars 200–210" on a shorter track) are rejected with
    the actual bar count. Never clamped.
@@ -236,4 +297,19 @@ The agent states the reading in its echo whenever a command touches one of these
     "cut ... and repeat/loop" means select. Pickup beats before beat 0 are kept and the echo says so.
 
 ## What we deliberately do not build
-(filled in at Phase 4)
+
+- **No LLM-produced numbers about the audio and no LLM-written code.** The model never sees beat times and
+  cannot express seconds; Part 3 pages come from a fixed template (D4).
+- **No empirical timing offsets** to make an eval number look better (D16, D21).
+- **No madmom DBN and no GPU path.** madmom does not build on Python 3.11/Windows without a compiler;
+  everything runs on a laptop CPU.
+- **No "boring" detector beyond loudness.** Vague targets are proposed from a stated measurement and cut
+  only after confirmation (D12).
+- **No automatic hypermeter (6/8 vs 12/8) or tempo-octave choice.** Both are exposed as alternatives the
+  user can pick in chat (D9, D13).
+- **No time-stretching inside Part 2 edits.** Edits splice the source; stretching is Part 1 sync only.
+- **No sample playback in Part 3.** The page uses oscillators and seeded noise only, so it carries no audio
+  from the source.
+- **No accounts, persistence or multi-user state in the preview app.** Sessions live in memory; it is a
+  local review tool.
+- **No committed third-party audio** whose licence does not clearly allow it (D20).

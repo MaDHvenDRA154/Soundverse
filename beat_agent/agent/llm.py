@@ -38,10 +38,12 @@ class LLMProvider:
 
 # ------------------------------------------------------------------ costs
 def price_per_mtok() -> tuple[float, float]:
-    """USD per 1M (input, output+thinking) tokens. gemini-3.5-flash has no row on
-    the public pricing page (checked 2026-10-12); the default is the highest
-    listed Flash price (Gemini 3.6/3.8 Flash from 2027-01-01: $1.50 / $7.50), so
-    the estimate is an upper bound. Override with GEMINI_PRICE_IN / GEMINI_PRICE_OUT."""
+    """USD per 1M (input, output+thinking) tokens, as an upper bound for any Gemini 3
+    Flash / Flash-Lite model: the highest listed Flash price (Gemini 3.6/3.8 Flash
+    from 2027-01-01: $1.50 / $7.50; checked 2026-10-12). Dev runs used
+    gemini-3.1-flash-lite on the free tier, where the real charge is $0, so the
+    reported figure is what the same calls would cost at most on a paid key.
+    Override with GEMINI_PRICE_IN / GEMINI_PRICE_OUT."""
     return float(os.environ.get("GEMINI_PRICE_IN", "1.50")), float(os.environ.get("GEMINI_PRICE_OUT", "7.50"))
 
 
@@ -92,6 +94,11 @@ def cache_key(model: str, system: str, contents: str, schema: dict) -> str:
 FORBIDDEN_MODEL_PREFIXES = ("gemini-2.5", "gemini-2.0", "gemini-1.")
 
 
+# The model every committed result was produced with (free tier, its own daily quota).
+# Any Gemini 3 model works: set GEMINI_MODEL.
+DEFAULT_MODEL = "gemini-3.1-flash-lite"
+
+
 class GeminiProvider(LLMProvider):
     def __init__(self, model: str | None = None, api_key: str | None = None, check_model: bool = True,
                  use_cache: bool = True):
@@ -100,7 +107,7 @@ class GeminiProvider(LLMProvider):
             load_dotenv()
         except Exception:
             pass
-        self.model = model or os.environ.get("GEMINI_MODEL") or "gemini-3.5-flash"
+        self.model = model or os.environ.get("GEMINI_MODEL") or DEFAULT_MODEL
         if self.model.startswith(FORBIDDEN_MODEL_PREFIXES):
             raise LLMError(f"Model {self.model!r} is not allowed (Gemini 2.x/1.x are retired or retiring); "
                            "set GEMINI_MODEL to a Gemini 3 model.")
@@ -120,11 +127,9 @@ class GeminiProvider(LLMProvider):
         except Exception as e:
             raise LLMError(f"Could not list Gemini models (key or network problem): {e}") from e
         if self.model not in names:
-            if self.model == "gemini-3.5-flash" and "gemini-flash-latest" in names:
-                self.model = "gemini-flash-latest"
-            else:
-                g3 = sorted(n for n in names if n.startswith("gemini-3"))
-                raise LLMError(f"Model {self.model!r} is not available for this key. Gemini 3 models it can use: {g3}")
+            # no fallback to an alias such as gemini-flash-latest: it may point at a non-Gemini-3 model
+            g3 = sorted(n for n in names if n.startswith("gemini-3"))
+            raise LLMError(f"Model {self.model!r} is not available for this key. Gemini 3 models it can use: {g3}")
 
     def complete_json(self, system: str, contents: str, schema: dict) -> LLMResponse:
         key = cache_key(self.model, system, contents, schema)

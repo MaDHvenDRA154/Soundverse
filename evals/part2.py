@@ -77,7 +77,10 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
         return {"error": msg}
     total = UsageLedger()
     sessions_out = []
+    llm_failure = None
     for s in man.get("sessions", []):
+        if llm_failure:
+            break
         prefs = s["clip"] if isinstance(s["clip"], list) else [s["clip"]]
         clip = next((clips[c] for c in prefs if c in clips and clips[c].audio), None)
         rec = {"id": s["id"], "requested_clip": prefs[0], "note": s.get("note"), "turns": []}
@@ -99,6 +102,9 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
         for k, text in enumerate(s["turns"], 1):
             t0 = time.perf_counter()
             res, tr = agent.handle(text)
+            if tr.llm_error:
+                llm_failure = f"{s['id']} turn {k}: {tr.llm_error}"
+                break
             turn = {"n": k, "user": text, "status": res.status, "echo": res.message,
                     "llm_attempts": [{"raw": a["raw"], "error": a["error"], "cached": a["cached"], "usage": a["usage"]}
                                      for a in tr.attempts],
@@ -129,6 +135,14 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
         (d / "transcript.md").write_text(transcript_md(rec))
         sessions_out.append(rec)
     result = {"model": llm.model, "sessions": sessions_out, "usage_total": total.to_dict(), "cumulative": cumulative_spend()}
+    if llm_failure:
+        # A run cut short by quota is never published: evals/results keeps the last complete run.
+        # Answers that did arrive are cached, so the next run replays them without new calls.
+        result["incomplete"] = llm_failure
+        (out_root / "part2.partial.json").write_text(json.dumps(result, indent=1, default=str))
+        print(f"Part 2 INCOMPLETE ({llm_failure}); evals/results/part2.* left unchanged. "
+              f"Partial run in {out_root / 'part2.partial.json'}")
+        return result
     (results_dir / "part2.json").write_text(json.dumps(result, indent=1, default=str))
     (results_dir / "part2.md").write_text(report(result))
     return result
@@ -140,12 +154,15 @@ def cumulative_spend() -> dict:
     pin, pout = price_per_mtok()
     calls = tok = 0
     cost = 0.0
+    by_model: dict[str, int] = {}
     for f in (cache_dir() / "llm").glob("*.json"):
-        u = json.loads(f.read_text()).get("usage", {})
+        d = json.loads(f.read_text())
+        u = d.get("usage", {})
         calls += 1
+        by_model[d.get("model", "?")] = by_model.get(d.get("model", "?"), 0) + 1
         tok += sum(u.values())
         cost += (u.get("prompt_tokens", 0) * pin + (u.get("output_tokens", 0) + u.get("thinking_tokens", 0)) * pout) / 1e6
-    return {"calls": calls, "tokens": tok, "est_cost_usd": round(cost, 5)}
+    return {"calls": calls, "calls_by_model": by_model, "tokens": tok, "est_cost_usd": round(cost, 5)}
 
 
 def transcript_md(rec: dict) -> str:
@@ -215,7 +232,7 @@ def report(res: dict) -> str:
           f"{u['output_tokens']} output + {u['thinking_tokens']} thinking tokens on this run; "
           f"estimated cost **${u['est_cost_usd']:.4f}** at an assumed {u['price_assumption_usd_per_mtok']['input']} / "
           f"{u['price_assumption_usd_per_mtok']['output_incl_thinking']} USD per 1M tokens (upper bound; "
-          "gemini-3.5-flash has no row on the public pricing page).", "",
+          "the highest listed Gemini 3 Flash price; these runs used the free tier, so the actual charge was $0).", "",
           f"Cumulative spend for this project so far (every non-cached call is cached once, so the cache is the ledger): "
           f"{res['cumulative']['calls']} real calls, {res['cumulative']['tokens']} tokens, estimated "
           f"**${res['cumulative']['est_cost_usd']:.4f}** (budget: $10).", "",

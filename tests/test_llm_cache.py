@@ -51,3 +51,19 @@ def test_cache_entry_holds_no_credentials(monkeypatch, tmp_path):
     import json
     (f,) = tmp_path.glob("*.json")
     assert set(json.loads(f.read_text())) == {"text", "usage", "model", "fetched_at"}
+
+
+def test_replay_mode_needs_no_key_and_never_calls(monkeypatch, tmp_path):
+    monkeypatch.setattr(L, "_cache_dir", lambda: tmp_path)
+    monkeypatch.setenv("LLM_CACHE", "replay")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr("dotenv.load_dotenv", lambda *a, **k: None)
+    p = L.GeminiProvider(model="gemini-3-test")
+    assert p.client is None
+    with pytest.raises(L.LLMError, match="no cached answer"):
+        p.complete_json("sys", "never cached", {"type": "object"})
+
+
+def test_committed_cache_holds_no_secrets():
+    from evals.cache_tool import check
+    assert check() == []

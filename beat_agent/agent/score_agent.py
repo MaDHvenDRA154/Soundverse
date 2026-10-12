@@ -49,7 +49,7 @@ class ScoreAgent:
                 self.llm_error = str(e)
                 return "error", f"The language model is unavailable: {e}. Nothing was changed.", None
             self.ledger.add(r)
-            self.fetched.append({"cached": r.cached, "fetched_at": r.fetched_at})
+            self.fetched.append({"cached": r.cached, "fetched_at": r.fetched_at, "cache_key": r.cache_key})
             raw = r.text
             try:
                 plan = S.ScorePlan.model_validate_json(raw)

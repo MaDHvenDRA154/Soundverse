@@ -1,0 +1,1 @@
+{"text": "{\n  \"reading\": \"removing beats 0 up to 8\",\n  \"ops\": [\n    {\n      \"op\": \"remove\",\n      \"range\": {\n        \"unit\": \"beats\",\n        \"start\": 0,\n        \"end\": 8\n      }\n    }\n  ]\n}", "usage": {"prompt_tokens": 1308, "output_tokens": 73, "thinking_tokens": 111}, "model": "gemini-3.1-flash-lite", "fetched_at": "2026-10-12T19:04:11Z"}

@@ -54,9 +54,11 @@ Gemini via `google-genai`, model from `GEMINI_MODEL`, checked against `models.li
 fallback to an alias (`gemini-flash-latest` could point at a non-Gemini-3 model); 2.0/2.5 models are refused
 (2.5 shuts down 16 Oct 2026). Output is validated with pydantic; one retry with the validation error; never
 execute a partially parsed plan. Responses are cached on (model, system prompt, contents incl. grid state,
-schema), so eval re-runs cost nothing. **Results are cached replays by default**; `LLM_CACHE=off` (or
-`python -m evals.run ... --live`, `make eval-live`) bypasses the cache, and every report prints where its
-answers came from and when they were fetched.
+schema), so eval re-runs cost nothing. **The cache is committed** (`evals/llm_cache/`: answer text, token
+counts, model, fetch time; no prompt, key or request data), so a fresh clone replays the exact answers behind
+the committed results; `LLM_CACHE=replay` does so without a key and errors instead of calling the API.
+`LLM_CACHE=off` (`--live`, `make eval-live`) makes fresh calls with your key, and results may then differ
+slightly. Every report prints where its answers came from and when they were fetched.
 - **Model used for every committed result: `gemini-3.1-flash-lite` on the free tier** (its own daily quota;
   the earlier `gemini-3.5-flash` runs hit that model's 20-requests/day free limit). It is also the default.
   **Reviewers can set `GEMINI_MODEL` to any Gemini 3 model** listed for their key; answers are then fetched
@@ -179,8 +181,15 @@ POP909 song 001 (8 bars, melody + piano), and the next qualifying dense Lakh fil
 used without a reference). They are rendered with FluidSynth + the GM soundfont TimGM6mb (reverb and chorus
 off) and trimmed to exactly their bars. The GM kit and piano are far cleaner than real recordings, so these
 numbers are likely optimistic for real P1-P4 material.
+- **The render is pinned** because it is an eval input: FluidSynth 2.3.1 (Debian 2.3.1-2 in the image) and
+  `TimGM6mb.sf2` sha256 `c5378b62...c854` (timgm6mb-soundfont 1.3-5), checked at image build and by the fetch
+  script. Measured: FluidSynth 2.4.4 (the Windows build first used) rendered the same MIDI 50-63 dB off and
+  moved one transcribed note on two clips; even the Windows 2.3.1 build is not bit-identical to Debian's. The
+  committed Part 3 numbers are the Docker image's; `part3.md` states the toolchain that rendered its inputs.
 
 ### D20. Licences: what is committed
+- **LLM answers** (`evals/llm_cache/`): our own Gemini outputs, committed so the results replay; they hold
+  no source audio. `python -m evals.cache_tool check` guards against anything key-like.
 - **GTZAN** (Parts 1-2 substitutes): no licence is stated for the audio or the TempoBeatDownbeat
   annotations, so neither they nor anything rendered from them (edited audio, click auditions, hard-cut
   controls, stems) is committed. Only the eval reports (numbers and chat transcripts) are.

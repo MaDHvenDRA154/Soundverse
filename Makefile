@@ -3,7 +3,7 @@ PY ?= uv run python
 AUDIO ?= testpack
 MANIFEST ?= evals/manifest.yaml
 
-.PHONY: setup test test-fast eval eval-robustness eval-part1 eval-part2 eval-part3 eval-studies eval-live samples status demo app clean-evals substitutes reproduce
+.PHONY: setup test test-fast eval eval-robustness eval-part1 eval-part2 eval-part3 eval-studies eval-replay eval-live samples status demo app clean-evals substitutes reproduce
 
 setup:
 	uv sync --extra dev
@@ -27,7 +27,10 @@ eval-part1:
 	$(PY) -m evals.run part1 --manifest $(MANIFEST)
 eval-part2:
 	$(PY) -m evals.run part2 --manifest $(MANIFEST)
-eval-live:            ## Part 2 + Part 3 with the LLM cache bypassed (20 real Gemini calls)
+eval-replay:          ## Part 2 + Part 3 from the committed LLM cache only: no key, no API calls
+	LLM_CACHE=replay $(PY) -m evals.run part2 --manifest $(MANIFEST)
+	LLM_CACHE=replay $(PY) -m evals.run part3 --manifest $(MANIFEST)
+eval-live:            ## Part 2 + Part 3 with the LLM cache bypassed (20 real Gemini calls; may differ slightly)
 	LLM_CACHE=off $(PY) -m evals.run part2 --manifest $(MANIFEST)
 	LLM_CACHE=off $(PY) -m evals.run part3 --manifest $(MANIFEST)
 eval-part3:

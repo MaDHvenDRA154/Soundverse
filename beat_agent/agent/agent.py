@@ -136,11 +136,13 @@ class Agent:
             raw = r.text
             try:
                 plan = O.EditPlan.model_validate_json(raw)
-                tr.attempts.append({"raw": raw, "error": None, "usage": r.usage, "cached": r.cached, "fetched_at": r.fetched_at})
+                tr.attempts.append({"raw": raw, "error": None, "usage": r.usage, "cached": r.cached, "fetched_at": r.fetched_at,
+                                "cache_key": r.cache_key})
                 break
             except ValidationError as e:
                 err = str(e)[:1500]
-                tr.attempts.append({"raw": raw, "error": err, "usage": r.usage, "cached": r.cached, "fetched_at": r.fetched_at})
+                tr.attempts.append({"raw": raw, "error": err, "usage": r.usage, "cached": r.cached, "fetched_at": r.fetched_at,
+                                "cache_key": r.cache_key})
                 plan = None
         if plan is None:
             res = TurnResult("error", "I could not turn that into a valid edit (the model's answer failed validation "

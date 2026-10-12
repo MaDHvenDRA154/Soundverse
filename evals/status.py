@@ -59,8 +59,12 @@ def headline(p1, p2, p3, rob) -> list[str]:
                  f"(hard-cut control: {sum(x['flagged'] for x in hc)} / {len(hc)} flagged) | 0 |")
         if gc:
             L.append(f"| Part 2 grid after edit | edited audio re-tracked | beat F min {_lnk(min(gc), 'part2.md')} | mapped grid vs fresh tracking |")
-        L.append(f"| LLM cost | all {p2['cumulative']['calls']} real calls in the cache | est. "
-                 f"{_lnk('$' + format(p2['cumulative']['est_cost_usd'], '.4f'), 'part2.md')} upper bound | free tier: $0 charged |")
+        u, ci = p2["usage_total"], p2.get("cache_inventory") or {}
+        L.append(f"| LLM calls, this run | Part 2 | {_lnk(str(u['calls'] - u['cached_calls']) + ' live', 'part2.md')}, "
+                 f"{u['cached_calls']} replayed from cache; est. ${u['est_cost_usd']:.4f} | upper-bound price; free tier: $0 charged |")
+        if ci:
+            L.append(f"| LLM cache inventory | committed `evals/llm_cache` | {_lnk(str(ci['unique_cached_responses']) + ' unique cached responses', 'part2.md')}, "
+                     f"est. ${ci['est_cost_usd_to_produce']:.4f} to produce | not a call count (one file per distinct prompt) |")
     if p3:
         ok = [r for r in p3["clips"] if r.get("status") == "ok"]
         f = lambda r, k: ((r.get("notes") or {}).get(k) or {}).get("f")
@@ -123,8 +127,10 @@ def block() -> str:
     if p2 and "sessions" in p2:
         from evals.part2 import provenance_line
         L.append(f"- {provenance_line(p2.get('llm_provenance'))}")
-        L.append(f"- Model `{p2['model']}`, real API (cached for re-runs). Cumulative LLM spend so far: "
-                 f"{p2['cumulative']['calls']} calls, est. ${p2['cumulative']['est_cost_usd']:.4f} (upper-bound pricing).")
+        u, ci = p2["usage_total"], p2.get("cache_inventory") or {}
+        L.append(f"- This run: {u['calls'] - u['cached_calls']} live Gemini calls, {u['cached_calls']} replayed from the cache "
+                 f"(est. ${u['est_cost_usd']:.4f} for the live calls, upper-bound pricing). Local cache: "
+                 f"{ci.get('unique_cached_responses', '?')} unique cached LLM responses (not a call count).")
         L += ["", "| session | ran on | statuses | clicks at splices | hard-cut control flagged | grid vs re-tracked (beat F) |",
               "|---|---|---|---|---|---|"]
         for s in p2["sessions"]:

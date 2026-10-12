@@ -107,7 +107,7 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
                 break
             turn = {"n": k, "user": text, "status": res.status, "echo": res.message,
                     "llm_attempts": [{"raw": a["raw"], "error": a["error"], "cached": a["cached"], "usage": a["usage"],
-                                      "fetched_at": a.get("fetched_at")}
+                                      "fetched_at": a.get("fetched_at"), "cache_key": a.get("cache_key")}
                                      for a in tr.attempts],
                     "ops": tr.plan["ops"] if tr.plan else None, "reading": tr.plan["reading"] if tr.plan else None,
                     "resolved": res.resolved, "length_before_s": res.length_before_s,
@@ -135,7 +135,7 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
             setattr(total, f, getattr(total, f) + getattr(agent.ledger, f))
         (d / "transcript.md").write_text(transcript_md(rec))
         sessions_out.append(rec)
-    result = {"model": llm.model, "sessions": sessions_out, "usage_total": total.to_dict(), "cumulative": cumulative_spend(),
+    result = {"model": llm.model, "sessions": sessions_out, "usage_total": total.to_dict(), "cache_inventory": cache_inventory(),
               "llm_provenance": provenance([a for s in sessions_out for t in s["turns"] for a in t["llm_attempts"]],
                                            llm.model)}
     if llm_failure:
@@ -175,21 +175,27 @@ def provenance_line(p: dict | None) -> str:
             "or `python -m evals.run part2 --live`.")
 
 
-def cumulative_spend() -> dict:
+def cache_inventory() -> dict:
+    """What is in the local LLM answer cache: one file per distinct prompt (model, prompt, schema).
+
+    This is NOT a count of API calls: a prompt answered live twice (LLM_CACHE=off) is one file, calls
+    that failed (quota) leave none, and other sessions (the preview app) add files. Live API calls are
+    counted per run in `usage_total` (calls - cached_calls)."""
     from beat_agent.agent.llm import price_per_mtok
-    from beat_agent.io.audio import cache_dir
     pin, pout = price_per_mtok()
     calls = tok = 0
     cost = 0.0
     by_model: dict[str, int] = {}
-    for f in (cache_dir() / "llm").glob("*.json"):
+    from beat_agent.agent.llm import _cache_dir
+    for f in _cache_dir().glob("*.json"):
         d = json.loads(f.read_text())
         u = d.get("usage", {})
         calls += 1
         by_model[d.get("model", "?")] = by_model.get(d.get("model", "?"), 0) + 1
         tok += sum(u.values())
         cost += (u.get("prompt_tokens", 0) * pin + (u.get("output_tokens", 0) + u.get("thinking_tokens", 0)) * pout) / 1e6
-    return {"calls": calls, "calls_by_model": by_model, "tokens": tok, "est_cost_usd": round(cost, 5)}
+    return {"unique_cached_responses": calls, "by_model": by_model, "tokens": tok,
+            "est_cost_usd_to_produce": round(cost, 5)}
 
 
 def transcript_md(rec: dict) -> str:
@@ -255,15 +261,19 @@ def report(res: dict) -> str:
                  f"{', '.join(_gc_cell(g) for g in gc) or '-'} | "
                  f"{', '.join(str(g.get('median_abs_ms')) for g in gc) or '-'} | {all(fm) if fm else '-'} |")
     u = res["usage_total"]
+    ci = res.get("cache_inventory") or {}
+    price = (f"at an assumed {u['price_assumption_usd_per_mtok']['input']} / "
+             f"{u['price_assumption_usd_per_mtok']['output_incl_thinking']} USD per 1M tokens (upper bound: the highest "
+             "listed Gemini 3 Flash price; the free tier charged $0)")
     L += ["", "## LLM usage", "",
-          f"{u['calls']} calls ({u['cached_calls']} served from cache), {u['prompt_tokens']} prompt + "
-          f"{u['output_tokens']} output + {u['thinking_tokens']} thinking tokens on this run; "
-          f"estimated cost **${u['est_cost_usd']:.4f}** at an assumed {u['price_assumption_usd_per_mtok']['input']} / "
-          f"{u['price_assumption_usd_per_mtok']['output_incl_thinking']} USD per 1M tokens (upper bound; "
-          "the highest listed Gemini 3 Flash price; these runs used the free tier, so the actual charge was $0).", "",
-          f"Cumulative spend for this project so far (every non-cached call is cached once, so the cache is the ledger): "
-          f"{res['cumulative']['calls']} real calls, {res['cumulative']['tokens']} tokens, estimated "
-          f"**${res['cumulative']['est_cost_usd']:.4f}** (budget: $10).", "",
+          f"**This run: {u['calls'] - u['cached_calls']} live API calls**, {u['cached_calls']} answers replayed from the cache "
+          f"({u['calls']} turns' worth of model answers in total). Live calls used {u['prompt_tokens']} prompt + "
+          f"{u['output_tokens']} output + {u['thinking_tokens']} thinking tokens; estimated cost "
+          f"**${u['est_cost_usd']:.4f}** {price}.", "",
+          f"Local cache inventory (not a call count): **{ci.get('unique_cached_responses')} unique cached LLM responses** "
+          f"({', '.join(f'{k}: {v}' for k, v in (ci.get('by_model') or {}).items())}), one per distinct prompt; producing "
+          f"them took at least that many live calls, {ci.get('tokens')} tokens, estimated "
+          f"${ci.get('est_cost_usd_to_produce', 0):.4f} at the same upper-bound price (budget: $10).", "",
           "## Transcripts", ""]
     for r in res["sessions"]:
         if r.get("status") != "missing":

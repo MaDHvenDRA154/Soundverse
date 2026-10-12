@@ -30,22 +30,40 @@ Inside Docker: `docker compose run --rm app make reproduce`.
 | `evals/substitutes/audio/`, `annotations/` (GTZAN) | **no** | no licence stated. `make substitutes` |
 | `evals/substitutes/part3/` (all four MIDI renders, the soundfont, FluidSynth) | **no** | Lakh / POP909 excerpts transcribe commercial songs the dataset licences do not cover; subP1's copy lives in `evals/samples/`. `make substitutes` |
 | `evals/out/` (edited audio, click auditions, hard-cut controls, grids, stems, pages, renders) | **no** | derived from the clips above (GTZAN-derived audio must not be committed). `make eval` |
-| `.cache/llm/` (cached Gemini answers) | **no** | local cache; without it a full run makes 20 Gemini calls |
+| `evals/llm_cache/` (the Gemini answers the committed results replay) | **yes** | one JSON per answer: text, token counts, model, fetch time; checked for secrets by `python -m evals.cache_tool check` and `tests/test_llm_cache.py`; pruned to what `evals/results` uses by `python -m evals.cache_tool prune` |
+| `.cache/` | **no** | local decode / upload caches only |
+
+### The Part 3 substitute renders are pinned
+
+The MIDI excerpts are rendered to audio on your machine, so the renderer is part of the input:
+
+| | pinned | where |
+|---|---|---|
+| FluidSynth | **2.3.1** (Debian bookworm `fluidsynth` / `libfluidsynth3` **2.3.1-2**) | `Dockerfile`; `fetch_midi.FLUIDSYNTH_VERSION` (the Windows fallback downloads the 2.3.1 build) |
+| soundfont | **`TimGM6mb.sf2`** from `timgm6mb-soundfont` **1.3-5**, sha256 `c5378b62028c920cb11e4803327983fee2f2cdff5dc89c708e39da417e51c854` | `Dockerfile` (`sha256sum -c` at build); `fetch_midi.SF2_SHA256` (a mismatch is an error) |
+
+`fetch_midi` records the FluidSynth version and soundfont checksum it used in `clips.json`, and `part3.md`
+says whether they match the pin. **The committed Part 3 numbers come from the Docker image.** Measured: the
+same MIDI rendered by FluidSynth 2.4.4 instead of 2.3.1 differs by 50-63 dB below the signal, enough to move
+one note on subP3 and subP4 (pitched F 0.6222 vs 0.625); the Windows 2.3.1 build gets within 66-75 dB on
+subP1-subP3 but is still not bit-identical (subP4 51 dB), so only the Docker image reproduces the committed
+numbers exactly.
 
 The licence reasoning per dataset is DECISIONS.md D20. Which Part 3 substitute may be committed is a field
 in the manifest (`commit_outputs`), not a code path.
 
 ## LLM runs
 
-**Results are cached replays by default.** The committed Part 2 and Part 3 chat results replay answers
-fetched from `gemini-3.1-flash-lite` (free tier) on 2026-10-12 UTC; `part2.md` and `part3.md` each print a
-provenance line (model, how many answers were replayed vs fetched live, fetch dates), and the same is in
-the JSON under `llm_provenance`.
+**Results are replays of the committed cache by default.** The committed Part 2 and Part 3 chat results
+replay the answers in `evals/llm_cache/`, fetched from `gemini-3.1-flash-lite` (free tier) on 2026-10-12
+UTC; `part2.md` and `part3.md` each print a provenance line (model, replayed vs fetched live, fetch dates),
+and every answer's cache key is in the JSON, so you can see exactly which file each turn replayed.
 
 | mode | how | effect |
 |---|---|---|
-| replay (default) | `LLM_CACHE=on` or unset | cached answers replayed, new prompts fetched and cached |
-| live | `LLM_CACHE=off`, `make eval-live`, or `python -m evals.run part2 --live` | every call goes to the API; the fresh answers replace the cached ones |
+| replay, then live on a miss (default) | `LLM_CACHE=on` or unset | committed answers replayed; a prompt not in the cache is sent to the API (needs a key) and cached |
+| replay only | `LLM_CACHE=replay` | no key needed, no API call ever; a prompt not in the cache is an error (how the clean-clone check runs) |
+| live | `LLM_CACHE=off`, `make eval-live`, or `python -m evals.run part2 --live` | every call goes to the API with your key; fresh answers replace the cached ones, and results **may differ slightly** from the committed ones |
 
 In Docker: `docker compose run --rm -e LLM_CACHE=off app make eval`.
 

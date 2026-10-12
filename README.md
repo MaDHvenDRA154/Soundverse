@@ -29,13 +29,18 @@ What is committed and what you regenerate: [evals/README.md](evals/README.md). I
 committed; GTZAN audio, the Lakh/POP909 renders and every audio output derived from them are not, and
 `make reproduce` rebuilds them.
 
-**LLM results are cached replays by default.** Gemini answers are cached in `.cache/llm/` (local, never
-committed) and replayed on every later run; the committed Part 2 and Part 3 chat results replay answers
-fetched from **`gemini-3.1-flash-lite` on 2026-10-12 (UTC), free tier**. Each report states its own
-provenance (model, replayed vs live, fetch date). To bypass the cache and call the API for every turn:
-`LLM_CACHE=off make eval` (or `make eval-live`, or `python -m evals.run part2 --live`); in Docker,
-`docker compose run --rm -e LLM_CACHE=off app make eval`. A full live run is 20 Gemini calls (17 Part 2
-turns + 3 Part 3 chat turns, up to 40 with validation retries); a fresh clone without the cache makes them too.
+**LLM results are replays of a committed cache by default.** The Gemini answers behind the committed Part 2
+and Part 3 chat results are committed in [`evals/llm_cache/`](evals/llm_cache/) (answer text, token counts,
+model, fetch time; no key or request data -- `python -m evals.cache_tool check`). They came from
+**`gemini-3.1-flash-lite`, free tier, fetched on 2026-10-12 (UTC)**. A fresh clone replays them, so it
+reproduces the committed results; `LLM_CACHE=replay` does that with no API key at all and fails rather than
+call the API. Each report prints its provenance (model, replayed vs live, fetch dates).
+
+To make fresh calls with your own key: `LLM_CACHE=off make eval` (or `make eval-live`, or
+`python -m evals.run part2 --live`; in Docker `docker compose run --rm -e LLM_CACHE=off app make eval`). That is
+20 Gemini calls (17 Part 2 turns + 3 Part 3 chat turns, up to 40 with validation retries), and **the results
+may differ slightly from the committed ones**: the model can phrase a reading differently or pick another
+valid op (e.g. a `linear` instead of an equal-power fade), and another `GEMINI_MODEL` will differ more.
 
 Without Docker (Python 3.11, [uv](https://docs.astral.sh/uv/), plus `ffmpeg` and `rubberband-cli` on PATH):
 

@@ -17,7 +17,13 @@ fixed here, before any transcription was scored, and never revisited:
          (no reference used)  and >= 6 other instruments; bars 17-24, all tracks.
 
 Rendering: FluidSynth, reverb/chorus off, 44.1 kHz stereo, soundfont TimGM6mb
-(GPL-2, Debian package `timgm6mb-soundfont`). Downloads land in
+(GPL-2, Debian package `timgm6mb-soundfont`). The render is part of the input, so
+the toolchain is pinned: FluidSynth 2.3.1 (Debian bookworm 2.3.1-2 in the Docker
+image; the 2.3.1 Windows build when none is installed) and TimGM6mb.sf2 with the
+sha256 below. A different FluidSynth version renders the same MIDI differently
+(2.4.4 vs 2.3.1: -50 to -63 dB difference, enough to move single notes across a
+detection threshold), so the script warns when it is not 2.3.1; a wrong soundfont
+is an error. The committed Part 3 numbers come from the Docker image. Downloads land in
 evals/substitutes/part3/ (gitignored). Run: uv run python -m evals.substitutes.fetch_midi
 """
 from __future__ import annotations
@@ -43,7 +49,10 @@ GMD = "https://storage.googleapis.com/magentadata/datasets/groove/groove-v1.0.0-
 LAKH = "http://hog.ee.columbia.edu/craffel/lmd/clean_midi.tar.gz"
 POP909 = "https://raw.githubusercontent.com/music-x-lab/POP909-Dataset/master/POP909/001/001.mid"
 SF2_DEB = "http://deb.debian.org/debian/pool/main/t/timgm6mb-soundfont/timgm6mb-soundfont_1.3-5_all.deb"
-FS_WIN = "https://github.com/FluidSynth/fluidsynth/releases/download/v2.4.4/fluidsynth-2.4.4-win10-x64.zip"
+FS_WIN = "https://github.com/FluidSynth/fluidsynth/releases/download/v2.3.1/fluidsynth-2.3.1-win10-x64.zip"
+FLUIDSYNTH_VERSION = "2.3.1"
+SF2_NAME = "TimGM6mb.sf2"
+SF2_SHA256 = "c5378b62028c920cb11e4803327983fee2f2cdff5dc89c708e39da417e51c854"   # timgm6mb-soundfont 1.3-5
 # the Windows FluidSynth build links SDL3.dll but does not ship it
 SDL3_WIN = "https://github.com/libsdl-org/SDL/releases/download/release-3.4.18/SDL3-3.4.18-win32-x64.zip"
 
@@ -151,18 +160,25 @@ def pick_pop909() -> pretty_midi.PrettyMIDI:
 
 
 # ------------------------------------------------------------------ render
+def _sha256(p: Path) -> str:
+    import hashlib
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
 def soundfont() -> Path:
-    for p in ("/usr/share/sounds/sf2/TimGM6mb.sf2", "/usr/share/soundfonts/TimGM6mb.sf2"):
+    for p in (f"/usr/share/sounds/sf2/{SF2_NAME}", f"/usr/share/soundfonts/{SF2_NAME}", DL / SF2_NAME):
         if Path(p).exists():
+            if _sha256(Path(p)) != SF2_SHA256:
+                raise RuntimeError(f"{p} is not the pinned {SF2_NAME} (sha256 {SF2_SHA256})")
             return Path(p)
-    sf2 = DL / "TimGM6mb.sf2"
-    if sf2.exists():
-        return sf2
+    sf2 = DL / SF2_NAME
     deb = _get(SF2_DEB, DL / "timgm6mb.deb")
     data = _ar_member(deb.read_bytes(), "data.tar")
     with tarfile.open(fileobj=io.BytesIO(data)) as t:
         m = next(x for x in t.getmembers() if x.name.endswith(".sf2"))
         sf2.write_bytes(t.extractfile(m).read())
+    if _sha256(sf2) != SF2_SHA256:
+        raise RuntimeError(f"downloaded {SF2_NAME} does not match the pinned sha256 {SF2_SHA256}")
     return sf2
 
 
@@ -184,18 +200,25 @@ def fluidsynth() -> str:
     if exe:
         return exe
     if os.name == "nt":
-        d = HERE.parents[1] / ".tools" / "fluidsynth"
+        d = HERE.parents[1] / ".tools" / f"fluidsynth-{FLUIDSYNTH_VERSION}"
         cand = list(d.rglob("fluidsynth.exe"))
         if not cand:
-            z = zipfile.ZipFile(_get(FS_WIN, DL / "fluidsynth-win.zip"))
+            z = zipfile.ZipFile(_get(FS_WIN, DL / f"fluidsynth-{FLUIDSYNTH_VERSION}-win.zip"))
             z.extractall(d)
             cand = list(d.rglob("fluidsynth.exe"))
         bindir = cand[0].parent
-        if not (bindir / "SDL3.dll").exists():
+        if FLUIDSYNTH_VERSION >= "2.4" and not (bindir / "SDL3.dll").exists():
             z = zipfile.ZipFile(_get(SDL3_WIN, DL / "sdl3-win.zip"))
             (bindir / "SDL3.dll").write_bytes(z.read(next(n for n in z.namelist() if n.endswith("SDL3.dll"))))
         return str(cand[0])
     raise RuntimeError("fluidsynth not found (apt install fluidsynth)")
+
+
+def fluidsynth_version() -> str:
+    import re
+    out = subprocess.run([fluidsynth(), "--version"], capture_output=True, text=True).stdout
+    m = re.search(r"FluidSynth (?:runtime )?version (\d+\.\d+\.\d+)", out)
+    return m.group(1) if m else "unknown"
 
 
 def render(mid: Path, wav: Path, length_s: float) -> None:
@@ -217,6 +240,10 @@ def render(mid: Path, wav: Path, length_s: float) -> None:
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
+    fs_ver, sf2 = fluidsynth_version(), soundfont()
+    if fs_ver != FLUIDSYNTH_VERSION:
+        print(f"WARNING: FluidSynth {fs_ver}, pinned {FLUIDSYNTH_VERSION}: the renders, and so the Part 3 "
+              "substitute numbers, will not match the committed ones (use the Docker image).", flush=True)
     clips = {"subP1": pick_gmd(), "subP3": pick_pop909()}
     clips["subP2"], clips["subP4"] = pick_lakh()
     meta = {}
@@ -226,6 +253,7 @@ def main() -> int:
         render(mid, wav, pm._meta["source_seconds"][1] - pm._meta["source_seconds"][0])
         meta[cid] = dict(pm._meta, midi=str(mid.relative_to(HERE.parents[1])), audio=str(wav.relative_to(HERE.parents[1])),
                          reference_used=cid != "subP4",
+                         toolchain={"fluidsynth": fs_ver, "soundfont": sf2.name, "soundfont_sha256": _sha256(sf2)},
                          instruments=[f"{'drums' if i.is_drum else pretty_midi.program_to_instrument_name(i.program)} "
                                       f"({len(i.notes)} notes)" for i in pm.instruments])
         print(cid, meta[cid]["instruments"], flush=True)

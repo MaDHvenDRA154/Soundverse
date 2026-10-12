@@ -1,0 +1,1 @@
+{"text": "{\n  \"reading\": \"Make the bass brighter.\",\n  \"ops\": [\n    {\n      \"op\": \"brightness\",\n      \"track\": \"bass\",\n      \"direction\": \"up\",\n      \"amount\": \"medium\"\n    }\n  ]\n}", "usage": {"prompt_tokens": 363, "output_tokens": 61, "thinking_tokens": 110}, "model": "gemini-3.1-flash-lite", "fetched_at": "2026-10-12T19:18:52Z"}

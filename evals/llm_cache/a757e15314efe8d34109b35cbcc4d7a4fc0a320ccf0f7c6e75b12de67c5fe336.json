@@ -1,0 +1,1 @@
+{"text": "{\n  \"reading\": \"Setting tempo to 140 BPM.\",\n  \"ops\": [\n    {\n      \"op\": \"set_tempo\",\n      \"bpm\": 140\n    }\n  ]\n}", "usage": {"prompt_tokens": 410, "output_tokens": 52, "thinking_tokens": 110}, "model": "gemini-3.1-flash-lite", "fetched_at": "2026-10-12T19:19:14Z"}

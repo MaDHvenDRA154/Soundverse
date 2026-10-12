@@ -1,0 +1,1 @@
+{"text": "{\n  \"reading\": \"Mute the drums.\",\n  \"ops\": [\n    {\n      \"op\": \"set_mute\",\n      \"track\": \"drums\",\n      \"mute\": true\n    }\n  ]\n}", "usage": {"prompt_tokens": 327, "output_tokens": 53, "thinking_tokens": 110}, "model": "gemini-3.1-flash-lite", "fetched_at": "2026-10-12T19:18:41Z"}

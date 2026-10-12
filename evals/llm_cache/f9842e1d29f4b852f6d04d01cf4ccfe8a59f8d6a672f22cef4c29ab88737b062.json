@@ -1,0 +1,1 @@
+{"text": "{\n  \"reading\": \"set tempo to half\",\n  \"ops\": [\n    {\n      \"op\": \"set_tempo_octave\",\n      \"factor\": 0.5\n    }\n  ]\n}", "usage": {"prompt_tokens": 1309, "output_tokens": 51, "thinking_tokens": 109}, "model": "gemini-3.1-flash-lite", "fetched_at": "2026-10-12T19:05:23Z"}

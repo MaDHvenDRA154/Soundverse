@@ -165,7 +165,7 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part3", results
         rows.append(row)
         print(f"[ok] {c['id']}: {row.get('notes')} timing={row['onset_timing']}", flush=True)
     chat = chat_demo(man, out_root)
-    result = {"clips": rows, "chat": chat}
+    result = {"clips": rows, "chat": chat, "substitute_toolchain": substitute_toolchain()}
     results_dir.mkdir(parents=True, exist_ok=True)
     if chat.get("status") == "incomplete":
         # Same rule as Part 2: no partial chat results in evals/results.
@@ -175,6 +175,18 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part3", results
     (results_dir / "part3.json").write_text(json.dumps(result, indent=1, default=str))
     (results_dir / "part3.md").write_text(report(result))
     return result
+
+
+def substitute_toolchain() -> dict:
+    """What rendered the MIDI substitutes (recorded by fetch_midi at render time), vs the pinned toolchain."""
+    from evals.substitutes import fetch_midi as fm
+    p = fm.OUT / "clips.json"
+    meta = json.loads(p.read_text()) if p.exists() else {}
+    seen = {json.dumps(m.get("toolchain"), sort_keys=True) for m in meta.values()}
+    rec = [json.loads(s) for s in seen if s != "null"]
+    pinned = {"fluidsynth": fm.FLUIDSYNTH_VERSION, "soundfont": fm.SF2_NAME, "soundfont_sha256": fm.SF2_SHA256}
+    return {"pinned": pinned, "recorded": rec[0] if len(rec) == 1 else rec or None,
+            "matches_pinned": len(rec) == 1 and rec[0] == pinned and "null" not in seen}
 
 
 def chat_demo(man, out_root: Path) -> dict:
@@ -196,12 +208,14 @@ def chat_demo(man, out_root: Path) -> dict:
     ag = ScoreAgent(llm, Score.model_validate_json(p.read_text()))
     turns = []
     for k, text in enumerate(spec["turns"], 1):
+        n_before = len(ag.fetched)
         status, echo, plan = ag.handle(text)
         if ag.llm_error:
             return {"clip": spec["clip"], "status": "incomplete", "error": ag.llm_error, "turns": turns,
                     "usage": ag.ledger.to_dict()}
         page = write_html(ag.score, out_root / spec["clip"] / f"chat_turn{k}.html")
-        turns.append({"user": text, "status": status, "ops": plan["ops"] if plan else None, "echo": echo, "page": page})
+        turns.append({"user": text, "status": status, "ops": plan["ops"] if plan else None, "echo": echo, "page": page,
+                      "llm_calls": ag.fetched[n_before:]})
         print(f"  [{status}] {text!r}: {echo}", flush=True)
     from evals.part2 import provenance
     return {"clip": spec["clip"], "turns": turns, "usage": ag.ledger.to_dict(),
@@ -236,6 +250,13 @@ def report(res) -> str:
             for k, v in r["notes"].items():
                 if v:
                     L.append(f"- {r['id']} {k}: P {v['p']}, R {v['r']}, F {v['f']} ({v['n_est']} est / {v['n_ref']} ref)")
+    tc = res.get("substitute_toolchain") or {}
+    if tc:
+        r = tc.get("recorded") or {}
+        L += ["", f"Substitute renders: FluidSynth {r.get('fluidsynth', 'not recorded')}, {r.get('soundfont', '?')} "
+              f"(sha256 {str(r.get('soundfont_sha256', '?'))[:12]}...); pinned FluidSynth {tc['pinned']['fluidsynth']}, "
+              f"sha256 {tc['pinned']['soundfont_sha256'][:12]}... -- "
+              f"{'matches' if tc.get('matches_pinned') else '**does not match: these numbers are not comparable with the committed ones**'}."]
     ch = res.get("chat") or {}
     if ch.get("turns"):
         from evals.part2 import provenance_line

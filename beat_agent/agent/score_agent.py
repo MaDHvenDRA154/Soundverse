@@ -32,6 +32,7 @@ class ScoreAgent:
         self.schema = gemini_schema_for(S.ScorePlan)
         self.history: list[dict] = []
         self.llm_error: str | None = None   # last provider failure (quota/network)
+        self.fetched: list[dict] = []        # per call: cached?, fetched_at
 
     def handle(self, text: str) -> tuple[str, str, dict | None]:
         ctx = {"tracks": [{"id": t.id, "role": t.role, "mute": t.mute, "gain_db": t.gain_db,
@@ -48,6 +49,7 @@ class ScoreAgent:
                 self.llm_error = str(e)
                 return "error", f"The language model is unavailable: {e}. Nothing was changed.", None
             self.ledger.add(r)
+            self.fetched.append({"cached": r.cached, "fetched_at": r.fetched_at})
             raw = r.text
             try:
                 plan = S.ScorePlan.model_validate_json(raw)

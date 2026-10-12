@@ -10,7 +10,12 @@ def main(argv=None) -> int:
     ap.add_argument("what", choices=["part1", "part2", "part3", "robustness", "all", "demo"])
     ap.add_argument("--manifest", default="evals/manifest.yaml")
     ap.add_argument("--slow", action="store_true", help="robustness: include the 12-minute clip")
+    ap.add_argument("--live", action="store_true",
+                    help="bypass the LLM answer cache (same as LLM_CACHE=off): every Gemini call goes to the API")
     a = ap.parse_args(argv)
+    if a.live:
+        import os
+        os.environ["LLM_CACHE"] = "off"
     todo = ["robustness", "part1", "part2", "part3"] if a.what in ("all", "demo") else [a.what]
     for w in todo:
         print(f"=== {w} ===", flush=True)

@@ -203,7 +203,9 @@ def chat_demo(man, out_root: Path) -> dict:
         page = write_html(ag.score, out_root / spec["clip"] / f"chat_turn{k}.html")
         turns.append({"user": text, "status": status, "ops": plan["ops"] if plan else None, "echo": echo, "page": page})
         print(f"  [{status}] {text!r}: {echo}", flush=True)
-    return {"clip": spec["clip"], "turns": turns, "usage": ag.ledger.to_dict()}
+    from evals.part2 import provenance
+    return {"clip": spec["clip"], "turns": turns, "usage": ag.ledger.to_dict(),
+            "llm_provenance": provenance(ag.fetched, llm.model)}
 
 
 def _g(x, k="f"):
@@ -236,7 +238,9 @@ def report(res) -> str:
                     L.append(f"- {r['id']} {k}: P {v['p']}, R {v['r']}, F {v['f']} ({v['n_est']} est / {v['n_ref']} ref)")
     ch = res.get("chat") or {}
     if ch.get("turns"):
-        L += ["", f"## Chat changes on the recreation of {ch['clip']} (real LLM)", ""]
+        from evals.part2 import provenance_line
+        L += ["", f"## Chat changes on the recreation of {ch['clip']} (real LLM)", "",
+              f"**{provenance_line(ch.get('llm_provenance'))}**", ""]
         for t in ch["turns"]:
             L += [f"- \"{t['user']}\" -> `{t['status']}` ops `{json.dumps(t['ops'])}`  ", f"  {t['echo'].replace(chr(10), ' / ')}"]
         L.append(f"\nLLM usage: {ch.get('usage')}")

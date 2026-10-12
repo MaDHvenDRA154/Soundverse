@@ -37,10 +37,24 @@ in the manifest (`commit_outputs`), not a code path.
 
 ## LLM runs
 
+**Results are cached replays by default.** The committed Part 2 and Part 3 chat results replay answers
+fetched from `gemini-3.1-flash-lite` (free tier) on 2026-10-12 UTC; `part2.md` and `part3.md` each print a
+provenance line (model, how many answers were replayed vs fetched live, fetch dates), and the same is in
+the JSON under `llm_provenance`.
+
+| mode | how | effect |
+|---|---|---|
+| replay (default) | `LLM_CACHE=on` or unset | cached answers replayed, new prompts fetched and cached |
+| live | `LLM_CACHE=off`, `make eval-live`, or `python -m evals.run part2 --live` | every call goes to the API; the fresh answers replace the cached ones |
+
+In Docker: `docker compose run --rm -e LLM_CACHE=off app make eval`.
+
 A full run makes **20 calls**: 17 Part 2 turns (10 sessions) and 3 Part 3 chat turns, up to 40 if every
 answer needs its one validation retry. Answers are cached on (model, prompt, grid state, schema), so a
-second run makes none. The committed results used `gemini-3.1-flash-lite` on the free tier; set
-`GEMINI_MODEL` to any Gemini 3 model to re-run with another.
+second run makes none, and any change to the analysis that changes the grid summary the model sees means
+new calls. Set `GEMINI_MODEL` to any Gemini 3 model to re-run with another. Cache entries hold only the
+model's JSON answer, token counts, the model name and the fetch time -- no key or request headers
+(`tests/test_llm_cache.py`).
 
 If the quota runs out mid-run, the eval stops calling, writes `evals/out/part2/part2.partial.json` (or
 `evals/out/part3/part3.partial.json`) and leaves `evals/results/` as it was. Run it again after the reset:

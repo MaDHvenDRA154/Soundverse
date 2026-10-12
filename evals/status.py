@@ -121,6 +121,8 @@ def block() -> str:
                 L.append(f"  - {r['status']}: `{r['name']}` -- {'; '.join(n.splitlines()[0] for n in r['notes'])}")
     L += ["", "### Part 2 -- chat editing ([evals/results/part2.md](evals/results/part2.md))", ""]
     if p2 and "sessions" in p2:
+        from evals.part2 import provenance_line
+        L.append(f"- {provenance_line(p2.get('llm_provenance'))}")
         L.append(f"- Model `{p2['model']}`, real API (cached for re-runs). Cumulative LLM spend so far: "
                  f"{p2['cumulative']['calls']} calls, est. ${p2['cumulative']['est_cost_usd']:.4f} (upper-bound pricing).")
         L += ["", "| session | ran on | statuses | clicks at splices | hard-cut control flagged | grid vs re-tracked (beat F) |",
@@ -155,6 +157,8 @@ def block() -> str:
         ch = p3.get("chat") or {}
         if ch.get("turns"):
             L.append(f"- Chat on the recreation of {ch['clip']}: " + "; ".join(f"\"{t['user']}\" -> {t['status']}" for t in ch["turns"]))
+            from evals.part2 import provenance_line
+            L.append(f"- {provenance_line(ch.get('llm_provenance'))}")
     else:
         L.append("- not run")
     return "\n".join(L)

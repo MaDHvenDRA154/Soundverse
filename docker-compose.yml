@@ -7,6 +7,7 @@ services:
         required: false
     environment:
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      LLM_CACHE: ${LLM_CACHE:-on}
     volumes:
       - ./testpack:/app/testpack:ro
       - ./audio:/app/audio

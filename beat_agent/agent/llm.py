@@ -5,6 +5,10 @@ in, raw JSON text + token usage out. Swap providers by implementing
 `LLMProvider`. Responses are cached on disk keyed by (model, system, contents,
 schema), so eval re-runs cost nothing; the cache key covers the grid state
 because the grid summary is part of the contents.
+
+LLM_CACHE=on (default) replays cached answers and caches new ones;
+LLM_CACHE=off never reads the cache (every call goes to the API) and stores
+the fresh answers, so the next default run replays the live one.
 """
 from __future__ import annotations
 
@@ -27,6 +31,15 @@ class LLMResponse:
     cached: bool = False
     model: str = ""
     latency_s: float = 0.0
+    fetched_at: str = ""   # UTC time the answer came from the API (for a cached answer: when it was cached)
+
+
+def cache_mode() -> str:
+    """'on' (default) or 'off' (bypass reads), from the LLM_CACHE environment variable."""
+    v = os.environ.get("LLM_CACHE", "on").strip().lower()
+    if v not in ("on", "off"):
+        raise LLMError(f"LLM_CACHE must be 'on' or 'off', not {v!r}")
+    return v
 
 
 class LLMProvider:
@@ -78,6 +91,10 @@ class UsageLedger:
 
 
 # ------------------------------------------------------------------ cache
+def _utc(ts: float) -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(ts))
+
+
 def _cache_dir() -> Path:
     from beat_agent.io.audio import cache_dir
     d = cache_dir() / "llm"
@@ -134,9 +151,11 @@ class GeminiProvider(LLMProvider):
     def complete_json(self, system: str, contents: str, schema: dict) -> LLMResponse:
         key = cache_key(self.model, system, contents, schema)
         cpath = _cache_dir() / f"{key}.json"
-        if self.use_cache and cpath.exists():
+        if self.use_cache and cache_mode() == "on" and cpath.exists():
             d = json.loads(cpath.read_text())
-            return LLMResponse(d["text"], d.get("usage", {}), cached=True, model=self.model)
+            # entries written before fetched_at existed: the file time is when the answer was cached
+            when = d.get("fetched_at") or _utc(cpath.stat().st_mtime)
+            return LLMResponse(d["text"], d.get("usage", {}), cached=True, model=self.model, fetched_at=when)
         from google.genai import types
         cfg = types.GenerateContentConfig(
             system_instruction=system,
@@ -167,8 +186,10 @@ class GeminiProvider(LLMProvider):
                      "output_tokens": getattr(um, "candidates_token_count", 0) or 0,
                      "thinking_tokens": getattr(um, "thoughts_token_count", 0) or 0}
             text = resp.text or ""
-            out = LLMResponse(text, usage, cached=False, model=self.model, latency_s=time.perf_counter() - t0)
+            now = _utc(time.time())
+            out = LLMResponse(text, usage, cached=False, model=self.model, latency_s=time.perf_counter() - t0,
+                              fetched_at=now)
             if self.use_cache and text:
-                cpath.write_text(json.dumps({"text": text, "usage": usage, "model": self.model}))
+                cpath.write_text(json.dumps({"text": text, "usage": usage, "model": self.model, "fetched_at": now}))
             return out
         raise LLMError(f"Gemini call failed after retries: {last}")

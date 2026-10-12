@@ -54,7 +54,9 @@ Gemini via `google-genai`, model from `GEMINI_MODEL`, checked against `models.li
 fallback to an alias (`gemini-flash-latest` could point at a non-Gemini-3 model); 2.0/2.5 models are refused
 (2.5 shuts down 16 Oct 2026). Output is validated with pydantic; one retry with the validation error; never
 execute a partially parsed plan. Responses are cached on (model, system prompt, contents incl. grid state,
-schema), so eval re-runs cost nothing.
+schema), so eval re-runs cost nothing. **Results are cached replays by default**; `LLM_CACHE=off` (or
+`python -m evals.run ... --live`, `make eval-live`) bypasses the cache, and every report prints where its
+answers came from and when they were fetched.
 - **Model used for every committed result: `gemini-3.1-flash-lite` on the free tier** (its own daily quota;
   the earlier `gemini-3.5-flash` runs hit that model's 20-requests/day free limit). It is also the default.
   **Reviewers can set `GEMINI_MODEL` to any Gemini 3 model** listed for their key; answers are then fetched

@@ -27,8 +27,15 @@ docker compose run --rm app make eval        # every eval, if the substitutes ar
 What is committed and what you regenerate: [evals/README.md](evals/README.md). In short, the reports in
 `evals/results/` and one licence-cleared recreation (`evals/samples/subP1/`, Groove MIDI, CC BY 4.0) are
 committed; GTZAN audio, the Lakh/POP909 renders and every audio output derived from them are not, and
-`make reproduce` rebuilds them. LLM answers are replayed from `.cache/llm/` when present; without it a full
-run makes 20 Gemini calls (17 Part 2 turns + 3 Part 3 chat turns, up to 40 with validation retries).
+`make reproduce` rebuilds them.
+
+**LLM results are cached replays by default.** Gemini answers are cached in `.cache/llm/` (local, never
+committed) and replayed on every later run; the committed Part 2 and Part 3 chat results replay answers
+fetched from **`gemini-3.1-flash-lite` on 2026-10-12 (UTC), free tier**. Each report states its own
+provenance (model, replayed vs live, fetch date). To bypass the cache and call the API for every turn:
+`LLM_CACHE=off make eval` (or `make eval-live`, or `python -m evals.run part2 --live`); in Docker,
+`docker compose run --rm -e LLM_CACHE=off app make eval`. A full live run is 20 Gemini calls (17 Part 2
+turns + 3 Part 3 chat turns, up to 40 with validation retries); a fresh clone without the cache makes them too.
 
 Without Docker (Python 3.11, [uv](https://docs.astral.sh/uv/), plus `ffmpeg` and `rubberband-cli` on PATH):
 
@@ -143,7 +150,7 @@ uv run python -m pytest -m "not slow and not llm"
    ([render offset study](evals/results/render_offset_study.md)).
 3. **Evidence is substitutes, and the click check is weaker than "0 clicks" suggests.** Nothing was
    measured on the real test pack. The splice click detector flags 0 of 13 crossfaded splices, but its own
-   negative control (the same edits with hard cuts) is flagged on only 5 of 13, so on dense material a
+   negative control (the same edits with hard cuts) is flagged on only 5 of 13 (all in S1), so outside S1 a
    clean score is weak evidence; listen to `turn*.wav` vs `*_HARDCUT_negative_control.wav`.
 
 Demo walkthrough (under 10 minutes): [notes/demo_script.md](notes/demo_script.md).

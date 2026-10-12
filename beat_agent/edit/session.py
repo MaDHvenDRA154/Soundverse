@@ -87,7 +87,8 @@ class EditSession:
         meter = f"{ts.numerator}/{ts.denominator}" if ts.numerator else "meter unknown"
         bpm = f"{g.tempo.bpm:.2f} BPM" if g.tempo.bpm else "tempo unknown"
         head = (f"Grid: {meter}, 1 beat = {unit}, {bpm} ({g.tempo.type}); beats {g.beats[0].index}-{g.beats[-1].index}, "
-                f"bars 1-{max(b.bar for b in g.bars) if g.bars else 0}. Beats are 0-based, bars 1-based; "
+                f"{f'bars 1-{max(b.bar for b in g.bars)}' if any(b.bar >= 1 for b in g.bars) else 'no bars (meter unknown)'}. "
+                "Beats are 0-based, bars 1-based; "
                 "beat ranges exclude their end beat, bar ranges include it.")
         amb = self.ambiguity_notes(g)
         return head + ("\n" + "\n".join(amb) if amb else "")

@@ -1,5 +1,7 @@
 # Beat Agent
 
+> Built for the Soundverse Applied AI Engineer take-home assignment ("Beat Agent"): a trustworthy beat grid and two-track sync, LLM chat editing addressed in beats and bars, and audio -> a self-contained Web Audio recreation. "The brief" in these docs means that assignment text, which is not included in this repo.
+
 One chat-driven agent for audio: (1) a beat grid you can trust and two-track beat-matching, (2) chat
 edits addressed in beats and bars, applied without clicks, (3) audio -> score JSON -> a self-contained,
 synthesis-only Web Audio page.

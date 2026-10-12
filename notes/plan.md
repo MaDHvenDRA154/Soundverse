@@ -1,7 +1,7 @@
 # Beat Agent — one-page plan
 
 ## Inputs found at Phase 0 (2026-10-12)
-- `BRIEF.md` + original PDF: present.
+- The assignment brief (text + original PDF): present locally; not part of the repo.
 - `testpack/`: **absent.** Nothing can be scored against reference annotations or MIDI
   until it is added. All development and tests run on audio generated in code; the eval
   harness marks accuracy rows "not measured" for clips without a reference.

@@ -1,5 +1,7 @@
 # Decisions
 
+> Built for the Soundverse Applied AI Engineer take-home assignment ("Beat Agent"): a trustworthy beat grid and two-track sync, LLM chat editing addressed in beats and bars, and audio -> a self-contained Web Audio recreation. "The brief" in these docs means that assignment text, which is not included in this repo.
+
 Status: final pass at Phase 4 (2026-10-13). Each decision was revisited at the end of the phase that
 implemented it; "measured" notes link to eval output. The official test pack was not available: every
 measured statement below is about SUBSTITUTE or generated audio.

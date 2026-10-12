@@ -2,7 +2,7 @@
 
 The Part 3 eval reports the recreated page's onsets landing a median 17.4 ms
 *after* the original's on subP1 (11.6 ms on subP2/subP4). Candidates:
-  scheduling   the page plays notes late (look-ahead scheduler, compressor delay)
+  scheduling   the page plays notes late (look-ahead scheduler, output-stage delay)
   transcription/quantise  the score's note times are already late of the audio
   attack shape the onset detector fires later on our synth voices than on the
                soundfont samples, though both start at the same instant
@@ -13,7 +13,9 @@ Every term is measured, in ms, positive = later, on drum notes only:
   T1  raw drum detections (before quantise) - reference MIDI onsets
   T2  score note times (after 0.5 soft quantise) - raw detections
   T3  page signal path: first audible sample - scheduled time, with the
-      shipped compressor and with it bypassed (diagnostic copy only)
+      shipped output stage and with it bypassed (diagnostic copy only). Until
+      2026-10-13 the output stage was a DynamicsCompressor (+6.04 ms look-ahead);
+      it is now a zero-latency soft limiter.
   T4  detector on our synth voices: librosa onsets on an isolated-hit probe
       render - scheduled times
   T5  detector on the original: librosa onsets on the substitute audio -
@@ -86,8 +88,8 @@ def _probe(score, bypass_comp: bool, td: Path):
                clip={"note": "diagnostic probe"}, tracks=[Track(id="drums", name="Drums", role="drums", notes=notes)])
     html = render_html(sc)
     if bypass_comp:
-        assert "master.connect(comp)" in html
-        html = html.replace("master.connect(comp)", "master.connect(out)")
+        assert "master.connect(limitIn)" in html
+        html = html.replace("master.connect(limitIn)", "master.connect(out)")
     page = td / f"probe_{int(bypass_comp)}.html"
     page.write_text(html, encoding="utf-8")
     wav = td / f"probe_{int(bypass_comp)}.wav"
@@ -137,7 +139,7 @@ def study(cid: str) -> dict:
                 v = _first_audible(y, sr, w)
                 if v is not None:
                     path[k].append(1e3 * v)
-            res[f"T3_signal_path_{'compressor_bypassed' if bypass else 'shipped'}_ms"] = {
+            res[f"T3_signal_path_{'output_stage_bypassed' if bypass else 'shipped'}_ms"] = {
                 k: round(float(np.median(v)), 3) for k, v in path.items() if v}
             if not bypass:
                 for hop in (128, 32):
@@ -185,8 +187,8 @@ def report(rows) -> str:
               f"| T1 | raw drum detections - reference MIDI | {_c(r['T1_raw_detection_minus_reference'])} | |",
               f"| T2 | score times ({r['quantize_strength']} quantise) - raw detections | {_c(r['T2_score_minus_raw_detection'])} | |",
               f"| T1+T2 | score times - reference MIDI | {_c(r['T1+T2_score_minus_reference'])} | |",
-              f"| T3 | page signal path, first audible sample - scheduled (shipped / compressor bypassed) | "
-              f"{r['T3_signal_path_shipped_ms']} / {r['T3_signal_path_compressor_bypassed_ms']} | |",
+              f"| T3 | page signal path, first audible sample - scheduled (shipped / output stage bypassed) | "
+              f"{r['T3_signal_path_shipped_ms']} / {r['T3_signal_path_output_stage_bypassed_ms']} | |",
               f"| T4 | detector on synth hits - scheduled | {_c(r['T4_detector_on_synth_hop128']['all'])} | {_c(r['T4_detector_on_synth_hop32']['all'])} |",
               f"| T4 kick / snare / hat | | {' / '.join(_c(r['T4_detector_on_synth_hop128'][k]) for k in ('kick', 'snare', 'hat'))} | "
               f"{' / '.join(_c(r['T4_detector_on_synth_hop32'][k]) for k in ('kick', 'snare', 'hat'))} |",
@@ -196,14 +198,15 @@ def report(rows) -> str:
               f"| | predicted T6 = T1+T2 + T4 - T5 | {r['predicted_T6_hop128_ms']} | {r['predicted_T6_hop32_ms']} |", ""]
         m = lambda k: (r[k] or {}).get("median_ms")
         comp = np.median(list(r["T3_signal_path_shipped_ms"].values()))
-        byp = np.median(list(r["T3_signal_path_compressor_bypassed_ms"].values()))
+        byp = np.median(list(r["T3_signal_path_output_stage_bypassed_ms"].values()))
         t4, t5 = r["T4_detector_on_synth_hop128"]["all"]["median_ms"], m("T5_detector_on_original_hop128")
         L += [f"**Finding ({r['clip']}, hop 128 medians):** the score itself is {m('T1+T2_score_minus_reference'):+.1f} ms late "
               f"of the reference: the raw detections are {m('T1_raw_detection_minus_reference'):+.1f} ms, and the "
               f"{r['quantize_strength']} soft quantise adds {m('T2_score_minus_raw_detection'):+.1f} ms because the grid it pulls "
               f"towards sits {m('T0_grid_beats_minus_reference'):+.1f} ms after the note-ons. The page then plays every sound "
-              f"{comp:.2f} ms after its scheduled time ({byp:.2f} ms with the compressor bypassed: the DynamicsCompressor's "
-              f"fixed look-ahead; the scheduler itself is exact). Net of that delay the detector fires {t4 - comp:+.1f} ms after "
+              f"{comp:.2f} ms after its scheduled time ({byp:.2f} ms with the output stage bypassed"
+              f"{', so the output stage adds ' + format(comp - byp, '.2f') + ' ms' if comp - byp > 0.5 else ': the output stage adds no latency'}"
+              f"; the scheduler itself is exact). Net of that delay the detector fires {t4 - comp:+.1f} ms after "
               f"a synth hit starts vs {t5:+.1f} ms after a soundfont hit, so the attack shape contributes {t4 - comp - t5:+.1f} ms "
               f"(synth hits are detected sooner, not later). Predicted {r['predicted_T6_hop128_ms']:+.1f} ms vs measured "
               f"{m('T6_render_minus_original_hop128'):+.1f} ms.", ""]

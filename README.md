@@ -45,6 +45,13 @@ turns, up to 40 with validation retries), and **its results may differ slightly 
 model can phrase a reading differently or pick another valid op (e.g. a `linear` instead of an equal-power
 fade), and another `GEMINI_MODEL` will differ more. `LLM_CACHE=on` replays and fetches only what is missing.
 
+**First run takes a while** (measured on this laptop: AMD Ryzen 9 8940HX, Docker with 32 CPUs / 7.4 GB):
+the cold `docker compose build` took more than 10 minutes (PyTorch, Demucs, Basic Pitch, Playwright Chromium;
+a rebuild with cached layers takes ~15 s); `make reproduce` then took 12 min 14 s: fetching the GTZAN excerpts
+(streamed from a 1.2 GB tarball) 4 min 22 s, the MIDI substitutes 12 s, and the evals 7 min 35 s (robustness
+2:52, Part 1 1:43, Part 2 0:50, Part 3 1:14 including the first download of the Demucs weights, studies 0:54).
+In the app the first analysis also downloads the Beat This! weights (131 s the first time on a fresh volume).
+
 Without Docker (Python 3.11, [uv](https://docs.astral.sh/uv/), plus `ffmpeg` and `rubberband-cli` on PATH):
 
 ```bash
@@ -67,18 +74,19 @@ uv run python -m pytest -m "not slow and not llm"
 | area | measured on | result | target / note |
 |---|---|---|---|
 | Part 1 grid drift | generated 6-min house | max [0.91 ms](evals/results/part1.md) | <= 10 ms |
-| Part 1 speed | generated 6-min house | [8.5 s](evals/results/part1.md) for 362.3 s of audio | laptop CPU |
+| Part 1 speed | generated 6-min house | [10.35 s](evals/results/part1.md) for 362.3 s of audio | laptop CPU |
 | Part 1 beats / downbeats | 5 GTZAN SUBSTITUTES | beat F [0.5325-1.0](evals/results/part1.md), downbeat F [0.0667-1.0](evals/results/part1.md) | human annotations, +-70 ms |
 | Part 1 sync | generated pair | kick offset median [1.745 ms](evals/results/part1.md), max 3.537 ms (121 pairs) | |
 | Generalisation | 36 generated cases | [26 pass](evals/results/robustness.md), 8 partial, 2 fail | failures listed below |
 | Part 2 chat sessions | 10 sessions, real `gemini-3.1-flash-lite` | [17 turns](evals/results/part2.md), transcripts in part2.md | |
 | Part 2 clicks at splices | every applied edit | [0 / 13 flagged](evals/results/part2.md) (hard-cut control: 5 / 13 flagged) | 0 |
 | Part 2 grid after edit | edited audio re-tracked | beat F min [0.9811](evals/results/part2.md) | mapped grid vs fresh tracking |
-| LLM cost | all 40 real calls in the cache | est. [$0.1197](evals/results/part2.md) upper bound | free tier: $0 charged |
+| LLM calls, this run | Part 2 | [0 live](evals/results/part2.md), 17 replayed from cache; est. $0.0000 | upper-bound price; free tier: $0 charged |
+| LLM cache inventory | committed `evals/llm_cache` | [20 unique cached responses](evals/results/part2.md), est. $0.0674 to produce | not a call count (one file per distinct prompt) |
 | Part 3 recreation | subP1 SUBSTITUTE (P1) | drum onsets F [0.7209](evals/results/part3.md), by class F [0.3256](evals/results/part3.md), render onset F [0.9756](evals/results/part3.md) | +-50 ms onsets |
 | Part 3 recreation | subP2 SUBSTITUTE (P2) | drum onsets F [0.7863](evals/results/part3.md), by class F [0.4786](evals/results/part3.md), pitched F [0.88](evals/results/part3.md), render onset F [0.9841](evals/results/part3.md) | +-50 ms onsets |
-| Part 3 recreation | subP3 SUBSTITUTE (P3) | pitched F [0.6222](evals/results/part3.md), render onset F [0.7123](evals/results/part3.md) | +-50 ms onsets |
-| Part 3 recreation | subP4 SUBSTITUTE (P4) | render onset F [0.9286](evals/results/part3.md) | no reference |
+| Part 3 recreation | subP3 SUBSTITUTE (P3) | pitched F [0.625](evals/results/part3.md), render onset F [0.7123](evals/results/part3.md) | +-50 ms onsets |
+| Part 3 recreation | subP4 SUBSTITUTE (P4) | render onset F [0.922](evals/results/part3.md) | no reference |
 | Part 3 page safety | 4 pages | [4 / 4 clean](evals/results/part3.md) | no URL / fetch / import / media / base64 audio |
 | Part 3 chat changes | subP2 | [3 / 3 applied](evals/results/part3.md) | typed score ops |
 | Grid timing root cause | see study | [report](evals/results/bias_study.md) | no empirical offsets added |
@@ -101,7 +109,7 @@ uv run python -m pytest -m "not slow and not llm"
 | G-waltz | generated | 1.0 | 1.0 | 0.62 | -0.54 | 100.0 | constant | 3/4 |
 - Sync A7 -> A1 at A1 bar 33: **missing**.
 - Sync G-house-partner -> G-house-6min at G-house-6min bar 33 (generated): kick offsets median 1.745 ms, max 3.537 ms over 121 pairs.
-- Speed: 362.3 s generated track analysed in 8.5 s on this laptop CPU.
+- Speed: 362.3 s generated track analysed in 10.35 s on this laptop CPU.
 
 ### Generalisation / robustness on generated audio ([evals/results/robustness.md](evals/results/robustness.md))
 
@@ -119,7 +127,8 @@ uv run python -m pytest -m "not slow and not llm"
 
 ### Part 2 -- chat editing ([evals/results/part2.md](evals/results/part2.md))
 
-- Model `gemini-3.1-flash-lite`, real API (cached for re-runs). Cumulative LLM spend so far: 40 calls, est. $0.1197 (upper-bound pricing).
+- LLM provenance: `gemini-3.1-flash-lite`, 17 calls, all answers replayed from the local cache (LLM_CACHE=replay); answers originally fetched from the API on 2026-10-12 (UTC). Re-run live with `LLM_CACHE=off` or `python -m evals.run part2 --live`.
+- This run: 0 live Gemini calls, 17 replayed from the cache (est. $0.0000 for the live calls, upper-bound pricing). Local cache: 20 unique cached LLM responses (not a call count).
 
 | session | ran on | statuses | clicks at splices | hard-cut control flagged | grid vs re-tracked (beat F) |
 |---|---|---|---|---|---|
@@ -140,9 +149,10 @@ uv run python -m pytest -m "not slow and not llm"
 |---|---|---|---|---|---|---|---|
 | subP1 | SUBSTITUTE | P1 | 0.7209 | 0.3256 | - | 0.9756 | ok |
 | subP2 | SUBSTITUTE | P2 | 0.7863 | 0.4786 | 0.88 | 0.9841 | ok |
-| subP3 | SUBSTITUTE | P3 | - | - | 0.6222 | 0.7123 | ok |
-| subP4 | SUBSTITUTE | P4 | no reference | no reference | no reference | 0.9286 | ok |
+| subP3 | SUBSTITUTE | P3 | - | - | 0.625 | 0.7123 | ok |
+| subP4 | SUBSTITUTE | P4 | no reference | no reference | no reference | 0.922 | ok |
 - Chat on the recreation of subP2: "Mute the drums." -> applied; "Make the bass brighter." -> applied; "Play it at 140." -> applied
+- LLM provenance: `gemini-3.1-flash-lite`, 3 calls, all answers replayed from the local cache (LLM_CACHE=replay); answers originally fetched from the API on 2026-10-12 (UTC). Re-run live with `LLM_CACHE=off` or `python -m evals.run part2 --live`.
 <!-- STATUS:END -->
 
 ## Known problems (top 3)

@@ -15,12 +15,14 @@
       {
        "raw": "{\n  \"reading\": \"repeating beats 16 up to (not incl.) 32 for a total of two plays\",\n  \"ops\": [\n    {\n      \"op\": \"repeat\",\n      \"range\": {\n        \"unit\": \"beats\",\n        \"start\": 16,\n        \"end\": 32\n      },\n      \"times_total\": 2\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1313,
         "output_tokens": 97,
         "thinking_tokens": 114
-       }
+       },
+       "fetched_at": "2026-10-12T19:00:57Z",
+       "cache_key": "0e6b1034e4135e547ea9ed3724c939fbbf8eb3d16d123c77263f2012d8998501"
       }
      ],
      "ops": [
@@ -51,11 +53,11 @@
      ],
      "length_before_s": 30.12154195011338,
      "length_after_s": 38.428390022675735,
-     "seconds": 16.35,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn1.wav",
-      "grid": "evals\\out\\part2\\S1\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn1.click.wav"
+      "audio": "evals/out/part2/S1/turn1.wav",
+      "grid": "evals/out/part2/S1/turn1.grid.json",
+      "click_audition": "evals/out/part2/S1/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -102,12 +104,14 @@
       {
        "raw": "{\n  \"reading\": \"Fade out the last 8 beats.\",\n  \"ops\": [\n    {\n      \"op\": \"fade\",\n      \"range\": {\n        \"unit\": \"last_beats\",\n        \"count\": 8\n      },\n      \"direction\": \"out\",\n      \"shape\": \"linear\"\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1423,
         "output_tokens": 82,
         "thinking_tokens": 305
-       }
+       },
+       "fetched_at": "2026-10-12T19:01:16Z",
+       "cache_key": "54dab15e2513f7be9321556e09201a5366251c69e9876687c2eab2c33f2cef50"
       }
      ],
      "ops": [
@@ -138,11 +142,11 @@
      ],
      "length_before_s": 38.428390022675735,
      "length_after_s": 38.428390022675735,
-     "seconds": 17.91,
+     "seconds": 0.04,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn2.wav",
-      "grid": "evals\\out\\part2\\S1\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn2.click.wav"
+      "audio": "evals/out/part2/S1/turn2.wav",
+      "grid": "evals/out/part2/S1/turn2.grid.json",
+      "click_audition": "evals/out/part2/S1/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -189,12 +193,14 @@
       {
        "raw": "{\n  \"reading\": \"Reverting the last operation (the fade).\",\n  \"ops\": [\n    {\n      \"op\": \"undo\",\n      \"turns\": 1\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1474,
         "output_tokens": 49,
         "thinking_tokens": 186
-       }
+       },
+       "fetched_at": "2026-10-12T19:01:33Z",
+       "cache_key": "668e9b1e9dde66947781ad79d1038d9f8986e8bed43f756020966da61bfebb1b"
       }
      ],
      "ops": [
@@ -207,11 +213,11 @@
      "resolved": [],
      "length_before_s": 38.428390022675735,
      "length_after_s": 38.428390022675735,
-     "seconds": 15.57,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn3.wav",
-      "grid": "evals\\out\\part2\\S1\\turn3.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn3.click.wav"
+      "audio": "evals/out/part2/S1/turn3.wav",
+      "grid": "evals/out/part2/S1/turn3.grid.json",
+      "click_audition": "evals/out/part2/S1/turn3.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -258,12 +264,14 @@
       {
        "raw": "{\n  \"reading\": \"remove bar 5\",\n  \"ops\": [\n    {\n      \"op\": \"remove\",\n      \"range\": {\n        \"unit\": \"bars\",\n        \"start\": 5,\n        \"end\": 5\n      }\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1504,
         "output_tokens": 69,
         "thinking_tokens": 163
-       }
+       },
+       "fetched_at": "2026-10-12T19:01:51Z",
+       "cache_key": "80c9a669ffb4c8ddced50f622cf3657e39974291223ca01434addf5ae9c721a4"
       }
      ],
      "ops": [
@@ -293,11 +301,11 @@
      ],
      "length_before_s": 38.428390022675735,
      "length_after_s": 36.344308390022675,
-     "seconds": 16.48,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S1\\turn4.wav",
-      "grid": "evals\\out\\part2\\S1\\turn4.grid.json",
-      "click_audition": "evals\\out\\part2\\S1\\turn4.click.wav"
+      "audio": "evals/out/part2/S1/turn4.wav",
+      "grid": "evals/out/part2/S1/turn4.grid.json",
+      "click_audition": "evals/out/part2/S1/turn4.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -358,11 +366,11 @@
    "audio": "evals/substitutes/audio/gtzan_disco_00000.wav",
    "usage": {
     "calls": 4,
-    "cached_calls": 0,
-    "prompt_tokens": 5714,
-    "output_tokens": 297,
-    "thinking_tokens": 768,
-    "est_cost_usd": 0.01656,
+    "cached_calls": 4,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -384,12 +392,14 @@
       {
        "raw": "{\n  \"reading\": \"repeating bars 1-4 for a total of 4 plays\",\n  \"ops\": [\n    {\n      \"op\": \"repeat\",\n      \"range\": {\n        \"unit\": \"bars\",\n        \"start\": 1,\n        \"end\": 4\n      },\n      \"times_total\": 4\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1314,
         "output_tokens": 88,
         "thinking_tokens": 125
-       }
+       },
+       "fetched_at": "2026-10-12T19:02:26Z",
+       "cache_key": "151a25c31842af667aebb08c5a1766523cf5a8d9b66e76cfd63e211c0b322f2a"
       }
      ],
      "ops": [
@@ -420,11 +430,11 @@
      ],
      "length_before_s": 30.00018140589569,
      "length_after_s": 54.16086167800454,
-     "seconds": 32.22,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S2\\turn1.wav",
-      "grid": "evals\\out\\part2\\S2\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S2\\turn1.click.wav"
+      "audio": "evals/out/part2/S2/turn1.wav",
+      "grid": "evals/out/part2/S2/turn1.grid.json",
+      "click_audition": "evals/out/part2/S2/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -501,11 +511,11 @@
    "audio": "evals/substitutes/audio/gtzan_hiphop_00000.wav",
    "usage": {
     "calls": 1,
-    "cached_calls": 0,
-    "prompt_tokens": 1314,
-    "output_tokens": 88,
-    "thinking_tokens": 125,
-    "est_cost_usd": 0.00357,
+    "cached_calls": 1,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -527,12 +537,14 @@
       {
        "raw": "{\n  \"reading\": \"The last bar before the tempo change will be repeated for a total of two plays.\",\n  \"ops\": [\n    {\n      \"op\": \"repeat\",\n      \"range\": {\n        \"unit\": \"bars_before_tempo_change\",\n        \"count\": 1,\n        \"change\": 1\n      },\n      \"times_total\": 2\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1441,
         "output_tokens": 97,
         "thinking_tokens": 73
-       }
+       },
+       "fetched_at": "2026-10-12T19:03:01Z",
+       "cache_key": "b2a15aee6e4976ffd92bd8adc47200ee3aebe3e16ca60cd89ac094f200886320"
       }
      ],
      "ops": [
@@ -563,11 +575,11 @@
      ],
      "length_before_s": 120.36580498866213,
      "length_after_s": 122.2655328798186,
-     "seconds": 30.39,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S3\\turn1.wav",
-      "grid": "evals\\out\\part2\\S3\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S3\\turn1.click.wav"
+      "audio": "evals/out/part2/S3/turn1.wav",
+      "grid": "evals/out/part2/S3/turn1.grid.json",
+      "click_audition": "evals/out/part2/S3/turn1.click.wav"
      },
      "format": {
       "samplerate": 44100,
@@ -609,14 +621,14 @@
    "clip": "G-step",
    "clip_kind": "generated",
    "clip_desc": "generated 4/4 with a tempo step 126 -> 134 BPM at beat 128",
-   "audio": "evals\\out\\part1\\_generated\\G-step.wav",
+   "audio": "evals/out/part1/_generated/G-step.wav",
    "usage": {
     "calls": 1,
-    "cached_calls": 0,
-    "prompt_tokens": 1441,
-    "output_tokens": 97,
-    "thinking_tokens": 73,
-    "est_cost_usd": 0.00344,
+    "cached_calls": 1,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -638,12 +650,14 @@
       {
        "raw": "{\n  \"reading\": \"repeating the last bar before the tempo change twice, in place\",\n  \"ops\": [\n    {\n      \"op\": \"repeat\",\n      \"range\": {\n        \"unit\": \"bars_before_tempo_change\",\n        \"count\": 1,\n        \"change\": null\n      },\n      \"times_total\": 2\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1310,
         "output_tokens": 92,
         "thinking_tokens": 110
-       }
+       },
+       "fetched_at": "2026-10-12T19:03:29Z",
+       "cache_key": "3e20f576879f479d80b8ebe298ac3bae00cec1070a84d54457af28b28e492f28"
       }
      ],
      "ops": [
@@ -661,7 +675,7 @@
      "resolved": [],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 22.54
+     "seconds": 0.01
     }
    ],
    "clip": "sub-disco",
@@ -670,11 +684,11 @@
    "audio": "evals/substitutes/audio/gtzan_disco_00000.wav",
    "usage": {
     "calls": 1,
-    "cached_calls": 0,
-    "prompt_tokens": 1310,
-    "output_tokens": 92,
-    "thinking_tokens": 110,
-    "est_cost_usd": 0.00348,
+    "cached_calls": 1,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -696,12 +710,14 @@
       {
        "raw": "{\"reading\": \"The 'boring part' is not measurable; I am proposing a cut of the lowest energy section.\", \"ops\": [{\"op\": \"propose_cut\", \"criterion\": \"lowest_energy\"}]}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1307,
         "output_tokens": 46,
         "thinking_tokens": 196
-       }
+       },
+       "fetched_at": "2026-10-12T19:03:50Z",
+       "cache_key": "47d9e557f9034725cc6a30130dc2cbc7c4ba26b527f1f83a77af2eaded586807"
       }
      ],
      "ops": [
@@ -727,7 +743,7 @@
      ],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 20.23
+     "seconds": 0.11
     }
    ],
    "clip": "sub-disco",
@@ -736,11 +752,11 @@
    "audio": "evals/substitutes/audio/gtzan_disco_00000.wav",
    "usage": {
     "calls": 1,
-    "cached_calls": 0,
-    "prompt_tokens": 1307,
-    "output_tokens": 46,
-    "thinking_tokens": 196,
-    "est_cost_usd": 0.00378,
+    "cached_calls": 1,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -762,12 +778,14 @@
       {
        "raw": "{\n  \"reading\": \"removing beats 0 up to 8\",\n  \"ops\": [\n    {\n      \"op\": \"remove\",\n      \"range\": {\n        \"unit\": \"beats\",\n        \"start\": 0,\n        \"end\": 8\n      }\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1308,
         "output_tokens": 73,
         "thinking_tokens": 111
-       }
+       },
+       "fetched_at": "2026-10-12T19:04:11Z",
+       "cache_key": "59d5dfbb46f2167027b34afc663e7189b90dbccbb04296bc7040b6babeb8cd4c"
       }
      ],
      "ops": [
@@ -797,11 +815,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 26.108344671201813,
-     "seconds": 19.61,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S5\\turn1.wav",
-      "grid": "evals\\out\\part2\\S5\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S5\\turn1.click.wav"
+      "audio": "evals/out/part2/S5/turn1.wav",
+      "grid": "evals/out/part2/S5/turn1.grid.json",
+      "click_audition": "evals/out/part2/S5/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -848,12 +866,14 @@
       {
        "raw": "{\n  \"reading\": \"removing bars 200 to 210\",\n  \"ops\": [\n    {\n      \"op\": \"remove\",\n      \"range\": {\n        \"unit\": \"bars\",\n        \"start\": 200,\n        \"end\": 210\n      }\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1477,
         "output_tokens": 80,
         "thinking_tokens": 194
-       }
+       },
+       "fetched_at": "2026-10-12T19:04:29Z",
+       "cache_key": "ec3177d8e413c507e38d609472490531425372106815c41283e7e5dffe46f8e4"
       }
      ],
      "ops": [
@@ -870,7 +890,7 @@
      "resolved": [],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 17.76
+     "seconds": 0.02
     }
    ],
    "clip": "sub-rock",
@@ -879,11 +899,11 @@
    "audio": "evals/substitutes/audio/gtzan_rock_00000.wav",
    "usage": {
     "calls": 2,
-    "cached_calls": 0,
-    "prompt_tokens": 2785,
-    "output_tokens": 153,
-    "thinking_tokens": 305,
-    "est_cost_usd": 0.00761,
+    "cached_calls": 2,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -905,12 +925,14 @@
       {
        "raw": "{\n  \"reading\": \"'the boring part' is not measurable; propose a measured candidate\",\n  \"ops\": [\n    {\n      \"op\": \"propose_cut\"\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1304,
         "output_tokens": 48,
         "thinking_tokens": 99
-       }
+       },
+       "fetched_at": "2026-10-12T19:04:49Z",
+       "cache_key": "ceed8b8b53b45e6a3e079eee2aaee59c5ce4986055b9e4844cf736b37a04a383"
       }
      ],
      "ops": [
@@ -936,7 +958,7 @@
      ],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 18.64
+     "seconds": 0.14
     },
     {
      "n": 2,
@@ -947,12 +969,14 @@
       {
        "raw": "{\n  \"reading\": \"Confirming the cut of the previously proposed bars (bars 6-7).\",\n  \"ops\": [\n    {\n      \"op\": \"confirm_proposal\"\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1372,
         "output_tokens": 51,
         "thinking_tokens": 110
-       }
+       },
+       "fetched_at": "2026-10-12T19:05:06Z",
+       "cache_key": "73146718cc133abd1410d40c109ab411c4034a5b42afef6b2ee118bf8f187f11"
       }
      ],
      "ops": [
@@ -977,11 +1001,11 @@
      ],
      "length_before_s": 30.081632653061224,
      "length_after_s": 24.399002267573696,
-     "seconds": 17.39,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S4b\\turn2.wav",
-      "grid": "evals\\out\\part2\\S4b\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S4b\\turn2.click.wav"
+      "audio": "evals/out/part2/S4b/turn2.wav",
+      "grid": "evals/out/part2/S4b/turn2.grid.json",
+      "click_audition": "evals/out/part2/S4b/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1026,11 +1050,11 @@
    "audio": "evals/substitutes/audio/gtzan_country_00000.wav",
    "usage": {
     "calls": 2,
-    "cached_calls": 0,
-    "prompt_tokens": 2676,
-    "output_tokens": 99,
-    "thinking_tokens": 209,
-    "est_cost_usd": 0.00632,
+    "cached_calls": 2,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -1052,12 +1076,14 @@
       {
        "raw": "{\n  \"reading\": \"set tempo to half\",\n  \"ops\": [\n    {\n      \"op\": \"set_tempo_octave\",\n      \"factor\": 0.5\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1309,
         "output_tokens": 51,
         "thinking_tokens": 109
-       }
+       },
+       "fetched_at": "2026-10-12T19:05:23Z",
+       "cache_key": "f9842e1d29f4b852f6d04d01cf4ccfe8a59f8d6a672f22cef4c29ab88737b062"
       }
      ],
      "ops": [
@@ -1074,11 +1100,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 30.013333333333332,
-     "seconds": 15.45,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S6\\turn1.wav",
-      "grid": "evals\\out\\part2\\S6\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S6\\turn1.click.wav"
+      "audio": "evals/out/part2/S6/turn1.wav",
+      "grid": "evals/out/part2/S6/turn1.grid.json",
+      "click_audition": "evals/out/part2/S6/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1108,12 +1134,14 @@
       {
        "raw": "{\n  \"reading\": \"remove bar 2\",\n  \"ops\": [\n    {\n      \"op\": \"remove\",\n      \"range\": {\n        \"unit\": \"bars\",\n        \"start\": 2,\n        \"end\": 2\n      }\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1343,
         "output_tokens": 69,
         "thinking_tokens": 103
-       }
+       },
+       "fetched_at": "2026-10-12T19:05:46Z",
+       "cache_key": "54dc45ac8fe4384e0c2194aa48de0c8e24f57a892956697a37c62cc94bde0d1e"
       }
      ],
      "ops": [
@@ -1143,11 +1171,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 28.59437641723356,
-     "seconds": 21.71,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S6\\turn2.wav",
-      "grid": "evals\\out\\part2\\S6\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S6\\turn2.click.wav"
+      "audio": "evals/out/part2/S6/turn2.wav",
+      "grid": "evals/out/part2/S6/turn2.grid.json",
+      "click_audition": "evals/out/part2/S6/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1194,11 +1222,11 @@
    "audio": "evals/substitutes/audio/gtzan_jazz_00000.wav",
    "usage": {
     "calls": 2,
-    "cached_calls": 0,
-    "prompt_tokens": 2652,
-    "output_tokens": 120,
-    "thinking_tokens": 212,
-    "est_cost_usd": 0.00647,
+    "cached_calls": 2,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -1220,12 +1248,14 @@
       {
        "raw": "{\n  \"reading\": \"The user wants to increase the volume but didn't specify an amount.\",\n  \"ops\": [\n    {\n      \"op\": \"clarify\",\n      \"question\": \"How much louder (in dB) would you like it to be?\"\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1302,
         "output_tokens": 68,
         "thinking_tokens": 104
-       }
+       },
+       "fetched_at": "2026-10-12T19:06:14Z",
+       "cache_key": "20a47abb784f8c366691b2516d0aff9410dbc40c142f53a6c304399a6e754346"
       }
      ],
      "ops": [
@@ -1238,7 +1268,7 @@
      "resolved": [],
      "length_before_s": null,
      "length_after_s": null,
-     "seconds": 25.57
+     "seconds": 0.01
     }
    ],
    "clip": "sub-hiphop",
@@ -1247,11 +1277,11 @@
    "audio": "evals/substitutes/audio/gtzan_hiphop_00000.wav",
    "usage": {
     "calls": 1,
-    "cached_calls": 0,
-    "prompt_tokens": 1302,
-    "output_tokens": 68,
-    "thinking_tokens": 104,
-    "est_cost_usd": 0.00324,
+    "cached_calls": 1,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -1273,12 +1303,14 @@
       {
        "raw": "{\n  \"reading\": \"set the meter to 3/4 time\",\n  \"ops\": [\n    {\n      \"op\": \"set_beats_per_bar\",\n      \"beats_per_bar\": 3\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1308,
         "output_tokens": 59,
         "thinking_tokens": 112
-       }
+       },
+       "fetched_at": "2026-10-12T19:06:44Z",
+       "cache_key": "bc44e1b348b3b567b83399ab11eba95238c458d8f74cc3641a6093621bace7c2"
       }
      ],
      "ops": [
@@ -1295,11 +1327,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 30.013333333333332,
-     "seconds": 29.38,
+     "seconds": 0.01,
      "files": {
-      "audio": "evals\\out\\part2\\S8\\turn1.wav",
-      "grid": "evals\\out\\part2\\S8\\turn1.grid.json",
-      "click_audition": "evals\\out\\part2\\S8\\turn1.click.wav"
+      "audio": "evals/out/part2/S8/turn1.wav",
+      "grid": "evals/out/part2/S8/turn1.grid.json",
+      "click_audition": "evals/out/part2/S8/turn1.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1327,12 +1359,14 @@
       {
        "raw": "{\n  \"reading\": \"remove bar 3\",\n  \"ops\": [\n    {\n      \"op\": \"remove\",\n      \"range\": {\n        \"unit\": \"bars\",\n        \"start\": 3,\n        \"end\": 3\n      }\n    }\n  ]\n}",
        "error": null,
-       "cached": false,
+       "cached": true,
        "usage": {
         "prompt_tokens": 1347,
         "output_tokens": 69,
         "thinking_tokens": 242
-       }
+       },
+       "fetched_at": "2026-10-12T19:07:13Z",
+       "cache_key": "62f60e0a6bdb9836a3cc1550eccb1a2892bafc746cf245ed64019df2815baf34"
       }
      ],
      "ops": [
@@ -1362,11 +1396,11 @@
      ],
      "length_before_s": 30.013333333333332,
      "length_after_s": 28.55079365079365,
-     "seconds": 27.5,
+     "seconds": 0.02,
      "files": {
-      "audio": "evals\\out\\part2\\S8\\turn2.wav",
-      "grid": "evals\\out\\part2\\S8\\turn2.grid.json",
-      "click_audition": "evals\\out\\part2\\S8\\turn2.click.wav"
+      "audio": "evals/out/part2/S8/turn2.wav",
+      "grid": "evals/out/part2/S8/turn2.grid.json",
+      "click_audition": "evals/out/part2/S8/turn2.click.wav"
      },
      "format": {
       "samplerate": 22050,
@@ -1411,11 +1445,11 @@
    "audio": "evals/substitutes/audio/gtzan_rock_00000.wav",
    "usage": {
     "calls": 2,
-    "cached_calls": 0,
-    "prompt_tokens": 2655,
-    "output_tokens": 128,
-    "thinking_tokens": 354,
-    "est_cost_usd": 0.0076,
+    "cached_calls": 2,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thinking_tokens": 0,
+    "est_cost_usd": 0.0,
     "price_assumption_usd_per_mtok": {
      "input": 1.5,
      "output_incl_thinking": 7.5,
@@ -1426,24 +1460,32 @@
  ],
  "usage_total": {
   "calls": 17,
-  "cached_calls": 0,
-  "prompt_tokens": 23156,
-  "output_tokens": 1188,
-  "thinking_tokens": 2456,
-  "est_cost_usd": 0.06206,
+  "cached_calls": 17,
+  "prompt_tokens": 0,
+  "output_tokens": 0,
+  "thinking_tokens": 0,
+  "est_cost_usd": 0.0,
   "price_assumption_usd_per_mtok": {
    "input": 1.5,
    "output_incl_thinking": 7.5,
    "note": "upper-bound estimate; see llm.price_per_mtok"
   }
  },
- "cumulative": {
-  "calls": 40,
-  "calls_by_model": {
-   "gemini-3.1-flash-lite": 20,
-   "gemini-3.5-flash": 20
+ "cache_inventory": {
+  "unique_cached_responses": 20,
+  "by_model": {
+   "gemini-3.1-flash-lite": 20
   },
-  "tokens": 57820,
-  "est_cost_usd": 0.11974
+  "tokens": 28396,
+  "est_cost_usd_to_produce": 0.06743
+ },
+ "llm_provenance": {
+  "model": "gemini-3.1-flash-lite",
+  "cache_mode": "replay",
+  "calls": 17,
+  "replayed_from_cache": 17,
+  "live_calls": 0,
+  "fetched_utc_first": "2026-10-12T19:00:57Z",
+  "fetched_utc_last": "2026-10-12T19:07:13Z"
  }
 }

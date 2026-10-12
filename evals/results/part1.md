@@ -20,15 +20,15 @@ Default analysis: phase refinement OFF (DECISIONS.md D8). The 'refinement ON' co
 | A5 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
 | A6 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
 | A7 | test pack | **missing** | - | - | - | - | - | - | - | - | - |
-| sub-disco | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 0.9787 | 1.0 | 114.983 | variable | 4/4 | 2.35 / 30.12 |
-| sub-hiphop | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 119.202 | constant | 4/4 | 1.14 / 30.0 |
-| sub-rock | SUBSTITUTE (GTZAN) | ok | 0.8039 | 0.8361 | 0.8039 | 0.7921 | 0.7692 | 121.027 | variable | 4/4 | 1.1 / 30.01 |
-| sub-jazz | SUBSTITUTE (GTZAN) | ok | 0.5325 | 0.5514 | 0.5325 | 0.5333 | 0.0667 | 243.963 | variable | 6/8 | 1.11 / 30.01 |
-| sub-country | SUBSTITUTE (GTZAN) | ok | 0.9577 | 0.8 | 0.9577 | 0.9014 | 1.0 | 84.468 | constant | 4/4 | 1.1 / 30.08 |
-| G-house-6min | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 124.0 | constant | 4/4 | 8.5 / 362.3 |
-| G-house-partner | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 118.501 | constant | 4/4 | 3.82 / 165.83 |
-| G-step | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 127.36 | variable | 4/4 | 3.15 / 120.37 |
-| G-waltz | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 100.0 | constant | 3/4 | 2.74 / 117.9 |
+| sub-disco | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 0.9787 | 1.0 | 114.983 | variable | 4/4 | 3.14 / 30.12 |
+| sub-hiphop | SUBSTITUTE (GTZAN) | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 119.202 | constant | 4/4 | 1.42 / 30.0 |
+| sub-rock | SUBSTITUTE (GTZAN) | ok | 0.8039 | 0.8361 | 0.8039 | 0.7921 | 0.7692 | 121.027 | variable | 4/4 | 1.24 / 30.01 |
+| sub-jazz | SUBSTITUTE (GTZAN) | ok | 0.5325 | 0.5514 | 0.5325 | 0.5333 | 0.0667 | 243.963 | variable | 6/8 | 1.12 / 30.01 |
+| sub-country | SUBSTITUTE (GTZAN) | ok | 0.9577 | 0.8 | 0.9577 | 0.9014 | 1.0 | 84.468 | constant | 4/4 | 1.23 / 30.08 |
+| G-house-6min | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 124.0 | constant | 4/4 | 10.35 / 362.3 |
+| G-house-partner | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 118.501 | constant | 4/4 | 4.67 / 165.83 |
+| G-step | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 127.36 | variable | 4/4 | 3.6 / 120.37 |
+| G-waltz | generated | ok | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 100.0 | constant | 3/4 | 3.21 / 117.9 |
 
 ## Drift (grid beat - reference beat, every matched reference beat)
 

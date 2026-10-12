@@ -226,7 +226,10 @@ an eval number.
 Demucs' API default (`shifts=1`) offsets the input by a random amount from Python's global `random` on every
 call, so stems and every Part 3 number changed between identical runs (drum onset F 0.72 vs 0.73 on subP1).
 The shift is kept and seeded per call (`DEMUCS_SHIFT_SEED`), restoring the caller's random state; two runs
-now give identical scores.
+now give bit-identical stem audio, scores and pages (checked across two clean Docker runs; the float stem WAV
+files differ only in the timestamp libsndfile writes into their PEAK chunk). The browser's offline render is the
+one remaining source of variation: Chromium differs by one 16-bit LSB on ~0.1% of samples run to run, which
+left every metric unchanged.
 
 ### D23. One command per audience
 `make reproduce` (fetch every substitute, then `make eval`) for a clean clone; `make eval` regenerates

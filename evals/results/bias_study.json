@@ -158,9 +158,9 @@
   },
   "m4a": {
    "n": 128,
-   "median_ms": 2.75,
-   "mean_ms": 2.75,
-   "mad_ms": 3.57
+   "median_ms": 2.74,
+   "mean_ms": 2.51,
+   "mad_ms": 3.38
   }
  },
  "E5_substitutes": {

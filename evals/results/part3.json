@@ -7,7 +7,7 @@
    "midi": "evals/substitutes/part3/subP1.mid",
    "desc": "Groove MIDI 2-bar drum loop (GM render)",
    "stands_in_for": "P1",
-   "recreate_s": 4.47,
+   "recreate_s": 38.14,
    "safety_violations": [],
    "page_bytes": 17194,
    "status": "ok",
@@ -66,7 +66,7 @@
    "midi": "evals/substitutes/part3/subP2.mid",
    "desc": "Lakh MIDI 4-bar drums + bass (GM render)",
    "stands_in_for": "P2",
-   "recreate_s": 4.27,
+   "recreate_s": 4.59,
    "safety_violations": [],
    "page_bytes": 23008,
    "status": "ok",
@@ -132,9 +132,9 @@
    "midi": "evals/substitutes/part3/subP3.mid",
    "desc": "POP909 8-bar piano melody + chords (GM render)",
    "stands_in_for": "P3",
-   "recreate_s": 5.7,
+   "recreate_s": 5.65,
    "safety_violations": [],
-   "page_bytes": 29243,
+   "page_bytes": 29131,
    "status": "ok",
    "tempo_bpm": 90.0,
    "loop_s": 10.6667,
@@ -146,14 +146,14 @@
    "mode": "whole_clip",
    "loop_note": "whole clip as the loop: 16 beats of 666.7 ms = 10.667 s",
    "tracks": {
-    "keys": 142
+    "keys": 141
    },
    "onset_timing": {
     "onset_f_50ms": 0.7123,
     "n_onsets_original": 38,
     "n_onsets_render": 35,
     "median_abs_offset_ms": 5.8,
-    "median_signed_offset_ms": 2.9
+    "median_signed_offset_ms": 5.8
    },
    "seam": {
     "seam_s": 10.6667,
@@ -163,18 +163,18 @@
     "drums_by_class": null,
     "drum_onsets_any_class": null,
     "pitched": {
-     "f": 0.6222,
-     "p": 0.493,
+     "f": 0.625,
+     "p": 0.4965,
      "r": 0.8434,
      "n_ref": 83,
-     "n_est": 142
+     "n_est": 141
     },
     "all_notes": {
-     "f": 0.6222,
-     "p": 0.493,
+     "f": 0.625,
+     "p": 0.4965,
      "r": 0.8434,
      "n_ref": 83,
-     "n_est": 142
+     "n_est": 141
     }
    }
   },
@@ -185,9 +185,9 @@
    "midi": null,
    "desc": "Lakh MIDI 8-bar dense mix, 7 instruments (GM render, no reference used)",
    "stands_in_for": "P4",
-   "recreate_s": 6.0,
+   "recreate_s": 6.4,
    "safety_violations": [],
-   "page_bytes": 80353,
+   "page_bytes": 80237,
    "status": "ok",
    "tempo_bpm": 120.0,
    "loop_s": 16.0,
@@ -200,13 +200,13 @@
    "loop_note": "whole clip as the loop: 32 beats of 500.0 ms = 16.000 s",
    "tracks": {
     "drums": 188,
-    "bass": 51,
+    "bass": 50,
     "keys": 352
    },
    "onset_timing": {
-    "onset_f_50ms": 0.9286,
+    "onset_f_50ms": 0.922,
     "n_onsets_original": 68,
-    "n_onsets_render": 72,
+    "n_onsets_render": 73,
     "median_abs_offset_ms": 11.61,
     "median_signed_offset_ms": 11.61
    },
@@ -230,7 +230,14 @@
      }
     ],
     "echo": "Reading: Mute the drums.\nDrums muted.",
-    "page": "evals\\out\\part3\\subP2\\chat_turn1.html"
+    "page": "evals/out/part3/subP2/chat_turn1.html",
+    "llm_calls": [
+     {
+      "cached": true,
+      "fetched_at": "2026-10-12T19:18:41Z",
+      "cache_key": "dc807a5c7f56253f2dfd540fac7b741298fbbcec3ca04d427fa707943da03f3c"
+     }
+    ]
    },
    {
     "user": "Make the bass brighter.",
@@ -244,7 +251,14 @@
      }
     ],
     "echo": "Reading: Make the bass brighter.\nBass low-pass cutoff 887 -> 1773 Hz (medium step up).",
-    "page": "evals\\out\\part3\\subP2\\chat_turn2.html"
+    "page": "evals/out/part3/subP2/chat_turn2.html",
+    "llm_calls": [
+     {
+      "cached": true,
+      "fetched_at": "2026-10-12T19:18:52Z",
+      "cache_key": "29826d23cb820042cfcb2de97d93ac2bb22468c6a32d8c05b8404230bff1daf4"
+     }
+    ]
    },
    {
     "user": "Play it at 140.",
@@ -256,21 +270,50 @@
      }
     ],
     "echo": "Reading: Setting tempo to 140 BPM.\nTempo 107.00 -> 140.00 BPM (loop 8.972 -> 6.857 s); notes keep their beat positions, so rhythm is unchanged.",
-    "page": "evals\\out\\part3\\subP2\\chat_turn3.html"
+    "page": "evals/out/part3/subP2/chat_turn3.html",
+    "llm_calls": [
+     {
+      "cached": true,
+      "fetched_at": "2026-10-12T19:19:14Z",
+      "cache_key": "a757e15314efe8d34109b35cbcc4d7a4fc0a320ccf0f7c6e75b12de67c5fe336"
+     }
+    ]
    }
   ],
   "usage": {
    "calls": 3,
-   "cached_calls": 0,
-   "prompt_tokens": 1100,
-   "output_tokens": 166,
-   "thinking_tokens": 330,
-   "est_cost_usd": 0.00537,
+   "cached_calls": 3,
+   "prompt_tokens": 0,
+   "output_tokens": 0,
+   "thinking_tokens": 0,
+   "est_cost_usd": 0.0,
    "price_assumption_usd_per_mtok": {
     "input": 1.5,
     "output_incl_thinking": 7.5,
     "note": "upper-bound estimate; see llm.price_per_mtok"
    }
+  },
+  "llm_provenance": {
+   "model": "gemini-3.1-flash-lite",
+   "cache_mode": "replay",
+   "calls": 3,
+   "replayed_from_cache": 3,
+   "live_calls": 0,
+   "fetched_utc_first": "2026-10-12T19:18:41Z",
+   "fetched_utc_last": "2026-10-12T19:19:14Z"
   }
+ },
+ "substitute_toolchain": {
+  "pinned": {
+   "fluidsynth": "2.3.1",
+   "soundfont": "TimGM6mb.sf2",
+   "soundfont_sha256": "c5378b62028c920cb11e4803327983fee2f2cdff5dc89c708e39da417e51c854"
+  },
+  "recorded": {
+   "fluidsynth": "2.3.1",
+   "soundfont": "TimGM6mb.sf2",
+   "soundfont_sha256": "c5378b62028c920cb11e4803327983fee2f2cdff5dc89c708e39da417e51c854"
+  },
+  "matches_pinned": true
  }
 }

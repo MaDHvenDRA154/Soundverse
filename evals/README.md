@@ -47,7 +47,10 @@ says whether they match the pin. **The committed Part 3 numbers come from the Do
 same MIDI rendered by FluidSynth 2.4.4 instead of 2.3.1 differs by 50-63 dB below the signal, enough to move
 one note on subP3 and subP4 (pitched F 0.6222 vs 0.625); the Windows 2.3.1 build gets within 66-75 dB on
 subP1-subP3 but is still not bit-identical (subP4 51 dB), so only the Docker image reproduces the committed
-numbers exactly.
+numbers exactly. One more source of tiny variation: Chromium's OfflineAudioContext is not bit-deterministic --
+three renders of the same page in the same container differ by one 16-bit LSB on ~0.1% of samples (cause in
+Chromium not investigated). Every onset metric was identical across two full Docker runs, but
+`render_*.wav` files (including `evals/samples/subP1/render_1loop.wav`) change by that LSB on every run.
 
 The licence reasoning per dataset is DECISIONS.md D20. Which Part 3 substitute may be committed is a field
 in the manifest (`commit_outputs`), not a code path.
@@ -140,10 +143,10 @@ Numbers from `evals/results/part1.md`, `robustness.md`, `part2.md`, `part3.md`. 
   bar labels only.
 - **subP2 (Lakh, drums + bass)** -- every reference drum hit is found (R 1.0) but with 25 extra hits
   (P 0.65); bass F 0.88. Chat changes: 3 of 3 applied.
-- **subP3 (POP909, piano)** -- pitched F 0.62: Basic Pitch finds 142 notes for 83 in the reference (P 0.49,
+- **subP3 (POP909, piano)** -- pitched F 0.63: Basic Pitch finds 141 notes for 83 in the reference (P 0.50,
   R 0.84; the kind of extra notes was not analysed), and the meter reads 6/8 (whole-clip loop mode
   keeps the loop length right regardless). Render onset F 0.71, the lowest.
-- **subP4 (Lakh, dense mix)** -- no reference is used, as in the brief; render onset F 0.93 against the
+- **subP4 (Lakh, dense mix)** -- no reference is used, as in the brief; render onset F 0.92 against the
   original's own onsets.
 - These renders are much cleaner than real recordings, so the numbers are likely optimistic for the real
   P1-P4.

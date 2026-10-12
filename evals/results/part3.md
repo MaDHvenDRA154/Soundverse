@@ -8,8 +8,8 @@ onset-only, +-50 ms. Drums are compared by class (kick / snare / hat / other); '
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | subP1 | SUBSTITUTE | P1 | ok | 138.0 | 3.4783 | drums (36) | 0.3256 | 0.7209 | - | 0.3256 | 0.9756 | 17.41 | 0.0 | ok |
 | subP2 | SUBSTITUTE | P2 | ok | 107.0 | 8.972 | drums (71), bass (14) | 0.4786 | 0.7863 | 0.88 | 0.5493 | 0.9841 | 11.61 | 0.871 | ok |
-| subP3 | SUBSTITUTE | P3 | ok | 90.0 | 10.6667 | keys (142) | - | - | 0.6222 | 0.6222 | 0.7123 | 5.8 | 0.433 | ok |
-| subP4 | SUBSTITUTE | P4 | ok | 120.0 | 16.0 | drums (188), bass (51), keys (352) | - | - | - | - | 0.9286 | 11.61 | 0.035 | ok |
+| subP3 | SUBSTITUTE | P3 | ok | 90.0 | 10.6667 | keys (141) | - | - | 0.625 | 0.625 | 0.7123 | 5.8 | 0.433 | ok |
+| subP4 | SUBSTITUTE | P4 | ok | 120.0 | 16.0 | drums (188), bass (50), keys (352) | - | - | - | - | 0.922 | 11.61 | 0.035 | ok |
 
 Precision / recall per clip:
 
@@ -20,10 +20,14 @@ Precision / recall per clip:
 - subP2 drum_onsets_any_class: P 0.6479, R 1.0, F 0.7863 (71 est / 46 ref)
 - subP2 pitched: P 0.7857, R 1.0, F 0.88 (14 est / 11 ref)
 - subP2 all_notes: P 0.4588, R 0.6842, F 0.5493 (85 est / 57 ref)
-- subP3 pitched: P 0.493, R 0.8434, F 0.6222 (142 est / 83 ref)
-- subP3 all_notes: P 0.493, R 0.8434, F 0.6222 (142 est / 83 ref)
+- subP3 pitched: P 0.4965, R 0.8434, F 0.625 (141 est / 83 ref)
+- subP3 all_notes: P 0.4965, R 0.8434, F 0.625 (141 est / 83 ref)
+
+Substitute renders: FluidSynth 2.3.1, TimGM6mb.sf2 (sha256 c5378b62028c...); pinned FluidSynth 2.3.1, sha256 c5378b62028c... -- matches.
 
 ## Chat changes on the recreation of subP2 (real LLM)
+
+**LLM provenance: `gemini-3.1-flash-lite`, 3 calls, all answers replayed from the local cache (LLM_CACHE=replay); answers originally fetched from the API on 2026-10-12 (UTC). Re-run live with `LLM_CACHE=off` or `python -m evals.run part2 --live`.**
 
 - "Mute the drums." -> `applied` ops `[{"op": "set_mute", "track": "drums", "mute": true}]`  
   Reading: Mute the drums. / Drums muted.
@@ -32,4 +36,4 @@ Precision / recall per clip:
 - "Play it at 140." -> `applied` ops `[{"op": "set_tempo", "bpm": 140.0}]`  
   Reading: Setting tempo to 140 BPM. / Tempo 107.00 -> 140.00 BPM (loop 8.972 -> 6.857 s); notes keep their beat positions, so rhythm is unchanged.
 
-LLM usage: {'calls': 3, 'cached_calls': 0, 'prompt_tokens': 1100, 'output_tokens': 166, 'thinking_tokens': 330, 'est_cost_usd': 0.00537, 'price_assumption_usd_per_mtok': {'input': 1.5, 'output_incl_thinking': 7.5, 'note': 'upper-bound estimate; see llm.price_per_mtok'}}
+LLM usage: {'calls': 3, 'cached_calls': 3, 'prompt_tokens': 0, 'output_tokens': 0, 'thinking_tokens': 0, 'est_cost_usd': 0.0, 'price_assumption_usd_per_mtok': {'input': 1.5, 'output_incl_thinking': 7.5, 'note': 'upper-bound estimate; see llm.price_per_mtok'}}

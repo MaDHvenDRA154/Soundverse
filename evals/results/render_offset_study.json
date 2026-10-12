@@ -279,14 +279,14 @@
   "T6_render_minus_original_hop32": {
    "n": 31,
    "median_ms": 8.71,
-   "mean_ms": 10.49,
+   "mean_ms": 10.44,
    "p10_ms": 7.26,
    "p90_ms": 14.51
   },
   "render_onsets_minus_scheduled_hop32": {
    "n": 61,
    "median_ms": 12.67,
-   "mean_ms": 9.26,
+   "mean_ms": 9.19,
    "p10_ms": -11.28,
    "p90_ms": 15.67
   },

@@ -43,6 +43,11 @@ PEAK_MIN_SEPARATION_S = 0.07
 # beats: 8 beats = two bars of 4/4, the shortest stretch in which "a tempo"
 # means anything.
 MIN_BEATS_PER_REGION = 8
+# ...except in clips shorter than 8 s, which may not contain 8 beats at all
+# (a 3 s clip at 120 BPM has 6). There, 4 beats -- three intervals, the least
+# that can show regularity -- may form a grid.
+SHORT_CLIP_S = 8.0
+SHORT_CLIP_MIN_BEATS = 4
 # Two consecutive tracked beats further apart than this many times the local
 # median beat period break the region (an intro, breakdown or silence).
 # 2.5 periods tolerates one missed beat (2.0) plus jitter.
@@ -54,6 +59,29 @@ REGION_MAX_IBI_CV = 0.20
 # Mean beat activation required for a region to count as beated. Real beats
 # activate the network far above the 0.5 detection threshold.
 REGION_MIN_MEAN_ACTIVATION = 0.6
+# Edge trimming: the tracker keeps a pulse going for a few beats into silence
+# or a sustained pad (seen on generated audio: activation ~0.9 in digital
+# silence). A beat at a region edge is kept only if the spectral flux under
+# it is at least this fraction of the region's median on-beat flux, i.e. some
+# event actually happens there. Interior beats are never trimmed.
+EDGE_ONSET_MIN_REL = 0.15
+# Window for "onset under the beat": +-40 ms, about two tracker frames.
+BEAT_SUPPORT_WINDOW_S = 0.04
+
+# --------------------------------------------------------------------------
+# Repair of single tracker errors inside a region
+# --------------------------------------------------------------------------
+# An interval >= 1.75 local periods is a missed beat (2 periods, allowing 12%
+# jitter). Beyond REGION_GAP_FACTOR it is a gap, not a miss.
+REPAIR_MISSED_FACTOR = 1.75
+# An interval < 0.6 local periods holds an extra peak: no music changes tempo
+# by 40% within a single beat.
+REPAIR_EXTRA_FACTOR = 0.6
+# During line fits, beats further than 25% of a period from the line are
+# outliers (half the distance to the neighbouring subdivision).
+FIT_OUTLIER_BEAT_FRACTION = 0.25
+# ...and a fit is only accepted if at least 90% of beats are inliers.
+CONSTANT_MIN_INLIER_FRACTION = 0.9
 
 # --------------------------------------------------------------------------
 # Tempo segmentation (constant vs variable)
@@ -76,24 +104,32 @@ CONSTANT_RESIDUAL_SMOOTH_BEATS = 16
 # tracker's quantisation noise: 20 ms frames -> 5.8 ms RMS, times 2.5 for
 # model jitter.
 CONSTANT_MAX_RESIDUAL_RMS_S = 0.015
-# For variable (non-constant) segments the tracked beats are used directly,
-# lightly smoothed with a local linear fit over this many beats each side.
-# 2 beats either side removes frame quantisation without erasing rubato.
-VARIABLE_SMOOTH_HALF_WINDOW = 2
+# Beats this close to a detected step change, or to the start/end of a beat
+# region, are excluded from the constant test and placed by the line fitted
+# to the stable part: the network integrates context across a change and
+# lacks context at a region edge, and in both cases the nearest ~4 beats come
+# out 5-50 ms off (measured on generated audio). 4 beats = one 4/4 bar.
+STEP_TRANSITION_GUARD_BEATS = 4
+# Variable (non-constant) segments use the tracked beats, smoothed by a local
+# quadratic (Savitzky-Golay) over this many beats each side: 9 beats averages
+# frame quantisation down ~3x, and a local quadratic still follows ramps.
+VARIABLE_SMOOTH_HALF_WINDOW = 4
 
 # --------------------------------------------------------------------------
 # Meter / downbeats
 # --------------------------------------------------------------------------
 # Candidate beats-per-bar at the tracked beat level. 2 covers 2/4 and 6/8
-# (two dotted-quarter beats), 3 covers 3/4 (and 9/8), 4 covers 4/4 and 12/8.
-METER_CANDIDATES = (2, 3, 4)
+# (two dotted-quarter beats), 3 covers 3/4 (and 9/8), 4 covers 4/4 and 12/8,
+# 6 covers 6/8 when the tracker locks to the eighth note (it does at slow
+# dotted-quarter tempos).
+METER_CANDIDATES = (2, 3, 4, 6)
 # Per-beat probability that the bar restarts early (a dropped beat, an
 # edit in the source, a live band's extra beat). Small, so the decoder only
 # breaks bar structure when the downbeat evidence clearly demands it.
 DOWNBEAT_RESTART_PROB = 0.005
 # Mild prior favouring 4 beats per bar, the most common case, used only to
 # break near ties. Expressed as log-likelihood bonus per bar.
-METER_PRIOR_LOGBONUS = {2: 0.0, 3: 0.0, 4: 0.05}
+METER_PRIOR_LOGBONUS = {2: 0.0, 3: 0.0, 4: 0.05, 6: 0.0}
 # Ternary vs binary subdivision decides 6/8 vs 2/4 (and 12/8 vs 4/4): ratio
 # of onset energy at beat thirds vs beat halves. 1.0 == neither; we
 # require a clear 25% margin before calling a meter compound.
@@ -133,8 +169,20 @@ KICK_LOWPASS_HZ = 150.0
 KICK_ONSET_FRACTION = 0.3
 # Envelope smoothing time constant for kick detection.
 KICK_ENVELOPE_S = 0.002
-# Ignore kicks quieter than this relative to the loudest kick in the render.
+# Ignore kicks whose envelope rise is under this fraction of the strongest
+# rises in the excerpt (99.9th percentile).
 KICK_MIN_REL_LEVEL = 0.25
+# Rise measured over 15 ms on an envelope averaged over 15 ms: a kick reaches
+# its peak within ~5-15 ms; averaging over 15 ms removes the beating between
+# kick and bass (both live below 150 Hz, beat frequencies >= ~60 Hz).
+KICK_RISE_S = 0.015
+KICK_DETECT_SMOOTH_S = 0.015
+# A detection must be a new event: the envelope after the rise is at least
+# 2x the minimum of the preceding 30 ms (6 dB), i.e. not a wobble on a decay.
+KICK_NEW_ONSET_RATIO = 2.0
+KICK_NEW_ONSET_LOOKBACK_S = 0.030
+# Two kicks closer than 70 ms are one hit (that is a 32nd note at 107 BPM).
+KICK_MIN_SPACING_S = 0.070
 # Kicks of A and B are paired only if within this fraction of a beat; anything
 # further apart is a different drum hit, not a misalignment.
 KICK_PAIR_MAX_BEAT_FRACTION = 0.25

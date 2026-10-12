@@ -17,3 +17,6 @@ node_modules/
 evals/substitutes/audio/
 evals/substitutes/annotations/
 evals/substitutes/part3/
+# the assignment brief: kept locally, never committed
+BRIEF.md
+Copy of Soundverse AI - Applied AI Engineer Assignment Beat Agent.pdf

@@ -7,7 +7,7 @@ services:
         required: false
     environment:
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.1-flash-lite}
-      LLM_CACHE: ${LLM_CACHE:-on}
+      LLM_CACHE: ${LLM_CACHE:-replay}   # eval harness only; the app always calls live
     volumes:
       - ./testpack:/app/testpack:ro
       - ./audio:/app/audio

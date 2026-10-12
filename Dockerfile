@@ -19,6 +19,6 @@ COPY . .
 RUN uv sync --frozen --extra dev
 # Model weights (Beat This!, Demucs) are fetched on first use into this
 # volume-mounted cache, so rebuilding the image does not re-download them.
-ENV TORCH_HOME=/cache/torch HF_HOME=/cache/hf XDG_CACHE_HOME=/cache
+ENV TORCH_HOME=/cache/torch HF_HOME=/cache/hf XDG_CACHE_HOME=/cache BEAT_AGENT_CACHE=/app/.cache
 EXPOSE 8000
 CMD ["uvicorn", "beat_agent.app.server:app", "--host", "0.0.0.0", "--port", "8000"]

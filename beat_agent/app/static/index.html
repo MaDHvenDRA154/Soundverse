@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beat Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14171c; --panel: #1a1e25; --line: #2a303a; --text: #e7e4dd; --muted: #8b919b;
+    --faint: #3a414c; --accent: #d9a441; --err: #c97a6d;
+    --sans: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 var(--sans); }
+  header { display: flex; align-items: baseline; gap: 18px; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: .02em; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  header .right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 420px; min-height: calc(100vh - 50px); }
+  section { padding: 18px 24px; }
+  .left { border-right: 1px solid var(--line); }
+  .label { font: 500 11px/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
+  button, .btn { font: 500 13px var(--sans); color: var(--text); background: transparent; border: 1px solid var(--line);
+    padding: 6px 12px; border-radius: 3px; cursor: pointer; text-decoration: none; }
+  button:hover:not(:disabled), .btn:hover { border-color: var(--muted); }
+  button:disabled { color: var(--faint); cursor: default; }
+  button.primary { border-color: var(--accent); color: var(--accent); }
+  #wave { width: 100%; height: 200px; display: block; background: var(--panel); border: 1px solid var(--line); cursor: crosshair; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+  .status { font: 12px var(--mono); color: var(--muted); }
+  .status.err { color: var(--err); }
+  pre.header { font: 12px/1.5 var(--mono); color: var(--muted); white-space: pre-wrap; margin: 0;
+    border-left: 2px solid var(--line); padding-left: 10px; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 0; font-size: 13px; }
+  dt { color: var(--muted); } dd { margin: 0; font-family: var(--mono); font-size: 12px; }
+  .chat { display: flex; flex-direction: column; height: calc(100vh - 50px); }
+  #log { flex: 1; overflow-y: auto; padding: 0 0 12px; }
+  .turn { border-bottom: 1px solid var(--line); padding: 12px 0; }
+  .turn .u { font-weight: 500; }
+  .turn .tag { display: inline-block; font: 500 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em;
+    color: var(--muted); border-left: 2px solid var(--faint); padding: 2px 6px; margin: 6px 0; }
+  .turn .tag.applied, .turn .tag.undo, .turn .tag.redo { border-color: var(--accent); color: var(--text); }
+  .turn .tag.error, .turn .tag.rejected { border-color: var(--err); color: var(--err); }
+  .turn pre { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; color: #cfcbc2; }
+  .turn details { margin-top: 6px; color: var(--muted); font: 11px var(--mono); }
+  form { display: flex; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+  input[type=text] { flex: 1; background: var(--panel); border: 1px solid var(--line); color: var(--text);
+    padding: 8px 10px; font: 14px var(--sans); border-radius: 3px; }
+  input[type=text]:focus { outline: none; border-color: var(--muted); }
+  .empty { color: var(--muted); padding: 40px 0; }
+  audio { width: 100%; height: 34px; }
+  .legend { font: 11px var(--mono); color: var(--muted); display: flex; gap: 14px; }
+  .legend i { display: inline-block; width: 12px; height: 2px; vertical-align: middle; margin-right: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Beat Agent</h1>
+  <span class="sub" id="fname">no file</span>
+  <div class="right">
+    <label class="btn" for="file">Open audio</label>
+    <input id="file" type="file" accept="audio/*,.wav,.mp3,.flac,.ogg,.m4a,.aac,.aif,.aiff" hidden>
+  </div>
+</header>
+<main>
+  <section class="left">
+    <p class="label">Waveform and grid</p>
+    <canvas id="wave" width="1600" height="400"></canvas>
+    <div class="row legend"><span><i style="background:#e7e4dd"></i>bar line</span><span><i style="background:#3a414c"></i>beat</span>
+      <span><i style="background:#d9a441"></i>tempo change</span><span><i style="background:repeating-linear-gradient(90deg,#d9a441 0 3px,transparent 3px 6px)"></i>splice</span></div>
+    <audio id="player" controls preload="none"></audio>
+    <div class="row">
+      <button id="undo" disabled>Undo</button><button id="redo" disabled>Redo</button>
+      <span style="flex:1"></span>
+      <a class="btn" id="dl-audio">Edited audio</a><a class="btn" id="dl-grid">Grid JSON</a><a class="btn" id="dl-click">Click audition</a>
+    </div>
+    <p class="status" id="status">Open a WAV, MP3, FLAC, OGG or M4A file to start.</p>
+    <p class="label" style="margin-top:22px">Grid</p>
+    <pre class="header" id="header">-</pre>
+    <p class="label" style="margin-top:22px">Analysis</p>
+    <dl id="facts"></dl>
+  </section>
+  <section class="chat">
+    <p class="label">Chat</p>
+    <div id="log"><p class="empty">Edits are addressed in beats and bars, e.g. "remove bar 5", "repeat beats 16-32 twice", "fade out the last 8 beats". Every edit is echoed with exact beat/bar numbers and seconds.</p></div>
+    <form id="form"><input id="msg" type="text" placeholder="Describe an edit" autocomplete="off" disabled><button class="primary" id="send" disabled>Send</button></form>
+  </section>
+</main>
+<script>
+let sid = null, st = null, peaks = null, version = -1;
+const $ = id => document.getElementById(id);
+const cv = $("wave"), ctx = cv.getContext("2d"), player = $("player");
+
+function setStatus(t, err) { $("status").textContent = t; $("status").className = "status" + (err ? " err" : ""); }
+
+$("file").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  $("fname").textContent = f.name; setStatus("Uploading...");
+  const fd = new FormData(); fd.append("file", f);
+  const r = await fetch("/api/upload", {method: "POST", body: fd});
+  sid = (await r.json()).id; version = -1; peaks = null; $("log").innerHTML = "";
+  history.replaceState(null, "", `?session=${sid}`);
+  poll();
+};
+
+async function poll() {
+  const r = await fetch(`/api/session/${sid}`); st = await r.json();
+  if (st.status === "decoding" || st.status === "analysing") { setStatus(`${st.status === "decoding" ? "Decoding" : "Analysing beats"}...`); setTimeout(poll, 700); return; }
+  if (st.status === "error") { setStatus(st.error, true); return; }
+  if (!$("fname").textContent.includes(".")) $("fname").textContent = st.name;
+  await refresh();
+}
+
+async function refresh() {
+  if (st.version !== version) {
+    version = st.version;
+    peaks = await (await fetch(`/api/session/${sid}/peaks?n=1600`)).json();
+    player.src = `/api/session/${sid}/audio?v=${version}`;
+    for (const [id, w] of [["dl-audio", "audio"], ["dl-grid", "grid"], ["dl-click", "click"]]) $(id).href = `/api/session/${sid}/export/${w}?v=${version}`;
+  }
+  $("undo").disabled = !st.can_undo; $("redo").disabled = !st.can_redo;
+  $("msg").disabled = $("send").disabled = false;
+  $("header").textContent = st.header || "-";
+  const s = st.source || {}, c = st.confidence || {};
+  const facts = [["length", `${st.duration.toFixed(3)} s`], ["format", `${s.samplerate} Hz, ${s.channels} ch, ${s.export_subtype}`],
+    ["beats", st.beats.length], ["confidence", `overall ${c.overall}, downbeat ${c.downbeat}, coverage ${c.coverage}`],
+    ["analysis", st.analysis_s ? `${st.analysis_s.toFixed(1)} s` : "-"],
+    ["chat", st.llm_available ? "Gemini" : `unavailable (${st.llm_error})`]];
+  if (st.usage) facts.push(["tokens", `${st.usage.prompt_tokens} in / ${st.usage.output_tokens + st.usage.thinking_tokens} out, est. $${st.usage.est_cost_usd}`]);
+  for (const m of st.messages || []) facts.push(["note", m]);
+  $("facts").innerHTML = facts.map(([k, v]) => `<dt>${k}</dt><dd>${String(v).replace(/</g, "&lt;")}</dd>`).join("");
+  renderLog(); draw();
+  setStatus(`Ready. Version ${version}.`);
+}
+
+function renderLog() {
+  if (!st.chat.length) return;
+  $("log").innerHTML = st.chat.map(t => `<div class="turn"><div class="u">${esc(t.user)}</div>
+    <span class="tag ${t.status}">${t.status}</span><pre>${esc(t.echo)}</pre>
+    ${t.ops ? `<details><summary>parsed ops</summary><pre>${esc(JSON.stringify(t.ops, null, 1))}</pre></details>` : ""}</div>`).join("");
+  $("log").scrollTop = 1e9;
+}
+const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+function draw() {
+  const W = cv.width, H = cv.height; ctx.clearRect(0, 0, W, H);
+  if (!peaks || !st) return;
+  const dur = st.duration, x = t => t / dur * W;
+  // beats first (behind the waveform), bar lines brighter, with bar numbers when there is room
+  const barsShown = st.beats.filter(b => b[3] === 1);
+  const every = Math.max(1, Math.ceil(barsShown.length / (W / 60)));
+  for (const [t, idx, bar, bib] of st.beats) {
+    ctx.fillStyle = bib === 1 ? "#e7e4dd" : "#3a414c";
+    ctx.fillRect(Math.round(x(t)), bib === 1 ? 0 : 24, bib === 1 ? 2 : 1, H);
+    if (bib === 1 && bar % every === 0) { ctx.fillStyle = "#8b919b"; ctx.font = "20px IBM Plex Mono"; ctx.fillText(String(bar), x(t) + 5, 20); }
+  }
+  ctx.fillStyle = "rgba(231,228,221,0.55)";
+  const n = peaks.peaks.length, mid = H / 2 + 12, amp = (H - 40) / 2;
+  for (let i = 0; i < n; i++) { const h = Math.max(1, peaks.peaks[i] * amp); ctx.fillRect(i / n * W, mid - h, Math.max(1, W / n), 2 * h); }
+  ctx.strokeStyle = "#d9a441"; ctx.lineWidth = 2;
+  for (const c of st.tempo_changes || []) { ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(x(c.time), 0); ctx.lineTo(x(c.time), H); ctx.stroke(); }
+  for (const s of st.splices || []) { ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(x(s), 24); ctx.lineTo(x(s), H); ctx.stroke(); }
+  ctx.setLineDash([]);
+  if (!player.paused || player.currentTime) { ctx.fillStyle = "#d9a441"; ctx.fillRect(x(player.currentTime), 0, 2, H); }
+}
+player.ontimeupdate = draw;
+(function loop() { if (!player.paused) draw(); requestAnimationFrame(loop); })();
+cv.onclick = e => { if (!st) return; const r = cv.getBoundingClientRect(); player.currentTime = (e.clientX - r.left) / r.width * st.duration; draw(); };
+
+$("form").onsubmit = async e => {
+  e.preventDefault(); const text = $("msg").value.trim(); if (!text || !sid) return;
+  $("msg").value = ""; $("send").disabled = true; setStatus("Interpreting...");
+  const r = await fetch(`/api/session/${sid}/chat`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text})});
+  if (!r.ok) { setStatus(`Error: ${(await r.json()).detail}`, true); $("send").disabled = false; return; }
+  st = await r.json(); await refresh();
+};
+const qs = new URLSearchParams(location.search).get("session");
+if (qs) { sid = qs; $("fname").textContent = "session " + qs; poll(); }
+for (const a of ["undo", "redo"]) $(a).onclick = async () => { st = await (await fetch(`/api/session/${sid}/${a}`, {method: "POST"})).json(); await refresh(); };
+</script>
+</body>
+</html>

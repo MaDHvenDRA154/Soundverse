@@ -2,6 +2,7 @@
 
   beat-agent analyze <file> [--out DIR]
   beat-agent sync <master> <other> --at-bar N [--b-bar M] [--out DIR]
+  beat-agent chat <file> [--out DIR]      interactive editing; :export, :quit
 """
 from __future__ import annotations
 
@@ -67,6 +68,42 @@ def cmd_sync(a) -> int:
     return 0
 
 
+def cmd_chat(a) -> int:
+    from beat_agent.agent.agent import Agent
+    from beat_agent.agent.llm import GeminiProvider
+    from beat_agent.analysis.pipeline import analyze
+    from beat_agent.edit.session import EditSession
+    from beat_agent.io.audio import open_source
+    src = open_source(a.file)
+    print(f"analysing {a.file} ...", flush=True)
+    sess = EditSession(src, analyze(a.file, src))
+    agent = Agent(GeminiProvider(), sess)
+    out = _out_dir(a.out, a.file)
+    print(sess.grid_header())
+    print("Type an edit (beats/bars), 'undo', 'redo', ':export' to write files, ':quit' to leave.")
+    n = 0
+    while True:
+        try:
+            text = input("> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            break
+        if not text:
+            continue
+        if text in (":q", ":quit", "quit", "exit"):
+            break
+        if text == ":export":
+            n += 1
+            ex = sess.export(out, f"edit{n:02d}")
+            print(f"wrote {ex['audio']}, {ex['grid']}, {ex['click']}")
+            continue
+        res, _ = agent.handle(text)
+        print(f"[{res.status}] {res.message}")
+    u = agent.ledger.to_dict()
+    print(f"LLM: {u['calls']} calls, {u['prompt_tokens']} in / {u['output_tokens'] + u['thinking_tokens']} out tokens, "
+          f"est. ${u['est_cost_usd']}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="beat-agent")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -82,12 +119,17 @@ def main(argv=None) -> int:
     p.add_argument("--seconds", type=float, default=60.0)
     p.add_argument("--out")
     p.set_defaults(fn=cmd_sync)
+    p = sub.add_parser("chat", help="interactive chat editing of <file>")
+    p.add_argument("file")
+    p.add_argument("--out")
+    p.set_defaults(fn=cmd_chat)
     a = ap.parse_args(argv)
     from beat_agent.io.audio import AudioInputError
+    from beat_agent.agent.llm import LLMError
     from beat_agent.sync.sync import SyncError
     try:
         return a.fn(a)
-    except (AudioInputError, SyncError) as e:
+    except (AudioInputError, SyncError, LLMError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
 

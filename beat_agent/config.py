@@ -110,6 +110,9 @@ CONSTANT_MAX_RESIDUAL_RMS_S = 0.015
 # lacks context at a region edge, and in both cases the nearest ~4 beats come
 # out 5-50 ms off (measured on generated audio). 4 beats = one 4/4 bar.
 STEP_TRANSITION_GUARD_BEATS = 4
+# A tracked beat counts as explained by a tempo line when it is within 30 ms of
+# the line's nearest beat: 1.5 tracker frames, under half the 70 ms beat window.
+STEP_INLIER_S = 0.030
 # Phase refinement (grid.refine_phase): shift each tempo segment onto the
 # audio's attacks when the evidence is statistically clear.
 PHASE_REFINEMENT = True
@@ -230,3 +233,28 @@ KICK_PAIR_MAX_BEAT_FRACTION = 0.25
 # long enough to remove the step discontinuity.
 SPLICE_CROSSFADE_S = 0.005
 DEFAULT_FADE_SHAPE = "equal_power"
+
+# --------------------------------------------------------------------------
+# Chat editing limits and echo
+# --------------------------------------------------------------------------
+# Repeats beyond 16 plays (a 64-bar loop of 4 bars) are almost certainly a
+# misparse; ask for it in steps instead.
+MAX_REPEAT_TOTAL = 16
+# Refuse edits that would make the output longer than 30 minutes (keeps
+# renders within laptop disk/RAM; far beyond any DJ edit).
+MAX_OUTPUT_S = 30 * 60
+# "Boring part" proposals measure a stretch of this many bars by default: 8
+# bars is the standard phrase length in pop/dance music (capped at a quarter
+# of the track for short clips).
+PROPOSE_CUT_BARS = 8
+# A "quietest stretch" is only offered as a real candidate if it is at least
+# 3 dB below the track average -- about the smallest level change listeners
+# reliably call "noticeably quieter". Below that the agent says it has no
+# measured basis and asks.
+PROPOSE_MIN_CONTRAST_DB = 3.0
+# The echo warns about a tempo-octave alternative when the half-beat points
+# carry >= 75% of the on-beat onset strength (double time nearly as well
+# supported) or when alternate beats differ by more than 2:1 (strong-weak
+# pattern: half time plausible).
+OCTAVE_DOUBLE_PLAUSIBLE = 0.75
+OCTAVE_HALF_PLAUSIBLE = 0.5

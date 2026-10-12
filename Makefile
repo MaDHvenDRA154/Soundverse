@@ -3,7 +3,7 @@ PY ?= uv run python
 AUDIO ?= testpack
 MANIFEST ?= evals/manifest.yaml
 
-.PHONY: setup test test-fast eval eval-part1 eval-part2 eval-part3 demo app clean-evals
+.PHONY: setup test test-fast eval eval-robustness eval-part1 eval-part2 eval-part3 status demo app clean-evals
 
 setup:
 	uv sync --extra dev
@@ -15,7 +15,7 @@ test-fast:            ## unit tests + no-hardcoding guard + synthetic generalisa
 test:                 ## everything, including the 12-minute clip and neural-model cases
 	$(PY) -m pytest -q -m "not llm"
 
-eval: clean-evals eval-part1 eval-part2 eval-part3   ## regenerate every file under evals/out and evals/results
+eval: clean-evals eval-robustness eval-part1 eval-part2 eval-part3 status   ## regenerate every file under evals/out and evals/results, then the README status block
 
 eval-part1:
 	$(PY) -m evals.run part1 --manifest $(MANIFEST)
@@ -32,3 +32,8 @@ app:
 
 clean-evals:
 	$(PY) -c "import shutil; [shutil.rmtree(p, ignore_errors=True) for p in ('evals/out', 'evals/results')]"
+
+eval-robustness:
+	$(PY) -m evals.robustness --slow
+status:
+	$(PY) -m evals.status

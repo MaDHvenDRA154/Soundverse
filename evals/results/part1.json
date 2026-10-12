@@ -4,6 +4,7 @@
    "id": "A1",
    "desc": "Four-on-the-floor house, constant tempo, ~6 min",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
@@ -12,6 +13,7 @@
    "id": "A2",
    "desc": "Hip-hop, half-time feel, fast hi-hats",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
@@ -20,6 +22,7 @@
    "id": "A3",
    "desc": "Live band, no click",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
@@ -28,6 +31,7 @@
    "id": "A4",
    "desc": "~45 s ambient intro without drums, then a full beat",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
@@ -36,6 +40,7 @@
    "id": "A5",
    "desc": "Electronic, tempo change partway",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
@@ -44,6 +49,7 @@
    "id": "A6",
    "desc": "Folk-pop with dholak, 6/8",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
@@ -52,19 +58,279 @@
    "id": "A7",
    "desc": "House at a different tempo from A1 (sync partner)",
    "generated": false,
+   "substitute": false,
    "audio": null,
    "reference": null,
    "status": "missing"
   },
   {
+   "id": "sub-disco",
+   "desc": "GTZAN disco.00000 (substitute; stands in for A1/A7: steady four-on-the-floor)",
+   "generated": false,
+   "substitute": true,
+   "audio": "evals/substitutes/audio/gtzan_disco_00000.wav",
+   "reference": {
+    "beats": "evals/substitutes/annotations/gtzan_disco_00000.beats"
+   },
+   "status": "ok",
+   "duration_s": 30.12,
+   "runtime_s": 3.28,
+   "bpm": 114.904,
+   "tempo_type": "variable",
+   "meter": "4/4",
+   "n_beats": 58,
+   "tempo_changes": [],
+   "messages": [],
+   "confidence": {
+    "overall": 1.0,
+    "beat": 1.0,
+    "downbeat": 1.0,
+    "coverage": 0.993
+   },
+   "beat_f": 1.0,
+   "beat_f_untrimmed": 1.0,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 0.9787,
+   "beat_f_no_phase_refinement": 1.0,
+   "drift": {
+    "matched": 58,
+    "of": 58,
+    "max_abs_ms": 34.19,
+    "mean_abs_ms": 12.97,
+    "mean_signed_ms": -11.64,
+    "within_10ms": 0.4138
+   },
+   "drift_no_phase_refinement": {
+    "matched": 58,
+    "of": 58,
+    "max_abs_ms": 34.19,
+    "mean_abs_ms": 12.97,
+    "mean_signed_ms": -11.64,
+    "within_10ms": 0.4138
+   }
+  },
+  {
+   "id": "sub-hiphop",
+   "desc": "GTZAN hiphop.00000 (substitute; stands in for A2)",
+   "generated": false,
+   "substitute": true,
+   "audio": "evals/substitutes/audio/gtzan_hiphop_00000.wav",
+   "reference": {
+    "beats": "evals/substitutes/annotations/gtzan_hiphop_00000.beats"
+   },
+   "status": "ok",
+   "duration_s": 30.0,
+   "runtime_s": 1.67,
+   "bpm": 119.197,
+   "tempo_type": "constant",
+   "meter": "4/4",
+   "n_beats": 60,
+   "tempo_changes": [],
+   "messages": [],
+   "confidence": {
+    "overall": 1.0,
+    "beat": 1.0,
+    "downbeat": 1.0,
+    "coverage": 0.994
+   },
+   "beat_f": 1.0,
+   "beat_f_untrimmed": 1.0,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 1.0,
+   "beat_f_no_phase_refinement": 1.0,
+   "drift": {
+    "matched": 60,
+    "of": 60,
+    "max_abs_ms": 36.42,
+    "mean_abs_ms": 25.29,
+    "mean_signed_ms": -25.29,
+    "within_10ms": 0.0
+   },
+   "drift_no_phase_refinement": {
+    "matched": 60,
+    "of": 60,
+    "max_abs_ms": 27.83,
+    "mean_abs_ms": 16.7,
+    "mean_signed_ms": -16.7,
+    "within_10ms": 0.0667
+   }
+  },
+  {
+   "id": "sub-rock",
+   "desc": "GTZAN rock.00000 (substitute; stands in for A3: live band)",
+   "generated": false,
+   "substitute": true,
+   "audio": "evals/substitutes/audio/gtzan_rock_00000.wav",
+   "reference": {
+    "beats": "evals/substitutes/annotations/gtzan_rock_00000.beats"
+   },
+   "status": "ok",
+   "duration_s": 30.01,
+   "runtime_s": 1.52,
+   "bpm": 121.567,
+   "tempo_type": "constant",
+   "meter": "4/4",
+   "n_beats": 61,
+   "tempo_changes": [
+    {
+     "beat_index": 17,
+     "time": 10.023659559126555,
+     "bar": 5,
+     "from_bpm": 123.14,
+     "to_bpm": 120.8,
+     "kind": "step"
+    }
+   ],
+   "messages": [],
+   "confidence": {
+    "overall": 0.951,
+    "beat": 1.0,
+    "downbeat": 1.0,
+    "coverage": 0.991
+   },
+   "beat_f": 0.8039,
+   "beat_f_untrimmed": 0.8361,
+   "downbeat_f": 0.7692,
+   "librosa_beat_f": 0.7921,
+   "beat_f_no_phase_refinement": 0.8039,
+   "drift": {
+    "matched": 51,
+    "of": 61,
+    "max_abs_ms": 50.73,
+    "mean_abs_ms": 18.09,
+    "mean_signed_ms": 4.58,
+    "within_10ms": 0.2941
+   },
+   "drift_no_phase_refinement": {
+    "matched": 51,
+    "of": 61,
+    "max_abs_ms": 50.73,
+    "mean_abs_ms": 18.09,
+    "mean_signed_ms": 4.58,
+    "within_10ms": 0.2941
+   }
+  },
+  {
+   "id": "sub-jazz",
+   "desc": "GTZAN jazz.00000 (substitute; live, swung)",
+   "generated": false,
+   "substitute": true,
+   "audio": "evals/substitutes/audio/gtzan_jazz_00000.wav",
+   "reference": {
+    "beats": "evals/substitutes/annotations/gtzan_jazz_00000.beats"
+   },
+   "status": "ok",
+   "duration_s": 30.01,
+   "runtime_s": 1.56,
+   "bpm": 241.212,
+   "tempo_type": "variable",
+   "meter": "6/8",
+   "n_beats": 121,
+   "tempo_changes": [
+    {
+     "beat_index": 32,
+     "time": 7.630174018380037,
+     "bar": 6,
+     "from_bpm": 254.169,
+     "to_bpm": 234.791,
+     "kind": "step"
+    },
+    {
+     "beat_index": 80,
+     "time": 19.893396014930378,
+     "bar": 14,
+     "from_bpm": 234.791,
+     "to_bpm": 241.212,
+     "kind": "step"
+    }
+   ],
+   "messages": [
+    "Downbeat/meter confidence is low (0.49); bar numbers may be off."
+   ],
+   "confidence": {
+    "overall": 0.826,
+    "beat": 1.0,
+    "downbeat": 0.486,
+    "coverage": 0.998
+   },
+   "beat_f": 0.5359,
+   "beat_f_untrimmed": 0.5543,
+   "downbeat_f": 0.0,
+   "librosa_beat_f": 0.5333,
+   "beat_f_no_phase_refinement": 0.5359,
+   "drift": {
+    "matched": 52,
+    "of": 63,
+    "max_abs_ms": 69.86,
+    "mean_abs_ms": 30.35,
+    "mean_signed_ms": -18.48,
+    "within_10ms": 0.0769
+   },
+   "drift_no_phase_refinement": {
+    "matched": 52,
+    "of": 63,
+    "max_abs_ms": 69.86,
+    "mean_abs_ms": 30.35,
+    "mean_signed_ms": -18.48,
+    "within_10ms": 0.0769
+   }
+  },
+  {
+   "id": "sub-country",
+   "desc": "GTZAN country.00000 (substitute; steady pop)",
+   "generated": false,
+   "substitute": true,
+   "audio": "evals/substitutes/audio/gtzan_country_00000.wav",
+   "reference": {
+    "beats": "evals/substitutes/annotations/gtzan_country_00000.beats"
+   },
+   "status": "ok",
+   "duration_s": 30.08,
+   "runtime_s": 1.49,
+   "bpm": 84.466,
+   "tempo_type": "constant",
+   "meter": "4/4",
+   "n_beats": 42,
+   "tempo_changes": [],
+   "messages": [],
+   "confidence": {
+    "overall": 0.999,
+    "beat": 0.999,
+    "downbeat": 1.0,
+    "coverage": 0.984
+   },
+   "beat_f": 0.9577,
+   "beat_f_untrimmed": 0.8,
+   "downbeat_f": 1.0,
+   "librosa_beat_f": 0.9014,
+   "beat_f_no_phase_refinement": 0.9577,
+   "drift": {
+    "matched": 34,
+    "of": 43,
+    "max_abs_ms": 64.62,
+    "mean_abs_ms": 6.53,
+    "mean_signed_ms": 5.46,
+    "within_10ms": 0.8529
+   },
+   "drift_no_phase_refinement": {
+    "matched": 34,
+    "of": 43,
+    "max_abs_ms": 64.62,
+    "mean_abs_ms": 6.53,
+    "mean_signed_ms": 5.46,
+    "within_10ms": 0.8529
+   }
+  },
+  {
    "id": "G-house-6min",
    "desc": "generated four-on-the-floor 4/4 at 124 BPM, 6 min (drift + speed stand-in)",
    "generated": true,
+   "substitute": false,
    "audio": "evals\\out\\part1\\_generated\\G-house-6min.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 362.3,
-   "runtime_s": 9.64,
+   "runtime_s": 12.17,
    "bpm": 124.0,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -103,11 +369,12 @@
    "id": "G-house-partner",
    "desc": "generated 4/4 at 118.5 BPM, 48 kHz mono 24-bit (sync partner stand-in)",
    "generated": true,
+   "substitute": false,
    "audio": "evals\\out\\part1\\_generated\\G-house-partner.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 165.83,
-   "runtime_s": 3.75,
+   "runtime_s": 5.51,
    "bpm": 118.499,
    "tempo_type": "constant",
    "meter": "4/4",
@@ -148,22 +415,23 @@
    "id": "G-step",
    "desc": "generated 4/4 with a tempo step 126 -> 134 BPM at beat 128",
    "generated": true,
+   "substitute": false,
    "audio": "evals\\out\\part1\\_generated\\G-step.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 120.37,
-   "runtime_s": 3.03,
-   "bpm": 126.547,
+   "runtime_s": 4.59,
+   "bpm": 126.612,
    "tempo_type": "variable",
    "meter": "4/4",
    "n_beats": 256,
    "tempo_changes": [
     {
      "beat_index": 128,
-     "time": 61.55032894330238,
+     "time": 61.550120380804415,
      "bar": 33,
-     "from_bpm": 125.995,
-     "to_bpm": 133.995,
+     "from_bpm": 125.994,
+     "to_bpm": 133.994,
      "kind": "step"
     }
    ],
@@ -182,7 +450,7 @@
    "drift": {
     "matched": 256,
     "of": 256,
-    "max_abs_ms": 2.57,
+    "max_abs_ms": 2.62,
     "mean_abs_ms": 1.19,
     "mean_signed_ms": -1.19,
     "within_10ms": 1.0
@@ -190,9 +458,9 @@
    "drift_no_phase_refinement": {
     "matched": 256,
     "of": 256,
-    "max_abs_ms": 6.41,
-    "mean_abs_ms": 4.6,
-    "mean_signed_ms": 0.52,
+    "max_abs_ms": 6.46,
+    "mean_abs_ms": 4.64,
+    "mean_signed_ms": 0.49,
     "within_10ms": 1.0
    }
   },
@@ -200,11 +468,12 @@
    "id": "G-waltz",
    "desc": "generated 3/4 at 100 BPM",
    "generated": true,
+   "substitute": false,
    "audio": "evals\\out\\part1\\_generated\\G-waltz.wav",
    "reference": "generated truth",
    "status": "ok",
    "duration_s": 117.9,
-   "runtime_s": 2.58,
+   "runtime_s": 3.82,
    "bpm": 99.998,
    "tempo_type": "constant",
    "meter": "3/4",

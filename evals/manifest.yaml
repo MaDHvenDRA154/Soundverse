@@ -5,6 +5,7 @@
 #   matches nothing is reported as "missing" and nothing is measured for it.
 #   `steady_tempo: true` marks clips the brief calls constant-tempo (they get
 #   the >= 0.90 beat-F target and the drift measurement).
+# substitutes: real music standing in for missing test-pack clips (see below).
 # generated: clips rendered by evals/synth.py with exact ground truth. Always
 #   labelled "generated" in reports; never presented as test-pack results.
 # sync: pairs to beat-match (master first). Bars are 1-based.
@@ -74,6 +75,39 @@ clips:
     audio: ["testpack/**/P4.*", "testpack/**/P4_*.wav", "testpack/**/P4_*.mp3", "testpack/**/P4_*.flac"]
     part3: true
 
+# substitutes: REAL music standing in for missing test-pack clips. GTZAN
+#   excerpts (30 s) with public beat/downbeat annotations, fetched by
+#   `python -m evals.substitutes.fetch` (not committed). Selection rule fixed
+#   before scoring (see evals/substitutes/fetch.py). Reported in their own table;
+#   never used to choose a parameter. GTZAN is held out from the Beat This!
+#   checkpoint we use.
+substitutes:
+  - id: sub-disco
+    desc: "GTZAN disco.00000 (substitute; stands in for A1/A7: steady four-on-the-floor)"
+    audio: ["evals/substitutes/audio/gtzan_disco_00000.wav"]
+    beats: ["evals/substitutes/annotations/gtzan_disco_00000.beats"]
+    steady_tempo: true
+  - id: sub-hiphop
+    desc: "GTZAN hiphop.00000 (substitute; stands in for A2)"
+    audio: ["evals/substitutes/audio/gtzan_hiphop_00000.wav"]
+    beats: ["evals/substitutes/annotations/gtzan_hiphop_00000.beats"]
+    steady_tempo: true
+  - id: sub-rock
+    desc: "GTZAN rock.00000 (substitute; stands in for A3: live band)"
+    audio: ["evals/substitutes/audio/gtzan_rock_00000.wav"]
+    beats: ["evals/substitutes/annotations/gtzan_rock_00000.beats"]
+    steady_tempo: false
+  - id: sub-jazz
+    desc: "GTZAN jazz.00000 (substitute; live, swung)"
+    audio: ["evals/substitutes/audio/gtzan_jazz_00000.wav"]
+    beats: ["evals/substitutes/annotations/gtzan_jazz_00000.beats"]
+    steady_tempo: false
+  - id: sub-country
+    desc: "GTZAN country.00000 (substitute; steady pop)"
+    audio: ["evals/substitutes/audio/gtzan_country_00000.wav"]
+    beats: ["evals/substitutes/annotations/gtzan_country_00000.beats"]
+    steady_tempo: true
+
 generated:
   - id: G-house-6min
     desc: generated four-on-the-floor 4/4 at 124 BPM, 6 min (drift + speed stand-in)
@@ -98,20 +132,43 @@ sync:
   - {master: G-house-6min, other: G-house-partner, a_bar: 33, b_bar: 1, generated: true}
 
 sessions:
+  # clip: list in order of preference; the first one whose audio exists is used
+  # and the report says which. Substitutes/generated stand in for missing clips.
   - id: S1
-    clip: A1
+    clip: [A1, sub-disco]
     turns: ["Cut beat 16-32 and repeat it twice.", "Now fade out the last 8 beats.", "Undo.", "Remove bar 5."]
   - id: S2
-    clip: A2
+    clip: [A2, sub-hiphop]
     turns: ["Loop the first 4 bars four times, then let the track play on."]
   - id: S3
-    clip: A5
+    clip: [A5, G-step]
+    turns: ["Repeat the last bar before the tempo change twice."]
+  - id: S3b
+    clip: [sub-disco]
+    note: "extra: the same request on a track with NO tempo change -- the agent must say so, not guess"
     turns: ["Repeat the last bar before the tempo change twice."]
   - id: S4
-    clip: A1
+    clip: [A1, sub-disco]
     turns: ["Chop out the boring part."]
   - id: S5
-    clip: A3
+    clip: [A3, sub-rock]
     turns: ["Cut beat 0 to beat 8.", "Delete bars 200-210."]
+  # ---- extras (not in the brief), labelled as such in the report
+  - id: S4b
+    clip: [sub-country]
+    note: "extra: the confirm path of a measured proposal"
+    turns: ["Chop out the boring part.", "Yes, cut it."]
+  - id: S6
+    clip: [sub-jazz]
+    note: "extra: grid correction by chat on a clip tracked at a doubled tempo"
+    turns: ["The tempo is half that.", "Remove bar 2."]
+  - id: S7
+    clip: [sub-hiphop]
+    note: "extra: a request with no amount -> the agent should ask"
+    turns: ["Make it louder."]
+  - id: S8
+    clip: [sub-rock]
+    note: "extra: meter correction"
+    turns: ["It's in 3/4.", "Remove bar 3."]
 
 extra_audio_dirs: ["audio"]

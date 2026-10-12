@@ -88,6 +88,37 @@ Basic Pitch hard-requires TensorFlow on Python 3.11. Its wheel ships the same mo
 ONNX; we override TensorFlow out (`[tool.uv] override-dependencies`) and run
 onnxruntime. Smaller install, same model.
 
+### D11. One turn = one atomic EDL, addresses resolved op by op against the current grid
+All ops of a turn are applied to a copy of the state; any failure (out of range, empty range, a missing tempo
+change) discards the whole turn and the user is told nothing changed. Each op resolves against the grid as it
+stands after the previous op; to keep "remove bar 5 and bar 9" meaning the *current* bars 5 and 9, the LLM is
+told to emit several ranges from the latest to the earliest. Undo/redo restore whole turns and name the turn.
+
+### D12. Vague targets are measured and proposed, never cut
+"Chop out the boring part" maps to `propose_cut`: code measures the quietest contiguous stretch of complete
+bars (8-bar phrase by default, a quarter of short tracks), reports its level against the track average, and
+cuts only after an explicit confirmation turn (`confirm_proposal`). If the quietest stretch is less than
+3 dB below the average, the agent says it has no measured basis and asks (on the substitute disco clip the
+best candidate was only 0.9 dB quieter).
+
+### D13. Tempo-octave correction keeps the bar lines
+"The tempo is half/double that" changes the beat level only; downbeats stay where the downbeat decoder put
+them, beats-per-bar scales (6 -> 3 when halving), and halving is refused when bars have an odd number of
+beats. (First version kept beats-per-bar fixed like DJ software, which silently renumbered every bar.)
+
+### D14. Splice quality is judged against the source, with a negative control
+Clicks are measured as the sample step at the splice relative to the natural steps around both source
+points (plus audible HF excess); every Part 2 report also renders the same edit with a hard cut to show the
+detector can see a click on that material. 5 ms equal-power crossfades centred on the splice keep lengths
+and grid times exact.
+
+### D15. Substitute real-music clips while the test pack is missing
+Five GTZAN excerpts (rule fixed before scoring: track 00000 of disco, hiphop, rock, jazz, country) with
+public beat/downbeat annotations, fetched by a script and not committed (no licence stated). GTZAN is held
+out from the Beat This! checkpoint we use. They are reported in their own rows, labelled SUBSTITUTE, and no
+parameter was changed in response to them -- including phase refinement, which made the hiphop substitute
+worse (max error 27.8 -> 36.4 ms); that decision is left for the real test pack.
+
 ## Ambiguities and the reading we use
 
 The agent states the reading in its echo whenever a command touches one of these.
@@ -128,6 +159,10 @@ The agent states the reading in its echo whenever a command touches one of these
 10. **Downbeats during a drumless intro.** No beats or downbeats are emitted in a region
     without a detectable pulse; the region is listed in `no_beat_regions`. Bar 1 is the
     first downbeat after it. We do not extrapolate the grid backwards into the intro.
+
+11. **"Make it louder"** without an amount -> the agent asks for the dB (observed with Gemini: clarify).
+12. **"Cut X and repeat it"** selects X; **"Cut beat 0 to beat 8"** removes. "Cut" alone means remove;
+    "cut ... and repeat/loop" means select. Pickup beats before beat 0 are kept and the echo says so.
 
 ## What we deliberately do not build
 (filled in at Phase 4)

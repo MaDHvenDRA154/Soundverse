@@ -1,0 +1,12 @@
+.venv/
+.cache/
+.tools/
+.git/
+evals/out/
+testpack/
+audio/*
+!audio/README.md
+evals/substitutes/audio/
+**/__pycache__/
+.env
+*.pdf

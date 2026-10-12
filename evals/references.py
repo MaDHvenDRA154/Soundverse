@@ -22,6 +22,7 @@ class Clip:
     midi: str | None = None
     steady_tempo: bool | None = None
     generated: bool = False
+    substitute: bool = False
     truth: object | None = None
     part3: bool = False
     ref_files: dict = field(default_factory=dict)
@@ -90,9 +91,10 @@ def load_manifest(path="evals/manifest.yaml") -> dict:
 
 def resolve_clips(manifest: dict, gen_dir: Path | None = None) -> list[Clip]:
     out = []
-    for c in manifest.get("clips", []):
+    entries = [(c, False) for c in manifest.get("clips", [])] + [(c, True) for c in manifest.get("substitutes", [])]
+    for c, is_sub in entries:
         clip = Clip(id=c["id"], desc=c.get("desc", ""), audio=first_audio(c.get("audio")),
-                    steady_tempo=c.get("steady_tempo"), part3=bool(c.get("part3")))
+                    steady_tempo=c.get("steady_tempo"), part3=bool(c.get("part3")), substitute=is_sub)
         bf = first_match(c.get("beats"))
         if bf:
             clip.beats, db = load_times(bf)

@@ -14,7 +14,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.36,
+  "runtime_s": 3.8,
   "audio_s": 47.91
  },
  {
@@ -32,7 +32,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.02,
+  "runtime_s": 2.76,
   "audio_s": 70.4
  },
  {
@@ -52,7 +52,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 0.63,
+  "runtime_s": 0.87,
   "audio_s": 28.17
  },
  {
@@ -72,7 +72,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.18,
+  "runtime_s": 1.58,
   "audio_s": 32.46
  },
  {
@@ -90,7 +90,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.21,
+  "runtime_s": 1.7,
   "audio_s": 42.3
  },
  {
@@ -110,7 +110,7 @@
   "notes": [
    "meter 4/4, expected 3/4"
   ],
-  "runtime_s": 1.15,
+  "runtime_s": 1.61,
   "audio_s": 35.46
  },
  {
@@ -128,7 +128,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.75,
+  "runtime_s": 2.61,
   "audio_s": 62.86
  },
  {
@@ -149,7 +149,7 @@
    "eighth-note level (compound meter)",
    "constant grid off by up to 15.13 ms (> 10.0 ms)"
   ],
-  "runtime_s": 1.17,
+  "runtime_s": 1.72,
   "audio_s": 43.83
  },
  {
@@ -169,7 +169,7 @@
   "notes": [
    "meter 6/8, expected 3/4"
   ],
-  "runtime_s": 1.14,
+  "runtime_s": 1.52,
   "audio_s": 31.23
  },
  {
@@ -187,7 +187,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.24,
+  "runtime_s": 1.81,
   "audio_s": 57.22
  },
  {
@@ -205,7 +205,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.72,
+  "runtime_s": 2.35,
   "audio_s": 59.64
  },
  {
@@ -225,7 +225,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.09,
+  "runtime_s": 1.52,
   "audio_s": 36.82
  },
  {
@@ -245,7 +245,7 @@
   "notes": [
    "tempo octave error: tracked 119.991 BPM vs 60.0; x1 alternative exposed; F at the tracked level 1.000"
   ],
-  "runtime_s": 2.47,
+  "runtime_s": 3.35,
   "audio_s": 98.2
  },
  {
@@ -263,7 +263,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.72,
+  "runtime_s": 2.37,
   "audio_s": 66.2
  },
  {
@@ -281,7 +281,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.2,
+  "runtime_s": 1.63,
   "audio_s": 47.2
  },
  {
@@ -299,7 +299,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.12,
+  "runtime_s": 1.55,
   "audio_s": 38.2
  },
  {
@@ -319,7 +319,7 @@
   "notes": [
    "tempo octave error: tracked 99.99 BPM vs 200.0; x2 alternative exposed; F at the tracked level 1.000"
   ],
-  "runtime_s": 1.05,
+  "runtime_s": 1.51,
   "audio_s": 31.0
  },
  {
@@ -337,7 +337,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.11,
+  "runtime_s": 1.57,
   "audio_s": 35.33
  },
  {
@@ -355,7 +355,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.27,
+  "runtime_s": 1.85,
   "audio_s": 57.98
  },
  {
@@ -375,7 +375,7 @@
   "notes": [
    "hypermeter: 12/8 for 6/8"
   ],
-  "runtime_s": 1.11,
+  "runtime_s": 1.51,
   "audio_s": 36.89
  },
  {
@@ -384,18 +384,18 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 4.51,
-   "mean_err_ms": -1.3,
+   "max_abs_err_ms": 3.98,
+   "mean_err_ms": -1.21,
    "beats_before_music": 0,
    "tempo_type": "variable",
    "tempo_change_found": true,
-   "tempo_change_err_s": 0.0045,
+   "tempo_change_err_s": 0.0028,
    "meter": "4/4",
    "downbeat_f": 1.0,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.79,
+  "runtime_s": 2.5,
   "audio_s": 65.02
  },
  {
@@ -404,8 +404,8 @@
   "status": "pass",
   "checks": {
    "beat_f": 1.0,
-   "max_abs_err_ms": 2.6,
-   "mean_err_ms": -0.88,
+   "max_abs_err_ms": 2.37,
+   "mean_err_ms": -0.86,
    "beats_before_music": 0,
    "tempo_type": "variable",
    "tempo_change_found": true,
@@ -415,7 +415,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.8,
+  "runtime_s": 2.5,
   "audio_s": 61.43
  },
  {
@@ -423,17 +423,17 @@
   "group": "robustness",
   "status": "pass",
   "checks": {
-   "beat_f": 1.0,
-   "max_abs_err_ms": 28.41,
-   "mean_err_ms": 0.49,
+   "beat_f": 0.9688,
+   "max_abs_err_ms": 65.17,
+   "mean_err_ms": 6.72,
    "beats_before_music": 0,
    "tempo_type": "variable",
    "meter": "4/4",
-   "downbeat_f": 1.0,
+   "downbeat_f": 0.9583,
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.28,
+  "runtime_s": 1.8,
   "audio_s": 55.56
  },
  {
@@ -451,7 +451,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.71,
+  "runtime_s": 2.49,
   "audio_s": 59.6
  },
  {
@@ -469,7 +469,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 2.55,
+  "runtime_s": 3.37,
   "audio_s": 94.21
  },
  {
@@ -481,7 +481,7 @@
    "message": "No detectable beat in this audio: no grid was produced. (Silence, noise, speech or beatless ambient material all look like this.)"
   },
   "notes": [],
-  "runtime_s": 0.38,
+  "runtime_s": 0.52,
   "audio_s": 20.0
  },
  {
@@ -493,7 +493,7 @@
    "message": "No detectable beat in this audio: no grid was produced. (Silence, noise, speech or beatless ambient material all look like this.)"
   },
   "notes": [],
-  "runtime_s": 0.35,
+  "runtime_s": 0.5,
   "audio_s": 20.0
  },
  {
@@ -512,7 +512,7 @@
   "notes": [
    "short clip: meter not required"
   ],
-  "runtime_s": 0.06,
+  "runtime_s": 0.07,
   "audio_s": 2.5
  },
  {
@@ -530,7 +530,7 @@
    "audition_format": "8000Hz/1ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.06,
+  "runtime_s": 1.47,
   "audio_s": 32.48
  },
  {
@@ -548,7 +548,7 @@
    "audition_format": "96000Hz/2ch/PCM_24"
   },
   "notes": [],
-  "runtime_s": 0.68,
+  "runtime_s": 0.93,
   "audio_s": 29.43
  },
  {
@@ -566,7 +566,7 @@
    "audition_format": "48000Hz/6ch/FLOAT"
   },
   "notes": [],
-  "runtime_s": 1.21,
+  "runtime_s": 1.54,
   "audio_s": 36.29
  },
  {
@@ -584,7 +584,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.11,
+  "runtime_s": 1.52,
   "audio_s": 32.97
  },
  {
@@ -602,7 +602,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.13,
+  "runtime_s": 1.55,
   "audio_s": 32.97
  },
  {
@@ -620,7 +620,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.17,
+  "runtime_s": 1.65,
   "audio_s": 32.97
  },
  {
@@ -638,7 +638,7 @@
    "audition_format": "44100Hz/2ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 1.14,
+  "runtime_s": 1.54,
   "audio_s": 32.97
  },
  {
@@ -656,7 +656,7 @@
    "audition_format": "44100Hz/1ch/PCM_16"
   },
   "notes": [],
-  "runtime_s": 16.82,
+  "runtime_s": 24.97,
   "audio_s": 722.0
  }
 ]

@@ -12,5 +12,8 @@ services:
       - ./audio:/app/audio
       - ./evals:/app/evals
       - model-cache:/cache
+      # replays cached LLM responses + decoded audio between runs (gitignored)
+      - ./.cache:/app/.cache
+      - ./evals/substitutes:/app/evals/substitutes
 volumes:
   model-cache:

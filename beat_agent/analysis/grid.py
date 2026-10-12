@@ -234,7 +234,57 @@ def _fit_guarded(t: np.ndarray, a: int, b: int, gl: int, gr: int):
         lo, hi = a, b
     j = np.arange(lo - a, hi - a, dtype=float)
     coef, r, inl = _poly_fit(j, t[lo:hi], 1)
+    # Adaptive guard: the tracker can stay confused for more than the fixed
+    # guard around a change. Keep excluding beats next to a guarded edge while
+    # they are off the stable line by > STEP_INLIER_S, up to MAX_GUARD beats.
+    max_g = config.MIN_SEGMENT_BEATS // 2
+    while gl and lo - a < max_g and hi - lo > config.MIN_BEATS_PER_REGION and abs(r[0]) > config.STEP_INLIER_S:
+        lo += 1
+        j = np.arange(lo - a, hi - a, dtype=float); coef, r, inl = _poly_fit(j, t[lo:hi], 1)
+    while gr and b - hi < max_g and hi - lo > config.MIN_BEATS_PER_REGION and abs(r[-1]) > config.STEP_INLIER_S:
+        hi -= 1
+        j = np.arange(lo - a, hi - a, dtype=float); coef, r, inl = _poly_fit(j, t[lo:hi], 1)
     return coef, r, inl, _passes(r, inl)
+
+
+def _step_location(t: np.ndarray, a: int, b: int, m: int) -> int | None:
+    """Most likely step-change beat in [a+m, b-m].
+
+    For each candidate s, fit the old-tempo line to beats [a, s-g) and the
+    new-tempo line to [s+g, b) (g = guard beats), then count the beats lying
+    within STEP_INLIER_S of the line active at their position (old before s,
+    new from s). Distances are to the *nearest* predicted beat, so a beat the
+    tracker dropped or added while adjusting does not shift anything. Every
+    beat assigned to the wrong side is an outlier, so the count peaks at the
+    true change; ties go to the smaller residual. (Least squares over all beats
+    was pulled up to 9 beats off by the tracker's transition errors, and a
+    median-interval contrast up to 7; see notes/ai_mistakes_log.md.)
+    """
+    g = config.STEP_TRANSITION_GUARD_BEATS
+    tol = config.STEP_INLIER_S
+
+    def line(lo, hi):
+        j = np.arange(lo, hi, dtype=float)
+        c, _, _ = _poly_fit(j, t[lo:hi], 1)
+        return c
+
+    def dist(c, tt):
+        k = np.round((tt - c[1]) / c[0])
+        return np.abs(tt - (c[1] + c[0] * k))
+
+    best, best_key = None, None
+    for s in range(a + m, b - m + 1):
+        lo1, hi1, lo2 = a, max(a + 4, s - g), min(b - 4, s + g)
+        cl, cr = line(lo1, hi1), line(lo2, b)
+        if cl[0] <= 0 or cr[0] <= 0:
+            continue
+        dl, dr = dist(cl, t[a:s]), dist(cr, t[s:b])
+        inl = int((dl < tol).sum() + (dr < tol).sum())
+        res = float(np.sum(np.minimum(dl, tol) ** 2) + np.sum(np.minimum(dr, tol) ** 2))
+        key = (inl, -res)
+        if best_key is None or key > best_key:
+            best, best_key = s, key
+    return best
 
 
 def _split_steps(t: np.ndarray, a: int, b: int, sse: _LineSSE, out: list,
@@ -251,18 +301,13 @@ def _split_steps(t: np.ndarray, a: int, b: int, sse: _LineSSE, out: list,
     m = config.MIN_SEGMENT_BEATS
     if b - a < 2 * m or depth > 8:
         return False
-    best, best_cost, slopes = None, np.inf, None
     g = config.STEP_TRANSITION_GUARD_BEATS
-    for s in range(a + m, b - m + 1):
-        # evaluate each candidate boundary without the beats right next to it:
-        # the tracker often keeps the old tempo for a few beats after a change
-        c1, s1 = sse(a, max(a + 2, s + 1 - g))
-        c2, s2 = sse(min(b - 2, s + g), b)
-        if c1 + c2 < best_cost:
-            best, best_cost, slopes = s, c1 + c2, (s1, s2)
-    if best is None or min(slopes) <= 0:
+    best = _step_location(t, a, b, m)
+    if best is None:
         return False
-    if abs(slopes[1] / slopes[0] - 1) < config.TEMPO_CHANGE_MIN_RATIO:
+    _, s1 = sse(a, max(a + 2, best + 1 - g))
+    _, s2 = sse(min(b - 2, best + g), b)
+    if min(s1, s2) <= 0 or abs(s2 / s1 - 1) < config.TEMPO_CHANGE_MIN_RATIO:
         return False
     return (_split_steps(t, a, best + 1, sse, out, gl, g, depth + 1)
             and _split_steps(t, best, b, sse, out, g, gr, depth + 1))

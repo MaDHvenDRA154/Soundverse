@@ -1,0 +1,62 @@
+[project]
+name = "beat-agent"
+version = "0.1.0"
+description = "Chat-driven beat grid, grid editing and audio-to-Web-Audio agent"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "numpy>=1.26,<2.3",
+    "scipy>=1.11",
+    "soundfile>=0.12",
+    "soxr>=0.3",
+    "librosa>=0.10.2",
+    "mir_eval>=0.8",
+    "pydantic>=2.7",
+    "pyyaml>=6",
+    "matplotlib>=3.8",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
+    "google-genai>=1.40",
+    "python-dotenv>=1.0",
+    "pyrubberband>=0.4",
+    "imageio-ffmpeg>=0.5",
+    "torch>=2.2",
+    "torchaudio>=2.2",
+    "beat-this>=1.1",
+    "demucs>=4.0.1",
+    "basic-pitch>=0.4",
+    "onnxruntime>=1.17",
+    "pretty_midi>=0.2.10",
+    "playwright>=1.44",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[project.scripts]
+beat-agent = "beat_agent.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["beat_agent"]
+
+[tool.uv]
+# Basic Pitch hard-requires TensorFlow on py3.11; we use its bundled ONNX model
+# through onnxruntime instead (much smaller, CPU-friendly). See DECISIONS.md.
+override-dependencies = ["tensorflow ; sys_platform == 'never'"]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchaudio = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: long-running (12-minute clip, neural models)", "llm: needs GEMINI_API_KEY"]

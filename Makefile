@@ -27,7 +27,7 @@ eval-part1:
 	$(PY) -m evals.run part1 --manifest $(MANIFEST)
 eval-part2:
 	$(PY) -m evals.run part2 --manifest $(MANIFEST)
-eval-replay:          ## Part 2 + Part 3 from the committed LLM cache only: no key, no API calls
+eval-replay:          ## Part 2 + Part 3 from the committed LLM cache only (the default mode, made explicit)
 	LLM_CACHE=replay $(PY) -m evals.run part2 --manifest $(MANIFEST)
 	LLM_CACHE=replay $(PY) -m evals.run part3 --manifest $(MANIFEST)
 eval-live:            ## Part 2 + Part 3 with the LLM cache bypassed (20 real Gemini calls; may differ slightly)

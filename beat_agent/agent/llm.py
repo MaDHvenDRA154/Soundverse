@@ -6,15 +6,17 @@ in, raw JSON text + token usage out. Swap providers by implementing
 schema), so eval re-runs cost nothing; the cache key covers the grid state
 because the grid summary is part of the contents.
 
-The cache lives in evals/llm_cache/ and is committed: a fresh clone replays the
-exact answers behind the committed results.
-  LLM_CACHE=on (default)  replay cached answers; a prompt not in the cache is sent
-                          to the API (needs GEMINI_API_KEY) and its answer cached
-  LLM_CACHE=replay        replay only: no API key needed, no call is ever made, a
-                          prompt not in the cache is an error (the clean-clone check)
-  LLM_CACHE=off           never read the cache: every call goes to the API with your
-                          key; fresh answers replace the cached ones
-BEAT_AGENT_LLM_CACHE_DIR overrides the directory.
+Cache modes (GeminiProvider(cache=...)):
+  "none"    live calls, no cache at all. The default for interactive use (the
+            preview app and `beat-agent chat`), which always uses your key.
+  "replay"  answers only from the cache directory; no key, no API call, a
+            prompt not in the cache is an error. The eval harness default (it
+            passes its committed cache directory).
+  "on"      replay, and send a prompt not in the cache to the API, caching it.
+  "off"     every call goes to the API; fresh answers replace the cached ones.
+The eval harness reads its mode from LLM_CACHE (default "replay"; `--live` = "off").
+LLM_CACHE does not affect the app or the CLI. The cache directory is passed in
+by the caller (cache_dir=...); this package has no default location for it.
 """
 from __future__ import annotations
 
@@ -41,11 +43,17 @@ class LLMResponse:
     cache_key: str = ""
 
 
-def cache_mode() -> str:
-    """'on' (default), 'replay' (cache only, no API) or 'off' (bypass reads), from LLM_CACHE."""
-    v = os.environ.get("LLM_CACHE", "on").strip().lower()
-    if v not in ("on", "replay", "off"):
-        raise LLMError(f"LLM_CACHE must be 'on', 'replay' or 'off', not {v!r}")
+CACHE_MODES = ("none", "replay", "on", "off")
+NO_KEY_INTERACTIVE = ("Chat needs a Gemini API key: put GEMINI_API_KEY=... in .env (copy .env.example), then "
+                      "restart. Free keys: https://aistudio.google.com/apikey. The committed eval results replay "
+                      "without a key (`make eval`).")
+
+
+def cache_mode(default: str = "replay") -> str:
+    """The eval harness's cache mode: LLM_CACHE, else `default` ('replay')."""
+    v = os.environ.get("LLM_CACHE", default).strip().lower()
+    if v not in ("replay", "on", "off"):
+        raise LLMError(f"LLM_CACHE must be 'replay', 'on' or 'off', not {v!r}")
     return v
 
 
@@ -102,14 +110,8 @@ def _utc(ts: float) -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(ts))
 
 
-def _cache_dir() -> Path:
-    """evals/llm_cache/ of this checkout (committed), or BEAT_AGENT_LLM_CACHE_DIR."""
-    env = os.environ.get("BEAT_AGENT_LLM_CACHE_DIR")
-    if env:
-        d = Path(env)
-    else:
-        repo = Path(__file__).resolve().parents[2]
-        d = (repo if (repo / "evals").is_dir() else Path.cwd()) / "evals" / "llm_cache"
+def _cache_dir(d) -> Path:
+    d = Path(d)
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -130,7 +132,7 @@ DEFAULT_MODEL = "gemini-3.1-flash-lite"
 
 class GeminiProvider(LLMProvider):
     def __init__(self, model: str | None = None, api_key: str | None = None, check_model: bool = True,
-                 use_cache: bool = True):
+                 cache: str = "none", cache_dir: str | os.PathLike | None = None):
         try:
             from dotenv import load_dotenv
             load_dotenv()
@@ -140,18 +142,22 @@ class GeminiProvider(LLMProvider):
         if self.model.startswith(FORBIDDEN_MODEL_PREFIXES):
             raise LLMError(f"Model {self.model!r} is not allowed (Gemini 2.x/1.x are retired or retiring); "
                            "set GEMINI_MODEL to a Gemini 3 model.")
-        self.use_cache = use_cache
-        if cache_mode() == "replay":   # cache only: no key, no client, no models.list
+        if cache not in CACHE_MODES:
+            raise LLMError(f"cache mode must be one of {CACHE_MODES}, not {cache!r}")
+        if cache != "none" and cache_dir is None:
+            raise LLMError(f"cache mode {cache!r} needs a cache_dir")
+        self.cache, self.cache_dir = cache, cache_dir
+        if cache == "replay":   # committed answers only: no key, no client, no models.list
             self.client = None
             return
         key = api_key or os.environ.get("GEMINI_API_KEY")
         if not key:
-            raise LLMError("GEMINI_API_KEY is not set (put it in .env; see .env.example), or set LLM_CACHE=replay "
-                           "to replay the committed answers without a key.")
+            raise LLMError(NO_KEY_INTERACTIVE if cache == "none" else
+                           f"GEMINI_API_KEY is not set (put it in .env; see .env.example). LLM_CACHE={cache} makes "
+                           "API calls; the default eval mode (replay) needs no key.")
         from google import genai
         self._genai = genai
         self.client = genai.Client(api_key=key)
-        self.use_cache = use_cache
         if check_model:
             self._check_model()
 
@@ -167,14 +173,14 @@ class GeminiProvider(LLMProvider):
 
     def complete_json(self, system: str, contents: str, schema: dict) -> LLMResponse:
         key = cache_key(self.model, system, contents, schema)
-        cpath = _cache_dir() / f"{key}.json"
-        mode = cache_mode()
-        if self.use_cache and mode in ("on", "replay") and cpath.exists():
+        cpath = _cache_dir(self.cache_dir) / f"{key}.json" if self.cache != "none" else None
+        mode = self.cache
+        if mode in ("on", "replay") and cpath.exists():
             d = json.loads(cpath.read_text())
             return LLMResponse(d["text"], d.get("usage", {}), cached=True, model=self.model,
                                fetched_at=d.get("fetched_at", ""), cache_key=key)
         if mode == "replay" or self.client is None:
-            raise LLMError(f"no cached answer for this prompt in {_cache_dir()} (LLM_CACHE=replay makes no API calls; "
+            raise LLMError(f"no cached answer for this prompt in {self.cache_dir} (LLM_CACHE=replay makes no API calls; "
                            "the analysis or prompt changed since the cache was made)")
         from google.genai import types
         cfg = types.GenerateContentConfig(
@@ -209,7 +215,7 @@ class GeminiProvider(LLMProvider):
             now = _utc(time.time())
             out = LLMResponse(text, usage, cached=False, model=self.model, latency_s=time.perf_counter() - t0,
                               fetched_at=now, cache_key=key)
-            if self.use_cache and text:
+            if mode in ("on", "off") and text:
                 cpath.write_text(json.dumps({"text": text, "usage": usage, "model": self.model, "fetched_at": now}))
             return out
         raise LLMError(f"Gemini call failed after retries: {last}")

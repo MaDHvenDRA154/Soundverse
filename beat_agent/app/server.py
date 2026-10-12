@@ -30,7 +30,7 @@ def llm():
             _llm["tried"] = True
             try:
                 from beat_agent.agent.llm import GeminiProvider
-                _llm["provider"] = GeminiProvider()
+                _llm["provider"] = GeminiProvider()   # live, your key, no cache (LLM_CACHE is for the evals)
             except Exception as e:
                 _llm["error"] = str(e)
         return _llm["provider"]

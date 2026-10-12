@@ -19,11 +19,11 @@ USAGE = {"prompt_tokens", "output_tokens", "thinking_tokens"}
 SECRET = re.compile(r"AIza[0-9A-Za-z_\-]{20,}|authorization|x-goog-api-key|bearer\s|api[_-]?key|"
                     r"password|secret|token=|-----BEGIN", re.I)
 RESULTS = Path("evals/results")
+LLM_CACHE_DIR = Path("evals/llm_cache")   # committed; passed to GeminiProvider by the eval harness
 
 
 def check(d: Path | None = None) -> list[str]:
-    from beat_agent.agent.llm import _cache_dir
-    d = d or _cache_dir()
+    d = d or LLM_CACHE_DIR
     problems = []
     for f in sorted(d.glob("*")):
         if f.suffix != ".json" or not re.fullmatch(r"[0-9a-f]{64}", f.stem):
@@ -55,11 +55,10 @@ def referenced_keys() -> set[str]:
 
 
 def prune() -> tuple[int, int]:
-    from beat_agent.agent.llm import _cache_dir
     keep = referenced_keys()
     if not keep:
         raise SystemExit("no cache keys in evals/results (run the evals first); nothing pruned")
-    files = list(_cache_dir().glob("*.json"))
+    files = list(LLM_CACHE_DIR.glob("*.json"))
     removed = [f for f in files if f.stem not in keep]
     missing = keep - {f.stem for f in files}
     if missing:

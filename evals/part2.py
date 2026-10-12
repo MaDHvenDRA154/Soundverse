@@ -57,7 +57,7 @@ def grid_check(edited_audio: str, grid) -> dict:
 
 def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results_dir="evals/results") -> dict:
     from beat_agent.agent.agent import Agent
-    from beat_agent.agent.llm import GeminiProvider, LLMError, UsageLedger
+    from beat_agent.agent.llm import GeminiProvider, LLMError, cache_mode, UsageLedger
     from beat_agent.analysis.pipeline import analyze
     from beat_agent.edit.session import EditSession
     from beat_agent.edit.timeline import render
@@ -69,7 +69,8 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
     man = load_manifest(manifest_path)
     clips = {c.id: c for c in resolve_clips(man, Path("evals/out/part1/_generated"))}
     try:
-        llm = GeminiProvider()
+        from evals.cache_tool import LLM_CACHE_DIR
+        llm = GeminiProvider(cache=cache_mode(), cache_dir=LLM_CACHE_DIR)
     except LLMError as e:
         msg = f"Part 2 not run: {e}"
         (results_dir / "part2.md").write_text(f"# Part 2\n\n**{msg}**\n")
@@ -153,8 +154,8 @@ def run(manifest_path="evals/manifest.yaml", out_root="evals/out/part2", results
 
 def provenance(attempts: list[dict], model: str) -> dict:
     """Where this run's answers came from: live API calls or cached replays, and when they were fetched."""
-    from beat_agent.agent.llm import cache_mode
     when = sorted(a["fetched_at"] for a in attempts if a.get("fetched_at"))
+    from beat_agent.agent.llm import cache_mode
     return {"model": model, "cache_mode": cache_mode(), "calls": len(attempts),
             "replayed_from_cache": sum(1 for a in attempts if a.get("cached")),
             "live_calls": sum(1 for a in attempts if not a.get("cached")),
@@ -186,8 +187,8 @@ def cache_inventory() -> dict:
     calls = tok = 0
     cost = 0.0
     by_model: dict[str, int] = {}
-    from beat_agent.agent.llm import _cache_dir
-    for f in _cache_dir().glob("*.json"):
+    from evals.cache_tool import LLM_CACHE_DIR
+    for f in LLM_CACHE_DIR.glob("*.json"):
         d = json.loads(f.read_text())
         u = d.get("usage", {})
         calls += 1

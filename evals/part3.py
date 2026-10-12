@@ -194,7 +194,7 @@ def chat_demo(man, out_root: Path) -> dict:
     spec = man.get("part3_chat")
     if not spec:
         return {}
-    from beat_agent.agent.llm import GeminiProvider, LLMError
+    from beat_agent.agent.llm import GeminiProvider, LLMError, cache_mode
     from beat_agent.agent.score_agent import ScoreAgent
     from beat_agent.render.html import write_html
     from beat_agent.transcribe.score import Score
@@ -202,7 +202,8 @@ def chat_demo(man, out_root: Path) -> dict:
     if not p.exists():
         return {"status": "missing", "clip": spec["clip"]}
     try:
-        llm = GeminiProvider()
+        from evals.cache_tool import LLM_CACHE_DIR
+        llm = GeminiProvider(cache=cache_mode(), cache_dir=LLM_CACHE_DIR)
     except LLMError as e:
         return {"status": "not run", "error": str(e)}
     ag = ScoreAgent(llm, Score.model_validate_json(p.read_text()))

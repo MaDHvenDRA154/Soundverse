@@ -13,34 +13,37 @@ echoes exactly what it did.
 > from (a) **SUBSTITUTE** clips, labelled as such everywhere: 5 GTZAN excerpts with public human beat
 > annotations (Parts 1-2) and 4 public-MIDI excerpts rendered with a GM soundfont (Part 3), and (b)
 > **generated** audio with exact ground truth. Neither is the test pack. When the test
-> pack is dropped into `testpack/`, `make eval` measures it (file-name patterns in `evals/manifest.yaml`).
+> pack is dropped into `testpack/`, `make eval` measures it (file-name patterns in `evals/manifest.yaml`); its chat
+> sessions are new prompts, so run them with a key and `LLM_CACHE=on` (replay mode would withhold them as missing).
 
 ## Quick start
 
-```bash
-cp .env.example .env            # add GEMINI_API_KEY (GEMINI_MODEL defaults to gemini-3.1-flash-lite; any Gemini 3 model works)
-docker compose up               # app on http://localhost:8000
-docker compose run --rm app make reproduce   # fetch the substitutes, then every eval from scratch
-docker compose run --rm app make eval        # every eval, if the substitutes are already fetched
-```
+Two ways to use it, with different LLM behaviour:
+
+| | command | LLM | key needed |
+|---|---|---|---|
+| **Use it** (preview app, `beat-agent chat`) | `cp .env.example .env` (add `GEMINI_API_KEY`), then `docker compose up` -> http://localhost:8000 | **live** Gemini calls with your key, nothing cached | yes; without one, chat says so and how to add it (analysis, click audition and export still work) |
+| **Reproduce the results** (eval harness) | `docker compose run --rm app make reproduce` (fetch the substitutes, then every eval) or `make eval` | **replay** of the committed answers in `evals/llm_cache/`; no API call | no |
+| Re-run the evals live | `docker compose run --rm -e LLM_CACHE=off app make eval` (or `make eval-live`, `python -m evals.run part2 --live`) | live calls with your key; fresh answers replace the cached ones | yes |
+
+`LLM_CACHE` only affects the eval harness; the app and the CLI always call the model live.
+`GEMINI_MODEL` defaults to `gemini-3.1-flash-lite`; any Gemini 3 model works.
 
 What is committed and what you regenerate: [evals/README.md](evals/README.md). In short, the reports in
 `evals/results/` and one licence-cleared recreation (`evals/samples/subP1/`, Groove MIDI, CC BY 4.0) are
 committed; GTZAN audio, the Lakh/POP909 renders and every audio output derived from them are not, and
 `make reproduce` rebuilds them.
 
-**LLM results are replays of a committed cache by default.** The Gemini answers behind the committed Part 2
-and Part 3 chat results are committed in [`evals/llm_cache/`](evals/llm_cache/) (answer text, token counts,
-model, fetch time; no key or request data -- `python -m evals.cache_tool check`). They came from
-**`gemini-3.1-flash-lite`, free tier, fetched on 2026-10-12 (UTC)**. A fresh clone replays them, so it
-reproduces the committed results; `LLM_CACHE=replay` does that with no API key at all and fails rather than
-call the API. Each report prints its provenance (model, replayed vs live, fetch dates).
-
-To make fresh calls with your own key: `LLM_CACHE=off make eval` (or `make eval-live`, or
-`python -m evals.run part2 --live`; in Docker `docker compose run --rm -e LLM_CACHE=off app make eval`). That is
-20 Gemini calls (17 Part 2 turns + 3 Part 3 chat turns, up to 40 with validation retries), and **the results
-may differ slightly from the committed ones**: the model can phrase a reading differently or pick another
-valid op (e.g. a `linear` instead of an equal-power fade), and another `GEMINI_MODEL` will differ more.
+**Eval LLM results are replays of a committed cache by default.** The Gemini answers behind the committed
+Part 2 and Part 3 chat results are in [`evals/llm_cache/`](evals/llm_cache/) (answer text, token counts, model,
+fetch time; no key or request data -- `python -m evals.cache_tool check`). They came from
+**`gemini-3.1-flash-lite`, free tier, fetched on 2026-10-12 (UTC)**. The default eval mode (`LLM_CACHE=replay`)
+needs no key, makes no API call, and fails on a prompt that is not in the cache instead of calling the API,
+so a fresh clone reproduces the committed results exactly. Each report prints its provenance (model, replayed
+vs live, fetch dates). A live eval run (`LLM_CACHE=off`) is 20 Gemini calls (17 Part 2 turns + 3 Part 3 chat
+turns, up to 40 with validation retries), and **its results may differ slightly from the committed ones**: the
+model can phrase a reading differently or pick another valid op (e.g. a `linear` instead of an equal-power
+fade), and another `GEMINI_MODEL` will differ more. `LLM_CACHE=on` replays and fetches only what is missing.
 
 Without Docker (Python 3.11, [uv](https://docs.astral.sh/uv/), plus `ffmpeg` and `rubberband-cli` on PATH):
 

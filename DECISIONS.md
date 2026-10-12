@@ -56,9 +56,11 @@ fallback to an alias (`gemini-flash-latest` could point at a non-Gemini-3 model)
 execute a partially parsed plan. Responses are cached on (model, system prompt, contents incl. grid state,
 schema), so eval re-runs cost nothing. **The cache is committed** (`evals/llm_cache/`: answer text, token
 counts, model, fetch time; no prompt, key or request data), so a fresh clone replays the exact answers behind
-the committed results; `LLM_CACHE=replay` does so without a key and errors instead of calling the API.
-`LLM_CACHE=off` (`--live`, `make eval-live`) makes fresh calls with your key, and results may then differ
-slightly. Every report prints where its answers came from and when they were fetched.
+the committed results. The eval harness defaults to `LLM_CACHE=replay` (no key, no API call, a miss is an
+error); `LLM_CACHE=off` (`--live`, `make eval-live`) makes fresh calls with your key, and results may then
+differ slightly. Every report prints where its answers came from and when they were fetched. The preview app
+and `beat-agent chat` are not evals: they always call the model live with the user's key, never touch the
+committed cache, and explain how to add a key when none is set.
 - **Model used for every committed result: `gemini-3.1-flash-lite` on the free tier** (its own daily quota;
   the earlier `gemini-3.5-flash` runs hit that model's 20-requests/day free limit). It is also the default.
   **Reviewers can set `GEMINI_MODEL` to any Gemini 3 model** listed for their key; answers are then fetched

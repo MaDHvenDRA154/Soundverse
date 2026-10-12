@@ -59,11 +59,14 @@ replay the answers in `evals/llm_cache/`, fetched from `gemini-3.1-flash-lite` (
 UTC; `part2.md` and `part3.md` each print a provenance line (model, replayed vs fetched live, fetch dates),
 and every answer's cache key is in the JSON, so you can see exactly which file each turn replayed.
 
-| mode | how | effect |
+| eval mode | how | effect |
 |---|---|---|
-| replay, then live on a miss (default) | `LLM_CACHE=on` or unset | committed answers replayed; a prompt not in the cache is sent to the API (needs a key) and cached |
-| replay only | `LLM_CACHE=replay` | no key needed, no API call ever; a prompt not in the cache is an error (how the clean-clone check runs) |
+| **replay (default)** | `LLM_CACHE` unset or `replay` | committed answers only; no key, no API call; a prompt not in the cache is an error, and the run is withheld as partial |
+| replay + fill gaps | `LLM_CACHE=on` | committed answers replayed; a prompt not in the cache is sent to the API (needs a key) and cached (e.g. after adding test-pack sessions) |
 | live | `LLM_CACHE=off`, `make eval-live`, or `python -m evals.run part2 --live` | every call goes to the API with your key; fresh answers replace the cached ones, and results **may differ slightly** from the committed ones |
+
+`LLM_CACHE` is read by the eval harness only. The preview app and `beat-agent chat` always make live calls
+with your key and never read or write `evals/llm_cache/`; without a key they say how to add one.
 
 In Docker: `docker compose run --rm -e LLM_CACHE=off app make eval`.
 

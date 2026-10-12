@@ -71,14 +71,19 @@ def cmd_sync(a) -> int:
 
 def cmd_chat(a) -> int:
     from beat_agent.agent.agent import Agent
-    from beat_agent.agent.llm import GeminiProvider
+    from beat_agent.agent.llm import GeminiProvider, LLMError
     from beat_agent.analysis.pipeline import analyze
     from beat_agent.edit.session import EditSession
     from beat_agent.io.audio import open_source
+    try:
+        provider = GeminiProvider()   # live calls with your key; no cache (LLM_CACHE is for the eval harness)
+    except LLMError as e:
+        print(e, file=sys.stderr)
+        return 2
     src = open_source(a.file)
     print(f"analysing {a.file} ...", flush=True)
     sess = EditSession(src, analyze(a.file, src))
-    agent = Agent(GeminiProvider(), sess)
+    agent = Agent(provider, sess)
     out = _out_dir(a.out, a.file)
     print(sess.grid_header())
     print("Type an edit (beats/bars), 'undo', 'redo', ':export' to write files, ':quit' to leave.")

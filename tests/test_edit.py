@@ -250,3 +250,49 @@ def test_undo_names_the_turn(track):
     r = s.apply(plan({"op": "undo"}), "undo")
     assert "'take out bar 2'" in r.message
     assert "'take out bar 2'" in s.apply(plan({"op": "redo"}), "redo").message
+
+
+# ------------------------------------------------------------------ repeat length (regression, live-app bug)
+@pytest.fixture(scope="module")
+def ramp68(tmp_path_factory):
+    """6/8 with a tempo ramp: a variable grid, like the track the bug was found on."""
+    sr = 44100
+    audio, _ = synth.make_track(sr=sr, segments=((48, 66, 80),), meter="6/8", seed=7)
+    p = tmp_path_factory.mktemp("r68") / "ramp68.wav"
+    synth.write(p, audio, sr)
+    src = open_source(str(p))
+    return src, analyze(str(p), src)
+
+
+def _span(sess, r):
+    g = sess.grid()
+    t = {b.index: b.time for b in g.beats}
+    return int(round(t[r["end"]] * sess.sr)) - int(round(t[r["start"]] * sess.sr))
+
+
+@pytest.mark.parametrize("times_total", [2, 3])
+def test_repeat_adds_range_length_on_variable_68_grid(ramp68, times_total):
+    src, grid = ramp68
+    assert grid.tempo.type != "constant" and grid.time_signature.numerator in (6, 12)
+    sess = EditSession(src, grid)
+    n0, span = sess.state.timeline.length, _span(sess, beats(16, 32))
+    res = sess.apply(plan({"op": "repeat", "range": beats(16, 32), "times_total": times_total}))
+    assert res.status == "applied"
+    # centred crossfades use source audio beyond the clip edges, so they overlap nothing: no length lost
+    assert abs(sess.state.timeline.length - (n0 + (times_total - 1) * span)) <= 2
+
+
+def test_cut_and_repeat_plan_with_a_remove_is_read_as_a_selection(ramp68):
+    """The live app got [remove 16-32, repeat 16-32 x2] from the model for 'Cut beat 16-32 and repeat it
+    twice': the remove deleted the range and the repeat then doubled the next 16 beats (net -8 ms)."""
+    src, grid = ramp68
+    sess = EditSession(src, grid)
+    n0, span = sess.state.timeline.length, _span(sess, beats(16, 32))
+    res = sess.apply(plan({"op": "remove", "range": beats(16, 32)},
+                          {"op": "repeat", "range": beats(16, 32), "times_total": 2}))
+    assert res.status == "applied" and "not deleting it" in res.message
+    assert abs(sess.state.timeline.length - (n0 + span)) <= 2
+    # a remove of a *different* range before a repeat is left alone
+    sess2 = EditSession(src, grid)
+    sess2.apply(plan({"op": "remove", "range": beats(0, 8)}, {"op": "repeat", "range": beats(16, 32), "times_total": 2}))
+    assert sess2.state.timeline.length < n0 + span

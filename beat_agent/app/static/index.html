@@ -70,7 +70,7 @@
     <canvas id="wave" width="1600" height="400"></canvas>
     <div class="row legend"><span><i style="background:#e7e4dd"></i>bar line</span><span><i style="background:#3a414c"></i>beat</span>
       <span><i style="background:#d9a441"></i>tempo change</span><span><i style="background:repeating-linear-gradient(90deg,#d9a441 0 3px,transparent 3px 6px)"></i>splice</span></div>
-    <audio id="player" controls preload="none"></audio>
+    <audio id="player" controls preload="metadata"></audio>
     <div class="row">
       <button id="undo" disabled>Undo</button><button id="redo" disabled>Redo</button>
       <span style="flex:1"></span>
@@ -118,6 +118,7 @@ async function refresh() {
     version = st.version;
     peaks = await (await fetch(`/api/session/${sid}/peaks?n=1600`)).json();
     player.src = `/api/session/${sid}/audio?v=${version}`;
+    player.load();   // fetch the new version's metadata now (duration), also after undo/redo
     for (const [id, w] of [["dl-audio", "audio"], ["dl-grid", "grid"], ["dl-click", "click"]]) $(id).href = `/api/session/${sid}/export/${w}?v=${version}`;
   }
   $("undo").disabled = !st.can_undo; $("redo").disabled = !st.can_redo;

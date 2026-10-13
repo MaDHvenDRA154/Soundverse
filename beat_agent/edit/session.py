@@ -181,8 +181,20 @@ class EditSession:
             else:
                 concrete.append(o)
 
+        # "Cut X and repeat it" selects X (DECISIONS ambiguity 12). A model that emits remove(X) then
+        # repeat(X) would delete X and then repeat whatever slid into X's place -- never what was meant.
+        notes = []
+        for i in range(len(concrete) - 1, 0, -1):
+            a, b = concrete[i - 1], concrete[i]
+            if isinstance(a, O.Remove) and isinstance(b, O.Repeat) and a.range == b.range:
+                del concrete[i - 1]
+                r = a.range.model_dump()
+                what = f"{r['unit']} {r.get('start')}-{r.get('end')}" if "start" in r else f"the {r['unit']} {r.get('count', '')}"
+                notes.append(f"Read 'cut ... and repeat' as selecting {what.strip()}, not deleting it "
+                             "(the plan also removed that range, which would have repeated different audio).")
+
         st = self.state
-        lines, resolved = [], []
+        lines, resolved = list(notes), []
         try:
             for o in concrete:
                 st, line, info = self._apply_op(st, o)
